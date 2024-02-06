@@ -70,6 +70,11 @@ class Point(pygame.sprite.Sprite):
 
         self.x += x
         self.y += y
+
+        if (self.x < 0) or (self.x > SCREEN_WIDTH):
+            self.x -= x
+        if (self.y < 0) or (self.y > SCREEN_HEIGHT):
+            self.y -= y
         
         self.rect.x = self.x - self.radius
         self.rect.y = self.y - self.radius

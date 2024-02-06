@@ -36,6 +36,7 @@ class Game:
 
     def updateScreen(self) -> None:
         # 更新时钟和帧间隔时间(单位: S)
+        pygame.display.set_caption(title=f"{SCREEN_TITLE} FPS: {self.clock.get_fps()}")
         self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
 
         # 绘制屏幕和角色

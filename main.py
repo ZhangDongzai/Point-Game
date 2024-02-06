@@ -1,6 +1,7 @@
 # 游戏主文件
 
 from setting import *
+from sprites import *
 
 import pygame
 import sys
@@ -15,6 +16,9 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.delta_time = 1
+
+        # 角色
+        self.sprite_point = Point(game=self)
 
         self.gameLoop()
 
@@ -31,11 +35,13 @@ class Game:
                 sys.exit()
 
     def updateScreen(self) -> None:
-        # 更新角色及时钟
-        self.delta_time = self.clock.tick(SCREEN_FPS)
+        # 更新时钟和帧间隔时间(单位: S)
+        self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
 
-        # 绘制屏幕
+        # 绘制屏幕和角色
         self.screen.fill(color=SCREEN_COLOR)
+        self.sprite_point.update()
+        self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
 
         # 更新缓存
         pygame.display.flip()

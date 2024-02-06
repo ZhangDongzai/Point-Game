@@ -39,16 +39,17 @@ class Game:
         # 更新帧速和帧间隔时间(单位: S)
         fps_text = self.fps_font.render(f"FPS: {int(self.clock.get_fps())}", True, FPS_COLOR)
         self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
+        
+        # 更新角色
+        self.sprite_point.update()
 
         # 绘制屏幕
         self.screen.fill(color=SCREEN_COLOR)
 
-        # 更新角色
-        self.sprite_point.update()
-
         # 绘制
         self.screen.blit(fps_text, FPS_CENTER)
         self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
+        self.sprite_point.draw()
 
         # 更新缓存
         pygame.display.flip()

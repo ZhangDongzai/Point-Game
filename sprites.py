@@ -90,10 +90,16 @@ class Point(pygame.sprite.Sprite):
             self.angle += rotation_speed
         self.angle %= math.tau
 
-        # 绘制图像
-        pygame.draw.line(surface=self.game.screen,
-                         color=self.color,
-                         start_pos=(self.x, self.y),
-                         end_pos=(self.x + SCREEN_WIDTH * math.cos(self.angle),
-                                  self.y + SCREEN_WIDTH * math.sin(self.angle)))
-        
+    def draw(self) -> None:
+        # 绘制方向指示
+        up_point = (self.x + math.cos(self.angle) * 40,
+                    self.y + math.sin(self.angle) * 40)
+        down_point = (self.x + math.cos(self.angle) * 30,
+                      self.y + math.sin(self.angle) * 30)
+        left_point = (self.x + math.cos(self.angle - 0.5) * 30,
+                      self.y + math.sin(self.angle - 0.5) * 30)
+        right_point = (self.x + math.cos(self.angle + 0.5) * 30,
+                       self.y + math.sin(self.angle + 0.5) * 30)
+        points = (up_point, left_point, down_point, right_point)
+
+        pygame.draw.polygon(surface=self.game.screen, color=WHITE, points=points)

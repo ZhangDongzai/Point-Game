@@ -21,7 +21,7 @@ class Point(pygame.sprite.Sprite):
 
         # 初始化属性
         self.game = game                                # 游戏类
-        self.size = self.side, self,side                # 图像尺寸
+        self.size = self.side, self.side                # 图像尺寸
         self.radius = self.side / 2                     # 圆的半径
         self.image_center = self.radius, self.radius    # 图像中心(相对位置)
         
@@ -50,7 +50,7 @@ class Point(pygame.sprite.Sprite):
         key_pressed = pygame.key.get_pressed()
 
         # 平移
-        x, y = 0, 0
+        x, y = 0.0, 0.0
         if key_pressed[pygame.K_w]:             # 前进
             x += movement_speed_cos
             y += movement_speed_sin
@@ -67,6 +67,9 @@ class Point(pygame.sprite.Sprite):
         if (x != 0) and (y != 0):               # 按两个键时 x, y 乘 sin(45) 或 cos(45)
             x *= 0.7071
             y *= 0.7071
+
+        self.x += x
+        self.y += y
         
         self.rect.x = self.x - self.radius
         self.rect.y = self.y - self.radius

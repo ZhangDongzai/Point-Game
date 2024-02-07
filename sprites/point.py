@@ -1,10 +1,11 @@
-# 角色文件
+# Point角色文件
 
 from setting import *
+import sprites.bullet
 
 import pygame
 import math
-
+import time
 
 
 class Point(pygame.sprite.Sprite):
@@ -13,7 +14,7 @@ class Point(pygame.sprite.Sprite):
     movement_speed = 200                                # 移动速度(单位: 像素/S)
     rotation_speed = 3                                  # 旋转速度(单位: 弧度/S)
     side = 30                                           # 图像边长
-    screen_center = x, y = SCREEN_CENTER                # 图像中心(绝对位置)
+    x, y = SCREEN_CENTER                                # 图像中心(绝对位置)
     angle = 0                                           # 默认方向(单位: 弧度)(O朝右)
 
     def __init__(self, game: object, *groups) -> None:
@@ -24,6 +25,8 @@ class Point(pygame.sprite.Sprite):
         self.size = self.side, self.side                # 图像尺寸
         self.radius = self.side / 2                     # 圆的半径
         self.image_center = self.radius, self.radius    # 图像中心(相对位置)
+        self.bullets = pygame.sprite.Group()
+        self.bullet_time = 0
         
         # 加载图像
         self.image = pygame.Surface(size=self.size)
@@ -37,39 +40,34 @@ class Point(pygame.sprite.Sprite):
         #   因为Rect实际在Surface的左上角,
         #   所以计算Surface的中心要在Rect.x, Rect.y的基础上分别减一半的边长.
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = self.x - self.radius, self.y - self.radius
+        self.rect.center = self.x, self.y
 
     def update(self, *args, **kwargs) -> None:
+        # 监控键盘
+        key_pressed = pygame.key.get_pressed()
+
+        # 移动
+        self.movement(key_pressed)
+
+        # 子弹
+        if key_pressed[pygame.K_j] and (time.time() - self.bullet_time > 0.1):
+            self.bullet_time = time.time()
+            sprites.bullet.Bullet(self.bullets, game=self.game, sprite=self)
+
+    def movement(self, key_pressed: pygame.key.ScancodeWrapper) -> None:
         # 计算当前帧速度
         movement_speed = self.movement_speed * self.game.delta_time
         rotation_speed = self.rotation_speed * self.game.delta_time
         movement_speed_sin = movement_speed * math.sin(self.angle)
         movement_speed_cos = movement_speed * math.cos(self.angle)
 
-        # 监控键盘
-        key_pressed = pygame.key.get_pressed()
-
         # 平移
-        x, y = 0.0, 0.0
         if key_pressed[pygame.K_w]:             # 前进
-            x += movement_speed_cos
-            y += movement_speed_sin
+            self.x += movement_speed_cos
+            self.y += movement_speed_sin
         if key_pressed[pygame.K_s]:             # 后退
-            x -= movement_speed_cos
-            y -= movement_speed_sin
-        if key_pressed[pygame.K_a]:             # 左移
-            x += movement_speed_sin
-            y -= movement_speed_cos
-        if key_pressed[pygame.K_d]:             # 右移
-            x -= movement_speed_sin
-            y += movement_speed_cos
-        
-        if (x != 0) and (y != 0):               # 按两个键时 x, y 乘 sin(45) 或 cos(45)
-            x *= 0.7071
-            y *= 0.7071
-
-        self.x += x
-        self.y += y
+            self.x -= movement_speed_cos
+            self.y -= movement_speed_sin
 
         if self.x < 0:
             self.x = 0
@@ -80,13 +78,12 @@ class Point(pygame.sprite.Sprite):
         if self.y > SCREEN_HEIGHT:
             self.y = SCREEN_HEIGHT
         
-        self.rect.x = self.x - self.radius
-        self.rect.y = self.y - self.radius
+        self.rect.center = self.x, self.y
 
         # 旋转
-        if key_pressed[pygame.K_LEFT]:
+        if key_pressed[pygame.K_a]:
             self.angle -= rotation_speed
-        if key_pressed[pygame.K_RIGHT]:
+        if key_pressed[pygame.K_d]:
             self.angle += rotation_speed
         self.angle %= math.tau
 
@@ -103,3 +100,9 @@ class Point(pygame.sprite.Sprite):
         points = (up_point, left_point, down_point, right_point)
 
         pygame.draw.polygon(surface=self.game.screen, color=WHITE, points=points)
+
+        # 绘制子弹
+        if len(self.bullets.sprites()) != 0:
+            for bullet in self.bullets.sprites():
+                bullet.update()
+                self.game.screen.blit(bullet.image, bullet.rect)

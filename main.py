@@ -1,8 +1,8 @@
 # 游戏主文件
 
 from setting import *
-from sprites import *
-from UI import *
+import sprites.point
+import UI.fps
 
 import pygame
 import sys
@@ -19,8 +19,8 @@ class Game:
         self.delta_time = 1
 
         # 角色
-        self.ui_fps = FPS(game=self)
-        self.sprite_point = Point(game=self)
+        self.ui_fps = UI.fps.FPS(game=self)
+        self.sprite_point = sprites.point.Point(game=self)
 
         self.gameLoop()
 
@@ -47,10 +47,10 @@ class Game:
         # 绘制屏幕
         self.screen.fill(color=SCREEN_COLOR)
 
-        # 绘制
-        self.screen.blit(self.ui_fps.image, self.ui_fps.rect)
-        self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
+        # 绘制(角色附有 -> 角色 -> UI)
         self.sprite_point.draw()
+        self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
+        self.screen.blit(self.ui_fps.image, self.ui_fps.rect)
 
         # 更新缓存
         pygame.display.flip()

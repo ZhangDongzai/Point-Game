@@ -2,6 +2,7 @@
 
 from setting import *
 import sprites.bullet
+import UI.bullet
 
 import pygame
 import math
@@ -17,7 +18,7 @@ class Point(pygame.sprite.Sprite):
     x, y = SCREEN_CENTER                                # 图像中心(绝对位置)
     angle = 0                                           # 默认方向(单位: 弧度)(O朝右)
 
-    def __init__(self, game: object, *groups) -> None:
+    def __init__(self, *groups, game: object) -> None:
         super().__init__(*groups)
 
         # 初始化属性
@@ -26,7 +27,6 @@ class Point(pygame.sprite.Sprite):
         self.radius = self.side / 2                     # 圆的半径
         self.image_center = self.radius, self.radius    # 图像中心(相对位置)
         self.bullets = pygame.sprite.Group()
-        self.bullet_time = 0
         
         # 加载图像
         self.image = pygame.Surface(size=self.size)
@@ -50,8 +50,8 @@ class Point(pygame.sprite.Sprite):
         self.movement(key_pressed)
 
         # 子弹
-        if key_pressed[pygame.K_j] and (time.time() - self.bullet_time > 0.1):
-            self.bullet_time = time.time()
+        self.game.ui_bullet.check_reload_bullet(key_pressed)
+        if self.game.ui_bullet.check_launch_bullet(key_pressed):
             sprites.bullet.Bullet(self.bullets, game=self.game, sprite=self)
 
     def movement(self, key_pressed: pygame.key.ScancodeWrapper) -> None:

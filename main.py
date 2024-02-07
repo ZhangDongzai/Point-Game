@@ -18,9 +18,14 @@ class Game:
         self.clock = pygame.time.Clock()
         self.delta_time = 1
 
+        # 角色组
+        self.ui = pygame.sprite.Group()
+        self.sprite = pygame.sprite.Group()
+        
         # 角色
-        self.ui_fps = UI.fps.FPS(game=self)
-        self.sprite_point = sprites.point.Point(game=self)
+        self.ui_fps = UI.fps.FPS(self.ui, game=self)
+        self.ui_bullet = UI.bullet.Bullet(self.ui, game=self)
+        self.sprite_point = sprites.point.Point(self.sprite, game=self)
 
         self.gameLoop()
 
@@ -41,8 +46,8 @@ class Game:
         self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
         
         # 更新角色
-        self.ui_fps.update()
-        self.sprite_point.update()
+        self.ui.update()
+        self.sprite.update()
 
         # 绘制屏幕
         self.screen.fill(color=SCREEN_COLOR)
@@ -51,6 +56,7 @@ class Game:
         self.sprite_point.draw()
         self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
         self.screen.blit(self.ui_fps.image, self.ui_fps.rect)
+        self.screen.blit(self.ui_bullet.image, self.ui_bullet.rect)
 
         # 更新缓存
         pygame.display.flip()

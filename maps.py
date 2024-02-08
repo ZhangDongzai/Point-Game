@@ -1,0 +1,66 @@
+# 地图文件
+
+from setting import *
+
+import pygame
+
+
+class Map:
+    background_color = BLACK
+    rect_color = WHITE
+
+    def __init__(self, game: object, map: list[list[bool]]):
+        self.game = game
+        self.map = map
+    
+        # 根据窗口大小计算每个格子的宽和高
+        self.width = SCREEN_WIDTH / len(self.map[0])
+        self.height = SCREEN_HEIGHT / len(self.map)
+        self.size = self.width, self.height
+
+        # 初始化图像
+        self.image = pygame.Surface(self.size)
+        self.image.set_colorkey(self.background_color)                  
+        self.image.fill(self.background_color)
+        pygame.draw.rect(surface=self.image,
+                         color=self.rect_color,
+                         rect=(0, 0)+self.size,
+                         width=1)
+        self.rects = []
+        self.make_rects()
+
+    def draw(self) -> None:
+        for rect in self.rects:
+            self.game.screen.blit(self.image, rect)
+    
+    def make_rects(self) -> None:
+        """使用`pygame.draw.rect`根据`self.map`的内容制作rects."""
+        for y, row in enumerate(self.map):
+            for x, colnum in enumerate(row):
+                if colnum:
+                    rect = pygame.Rect(x * self.width,
+                                       y * self.height,
+                                       self.width,
+                                       self.height)
+                    self.rects.append(rect)
+                    
+    def isHit(self, pos: tuple[float, float]) -> bool:
+        """判断pos是否在墙内"""                    
+        for rect in self.rects:
+            if rect.collidepoint(pos):
+                return True
+        return False
+
+
+map_1 = [
+         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]  
+        

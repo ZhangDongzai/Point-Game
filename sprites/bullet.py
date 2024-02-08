@@ -9,7 +9,7 @@ import math
 class Bullet(pygame.sprite.Sprite):
     # 角色属性
     color = WHITE
-    speed = 200
+    speed = 500
     side = 10
 
     def __init__(self, *groups, game: object, sprite: pygame.sprite.Sprite) -> None:
@@ -24,6 +24,8 @@ class Bullet(pygame.sprite.Sprite):
 
         # 初始化图像
         self.image = pygame.Surface(size=self.size)
+        self.image.set_colorkey(BLACK)                  # 设置黑色为透明色
+        self.image.fill(BLACK)
         pygame.draw.circle(surface=self.image,
                            color=self.color,
                            center=self.center,

@@ -3,7 +3,7 @@
 from setting import *
 import sprites.point
 import UI.fps
-import maps.map_1
+import maps
 
 import pygame
 import sys
@@ -24,7 +24,7 @@ class Game:
         self.sprite = pygame.sprite.Group()
         
         # 角色
-        self.map = maps.map_1.Map(game=self)
+        self.map = maps.Map(game=self, map=maps.map_1)
         self.ui_fps = UI.fps.FPS(self.ui, game=self)
         self.ui_bullet = UI.bullet.Bullet(self.ui, game=self)
         self.sprite_point = sprites.point.Point(self.sprite, game=self)
@@ -47,8 +47,7 @@ class Game:
         # 更新帧间隔时间(单位: S)
         self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
         
-        # 更新角色
-        self.map.update()
+        # 更新
         self.ui.update()
         self.sprite.update()
 
@@ -56,7 +55,7 @@ class Game:
         self.screen.fill(color=SCREEN_COLOR)
 
         # 绘制(地图 -> 角色附有 -> 角色 -> UI)
-        self.screen.blit(self.map.image, self.map.rect)
+        self.map.draw()
         self.sprite_point.draw()
         self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
         self.screen.blit(self.ui_fps.image, self.ui_fps.rect)

@@ -30,6 +30,8 @@ class Point(pygame.sprite.Sprite):
         
         # 加载图像
         self.image = pygame.Surface(size=self.size)
+        self.image.set_colorkey(BLACK)                  # 设置黑色为透明色
+        self.image.fill(BLACK)
         pygame.draw.circle(surface=self.image,
                            color=self.color,
                            center=self.image_center,
@@ -62,21 +64,19 @@ class Point(pygame.sprite.Sprite):
         movement_speed_cos = movement_speed * math.cos(self.angle)
 
         # 平移
+        x, y = 0, 0
         if key_pressed[pygame.K_w]:             # 前进
-            self.x += movement_speed_cos
-            self.y += movement_speed_sin
+            x += movement_speed_cos
+            y += movement_speed_sin
         if key_pressed[pygame.K_s]:             # 后退
-            self.x -= movement_speed_cos
-            self.y -= movement_speed_sin
+            x -= movement_speed_cos
+            y -= movement_speed_sin
 
-        if self.x < 0:
-            self.x = 0
-        if self.x > SCREEN_WIDTH:
-            self.x = SCREEN_WIDTH
-        if self.y < 0:
-            self.y = 0
-        if self.y > SCREEN_HEIGHT:
-            self.y = SCREEN_HEIGHT
+        # 撞墙
+        if not self.game.map.isHit(pos = (self.x + x, self.y)):
+            self.x += x
+        if not self.game.map.isHit(pos = (self.x, self.y + y)):
+            self.y += y
         
         self.rect.center = self.x, self.y
 

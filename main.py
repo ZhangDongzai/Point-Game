@@ -1,20 +1,23 @@
 # 游戏主文件
 
 from setting import *
-import sprites.point
-import UI.fps
+import sprites
+import UI
 import maps
 
 import pygame
-import sys
 
 
 class Game:
     def __init__(self) -> None:
+        # 初始化pygame
         pygame.init()
+
+        # 设置窗口属性
         pygame.display.set_caption(SCREEN_TITLE)        # 设置标题
         pygame.display.set_mode(SCREEN_SIZE)            # 设置大小
 
+        self.running = True
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.delta_time = 1
@@ -24,7 +27,7 @@ class Game:
         self.sprite = pygame.sprite.Group()
         
         # 角色
-        self.map = maps.Map(game=self, map=maps.map_1)
+        self.map = maps.Map(game=self, _map=maps.map_1)
         self.ui_fps = UI.fps.FPS(self.ui, game=self)
         self.ui_bullet = UI.bullet.Bullet(self.ui, game=self)
         self.sprite_point = sprites.point.Point(self.sprite, game=self)
@@ -32,16 +35,16 @@ class Game:
         self.gameLoop()
 
     def gameLoop(self) -> None:
-        while True:
-            self.checkEvent()
+        while self.running:
             self.updateScreen()
+            self.checkEvent()
 
     def checkEvent(self) -> None:
         for event in pygame.event.get():
             # 窗口关闭
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                pygame.base.quit()
+                self.running = False
 
     def updateScreen(self) -> None:
         # 更新帧间隔时间(单位: S)

@@ -1,8 +1,8 @@
 # Point角色文件
 
 from setting import *
-import sprites.bullet
-import UI.bullet
+import sprites
+import UI
 
 import pygame
 import math
@@ -12,10 +12,10 @@ import time
 class Point(pygame.sprite.Sprite):
     # 角色属性
     color = WHITE                                       # 图像颜色
-    movement_speed = 200                                # 移动速度(单位: 像素/S)
+    movement_speed = 200 * RATIO                        # 移动速度(单位: 像素/S)
     rotation_speed = 3                                  # 旋转速度(单位: 弧度/S)
-    side = 30                                           # 图像边长
-    x, y = SCREEN_CENTER                                # 图像中心(绝对位置)
+    side = 30 * RATIO                                   # 图像边长
+    x, y = 80 * WIDTH_RATIO, 360 * HEIGHT_RATIO         # 图像中心(绝对位置)
     angle = 0                                           # 默认方向(单位: 弧度)(O朝右)
 
     def __init__(self, *groups, game: object) -> None:
@@ -89,14 +89,14 @@ class Point(pygame.sprite.Sprite):
 
     def draw(self) -> None:
         # 绘制方向指示
-        up_point = (self.x + math.cos(self.angle) * 40,
-                    self.y + math.sin(self.angle) * 40)
-        down_point = (self.x + math.cos(self.angle) * 30,
-                      self.y + math.sin(self.angle) * 30)
-        left_point = (self.x + math.cos(self.angle - 0.5) * 30,
-                      self.y + math.sin(self.angle - 0.5) * 30)
-        right_point = (self.x + math.cos(self.angle + 0.5) * 30,
-                       self.y + math.sin(self.angle + 0.5) * 30)
+        up_point = (self.x + math.cos(self.angle) * 40 * RATIO,
+                    self.y + math.sin(self.angle) * 40 * RATIO)
+        down_point = (self.x + math.cos(self.angle) * 30 * RATIO,
+                      self.y + math.sin(self.angle) * 30 * RATIO)
+        left_point = (self.x + math.cos(self.angle - 0.5) * 30 * RATIO,
+                      self.y + math.sin(self.angle - 0.5) * 30 * RATIO)
+        right_point = (self.x + math.cos(self.angle + 0.5) * 30 * RATIO,
+                       self.y + math.sin(self.angle + 0.5) * 30 * RATIO)
         points = (up_point, left_point, down_point, right_point)
 
         pygame.draw.polygon(surface=self.game.screen, color=WHITE, points=points)

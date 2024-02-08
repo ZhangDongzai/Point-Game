@@ -6,8 +6,8 @@ import pygame
 
 
 class FPS(pygame.sprite.Sprite):
-    size = 20
-    pos = 10, SCREEN_HEIGHT - 20
+    size = int(40 * RATIO)
+    pos = 10 * RATIO, SCREEN_HEIGHT - (20 * RATIO)
     color = YELLOW
     def __init__(self, *groups, game: object) -> None:
         """

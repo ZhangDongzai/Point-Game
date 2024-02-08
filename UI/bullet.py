@@ -7,9 +7,9 @@ import time
 
 
 class Bullet(pygame.sprite.Sprite):
-    size = 50
+    size = int(50 * RATIO)
     color = YELLOW
-    pos = 10, 10
+    pos = 10 * WIDTH_RATIO, 10 * HEIGHT_RATIO
     max_number = 50
     def __init__(self, *groups, game: object) -> None:
         super().__init__(*groups)

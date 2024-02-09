@@ -4,3 +4,5 @@
 # 用户就不用再导入了
 from . import fps
 from . import bullet
+from . import health_point
+from . import win

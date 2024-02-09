@@ -21,16 +21,17 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.delta_time = 1
+        self.win = False
 
-        # 角色组
+        # 精灵组
         self.ui = pygame.sprite.Group()
         self.sprite = pygame.sprite.Group()
         
-        # 角色
+        # 精灵
         self.map = maps.Map(game=self, _map=maps.map_1)
         self.ui_fps = UI.fps.FPS(self.ui, game=self)
-        self.ui_bullet = UI.bullet.Bullet(self.ui, game=self)
-        self.sprite_point = sprites.point.Point(self.sprite, game=self)
+        self.sprite_point_1 = sprites.point.Point(self.sprite, game=self, setting=PLAYER_1)
+        self.sprite_point_2 = sprites.point.Point(self.sprite, game=self, setting=PLAYER_2)
 
         self.gameLoop()
 
@@ -43,7 +44,7 @@ class Game:
         for event in pygame.event.get():
             # 窗口关闭
             if event.type == pygame.QUIT:
-                pygame.base.quit()
+                pygame.quit()
                 self.running = False
 
     def updateScreen(self) -> None:
@@ -57,12 +58,21 @@ class Game:
         # 绘制屏幕
         self.screen.fill(color=SCREEN_COLOR)
 
+        # 检测是否获胜
+        if (len(self.sprite.sprites()) == 1) and (self.win == False):
+            self.sprite.empty()
+            self.ui.empty()
+            UI.win.Win(self.ui)
+            self.win = True
+        else:
         # 绘制(地图 -> 角色附有 -> 角色 -> UI)
-        self.map.draw()
-        self.sprite_point.draw()
-        self.screen.blit(self.sprite_point.image, self.sprite_point.rect)
-        self.screen.blit(self.ui_fps.image, self.ui_fps.rect)
-        self.screen.blit(self.ui_bullet.image, self.ui_bullet.rect)
+            self.map.draw()
+            for sprite in self.sprite.sprites():
+                self.screen.blit(sprite.image, sprite.rect)
+                sprite.draw()
+                
+        for ui in self.ui.sprites():
+            self.screen.blit(ui.image, ui.rect)
 
         # 更新缓存
         pygame.display.flip()

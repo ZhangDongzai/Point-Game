@@ -7,7 +7,7 @@ import pygame
 
 class FPS(pygame.sprite.Sprite):
     size = int(40 * RATIO)
-    pos = 10 * RATIO, SCREEN_HEIGHT - (20 * RATIO)
+    pos = 10 * WIDTH_RATIO, 690 * HEIGHT_RATIO
     color = YELLOW
     def __init__(self, *groups, game: object) -> None:
         """
@@ -27,7 +27,7 @@ class FPS(pygame.sprite.Sprite):
 
         # 初始化位置
         self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = self.pos
+        self.rect.topleft = self.pos
 
     def update(self, *args, **kwargs) -> None:
         """

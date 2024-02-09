@@ -9,7 +9,7 @@ import math
 class Bullet(pygame.sprite.Sprite):
     # 角色属性
     color = WHITE
-    speed = 500 * RATIO
+    speed = 1000 * RATIO
     side = 10 * RATIO
 
     def __init__(self, *groups, game: object, sprite: pygame.sprite.Sprite) -> None:
@@ -44,9 +44,17 @@ class Bullet(pygame.sprite.Sprite):
         # 移动
         self.x += speed_cos
         self.y += speed_sin
+        self.rect.center = self.x, self.y
 
         # 判定是否撞墙
-        if self.game.map.isHit((self.x, self.y )):
+        if self.game.map.isHit((self.x, self.y)):
             self.kill()
 
-        self.rect.center = self.x, self.y
+        # 判断是否撞角色
+        for sprite in self.game.sprite.sprites():
+            if sprite is self.sprite:
+                continue
+            elif sprite.rect.colliderect(self.rect):
+                self.kill()
+                sprite.ui_health_point.hurt()
+                break

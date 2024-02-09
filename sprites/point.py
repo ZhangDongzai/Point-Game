@@ -15,18 +15,21 @@ class Point(pygame.sprite.Sprite):
     movement_speed = 200 * RATIO                        # 移动速度(单位: 像素/S)
     rotation_speed = 3                                  # 旋转速度(单位: 弧度/S)
     side = 30 * RATIO                                   # 图像边长
-    x, y = 80 * WIDTH_RATIO, 360 * HEIGHT_RATIO         # 图像中心(绝对位置)
-    angle = 0                                           # 默认方向(单位: 弧度)(O朝右)
 
-    def __init__(self, *groups, game: object) -> None:
+    def __init__(self, *groups, game: object, setting: dict) -> None:
         super().__init__(*groups)
 
         # 初始化属性
         self.game = game                                # 游戏类
+        self.setting = setting                          # 角色键位
         self.size = self.side, self.side                # 图像尺寸
         self.radius = self.side / 2                     # 圆的半径
         self.image_center = self.radius, self.radius    # 图像中心(相对位置)
+        self.x, self.y = setting["POS"]["POINT"]
+        self.angle = setting["ANGLE"]["POINT"]          # 默认方向(单位: 弧度)(O朝右)
         self.bullets = pygame.sprite.Group()
+        self.ui_bullet = UI.bullet.Bullet(self.game.ui, game=self.game, setting=self.setting)
+        self.ui_health_point = UI.health_point.HealthPoint(self.game.ui, sprite=self, setting=setting)
         
         # 加载图像
         self.image = pygame.Surface(size=self.size)
@@ -52,8 +55,8 @@ class Point(pygame.sprite.Sprite):
         self.movement(key_pressed)
 
         # 子弹
-        self.game.ui_bullet.check_reload_bullet(key_pressed)
-        if self.game.ui_bullet.check_launch_bullet(key_pressed):
+        self.ui_bullet.check_reload_bullet(key_pressed)
+        if self.ui_bullet.check_launch_bullet(key_pressed):
             sprites.bullet.Bullet(self.bullets, game=self.game, sprite=self)
 
     def movement(self, key_pressed: pygame.key.ScancodeWrapper) -> None:
@@ -65,10 +68,10 @@ class Point(pygame.sprite.Sprite):
 
         # 平移
         x, y = 0, 0
-        if key_pressed[pygame.K_w]:             # 前进
+        if key_pressed[self.setting["KEY"]["UP"]]:         # 前进
             x += movement_speed_cos
             y += movement_speed_sin
-        if key_pressed[pygame.K_s]:             # 后退
+        if key_pressed[self.setting["KEY"]["DOWN"]]:       # 后退
             x -= movement_speed_cos
             y -= movement_speed_sin
 
@@ -81,9 +84,9 @@ class Point(pygame.sprite.Sprite):
         self.rect.center = self.x, self.y
 
         # 旋转
-        if key_pressed[pygame.K_a]:
+        if key_pressed[self.setting["KEY"]["LEFT"]]:
             self.angle -= rotation_speed
-        if key_pressed[pygame.K_d]:
+        if key_pressed[self.setting["KEY"]["RIGHT"]]:
             self.angle += rotation_speed
         self.angle %= math.tau
 

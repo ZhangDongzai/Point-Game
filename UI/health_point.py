@@ -47,9 +47,7 @@ class HealthPoint(pygame.sprite.Sprite):
 
             # 判断获胜
             if len(self.sprite.game.sprite.sprites()) == 1:
-                self.sprite.game.sprite.empty()
-                self.sprite.game.ui.empty()
-                UI.win.Win(self.sprite.game.ui)
+                self.sprite.game.state = 1
 
     def hurt(self) -> None:
         """受伤"""

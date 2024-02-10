@@ -21,18 +21,15 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.delta_time = 1
-        self.win = False
+        self.state = -1
 
         # 精灵组
         self.ui = pygame.sprite.Group()
         self.sprite = pygame.sprite.Group()
-        
-        # 精灵
-        self.map = maps.Map(game=self, _map=maps.map_1)
-        self.ui_fps = UI.fps.FPS(self.ui, game=self)
-        self.sprite_point_1 = sprites.point.Point(self.sprite, game=self, setting=PLAYER_1)
-        self.sprite_point_2 = sprites.point.Point(self.sprite, game=self, setting=PLAYER_2)
 
+        # 界面
+        self.checkState()
+        
         self.gameLoop()
 
     def gameLoop(self) -> None:
@@ -46,6 +43,43 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 self.running = False
+            # 游戏开始
+            elif event.type == pygame.KEYDOWN and self.state == -1:
+                self.state = 0
+                self.checkState()
+
+    def checkState(self) -> None:
+        self.ui.empty()
+        self.sprite.empty()
+
+        # 开始界面
+        if self.state == -1:
+            # 更改地图
+            self.map = maps.Map(game=self, _map=maps.map_0)
+
+            # 文字
+            UI.start.Title(self.ui)
+            UI.start.Tip(self.ui)
+
+        # 游戏界面
+        elif self.state == 0:
+            # 更改地图
+            self.map.map = maps.map_1
+            self.map.make_rects()
+
+            # 精灵
+            UI.fps.FPS(self.ui, game=self)
+            sprites.point.Point(self.sprite, game=self, setting=PLAYER_1)
+            sprites.point.Point(self.sprite, game=self, setting=PLAYER_2)
+
+        # 结束界面
+        elif self.state == 1:
+            # 更改地图
+            self.map.map = maps.map_0
+            self.map.make_rects()
+
+            # 文字
+            UI.win.Win(self.ui)
 
     def updateScreen(self) -> None:
         # 更新帧间隔时间(单位: S)

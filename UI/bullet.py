@@ -14,7 +14,7 @@ class Bullet(pygame.sprite.Sprite):
         super().__init__(*groups)
         
         self.game = game
-        self.font = pygame.font.Font(None, size=self.size)
+        self.font = pygame.font.Font(name=None, size=self.size)
         self.number = self.max_number
         self.bullet_time = 0
         self.setting = setting

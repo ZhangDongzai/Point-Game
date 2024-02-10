@@ -6,3 +6,4 @@ from . import fps
 from . import bullet
 from . import health_point
 from . import win
+from . import start

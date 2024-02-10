@@ -58,18 +58,11 @@ class Game:
         # 绘制屏幕
         self.screen.fill(color=SCREEN_COLOR)
 
-        # 检测是否获胜
-        if (len(self.sprite.sprites()) == 1) and (self.win == False):
-            self.sprite.empty()
-            self.ui.empty()
-            UI.win.Win(self.ui)
-            self.win = True
-        else:
         # 绘制(地图 -> 角色附有 -> 角色 -> UI)
-            self.map.draw()
-            for sprite in self.sprite.sprites():
-                self.screen.blit(sprite.image, sprite.rect)
-                sprite.draw()
+        self.map.draw()
+        for sprite in self.sprite.sprites():
+            self.screen.blit(sprite.image, sprite.rect)
+            sprite.draw()
                 
         for ui in self.ui.sprites():
             self.screen.blit(ui.image, ui.rect)

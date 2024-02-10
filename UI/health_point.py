@@ -1,6 +1,7 @@
 # 血量界面文件
 
 from setting import *
+import UI
 
 import pygame
 
@@ -43,6 +44,12 @@ class HealthPoint(pygame.sprite.Sprite):
         if self.number <= 0:
             self.sprite.kill()
             self.kill()
+
+            # 判断获胜
+            if len(self.sprite.game.sprite.sprites()) == 1:
+                self.sprite.game.sprite.empty()
+                self.sprite.game.ui.empty()
+                UI.win.Win(self.sprite.game.ui)
 
     def hurt(self) -> None:
         """受伤"""

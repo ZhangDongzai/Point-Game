@@ -48,8 +48,8 @@ PLAYER_2 = {
         "DOWN": pygame.K_DOWN,
         "LEFT": pygame.K_LEFT,
         "RIGHT": pygame.K_RIGHT,
-        "SHOOT": pygame.K_1,
-        "RELOAD_BULLET": pygame.K_2,
+        "SHOOT": pygame.K_KP_1,
+        "RELOAD_BULLET": pygame.K_KP_2,
     },
     "POS": {
         "POINT": (1200 * WIDTH_RATIO, 360 * HEIGHT_RATIO),

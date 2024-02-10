@@ -12,7 +12,7 @@ class Title(pygame.sprite.Sprite):
 	def __init__(self, *groups) -> None:
 		super().__init__(*groups)
 
-		self.font = pygame.font.Font(name=None, size=self.size)
+		self.font = pygame.font.Font(None, size=self.size)
 
 		self.image = self.font.render("Point Game", False, self.color)
 		
@@ -27,7 +27,7 @@ class Tip(pygame.sprite.Sprite):
 	def __init__(self, *groups) -> None:
 		super().__init__(*groups)
 
-		self.font = pygame.font.Font(name=None, size=self.size)
+		self.font = pygame.font.Font(None, size=self.size)
 
 		self.image = self.font.render("Press any key to start", False, self.color)
 		

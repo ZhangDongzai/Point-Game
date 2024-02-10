@@ -19,7 +19,7 @@ class FPS(pygame.sprite.Sprite):
         super().__init__(*groups)
 
         self.game = game
-        self.font = pygame.font.Font(name=None, size=self.size)
+        self.font = pygame.font.Font(None, size=self.size)
         self.fps = 0
 
         # 初始化图像

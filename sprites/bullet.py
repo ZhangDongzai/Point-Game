@@ -4,6 +4,7 @@ from setting import *
 
 import pygame
 import math
+import random
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -11,6 +12,8 @@ class Bullet(pygame.sprite.Sprite):
     color = WHITE
     speed = 1000 * RATIO
     side = 10 * RATIO
+    hurt = 10
+    good_hurt = 0.1
 
     def __init__(self, *groups, game: object, sprite: pygame.sprite.Sprite) -> None:
         super().__init__(*groups)
@@ -21,6 +24,7 @@ class Bullet(pygame.sprite.Sprite):
         self.size = self.side, self.side
         self.radius = self.side / 2
         self.center = self.radius, self.radius
+        self.good_hurt_list = [True for _ in range(int(self.good_hurt * 100))] + [False for _ in range(int((1 - self.good_hurt) * 100))]
 
         # 初始化图像
         self.image = pygame.Surface(size=self.size)
@@ -56,5 +60,9 @@ class Bullet(pygame.sprite.Sprite):
                 continue
             elif sprite.rect.colliderect(self.rect):
                 self.kill()
-                sprite.ui_health_point.number -= 10
+
+                hurt = self.hurt
+                if random.choice(self.good_hurt_list):
+                    hurt += 5
+                sprite.ui_health_point.number -= hurt
                 break

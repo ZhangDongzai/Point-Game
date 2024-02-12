@@ -107,7 +107,6 @@ class Game:
         for sprite in self.sprite.sprites():
             self.screen.blit(sprite.image, sprite.rect)
             sprite.draw()
-                
         for ui in self.ui.sprites():
             self.screen.blit(ui.image, ui.rect)
 

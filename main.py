@@ -21,7 +21,9 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.delta_time = 1
-        self.state = -1
+        self.state = 0
+
+        self.map = maps.Map(game=self, _map=maps.map_1)
 
         # 精灵组
         self.ui = pygame.sprite.Group()
@@ -43,8 +45,16 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 self.running = False
-            # 游戏开始
-            elif event.type == pygame.KEYDOWN and self.state == -1:
+            # 运行
+            elif event.type == pygame.KEYDOWN and self.state == 0:
+                self.state = 1
+                self.checkState()
+            # 回到开始
+            elif event.type == pygame.KEYDOWN and self.state == 2:
+                self.state = 0
+                self.checkState()
+            # 回到开始
+            elif pygame.key.get_pressed()[pygame.K_ESCAPE] and self.state == 1:
                 self.state = 0
                 self.checkState()
 
@@ -53,33 +63,23 @@ class Game:
         self.sprite.empty()
 
         # 开始界面
-        if self.state == -1:
-            # 更改地图
-            self.map = maps.Map(game=self, _map=maps.map_0)
-
+        if self.state == 0:
             # 文字
-            UI.start.Title(self.ui)
-            UI.start.Tip(self.ui)
+            UI.no_playing.Title(self.ui, text="Point Game")
+            UI.no_playing.Tip(self.ui, text="Press any key to start")
 
         # 游戏界面
-        elif self.state == 0:
-            # 更改地图
-            self.map.map = maps.map_1
-            self.map.make_rects()
-
+        elif self.state == 1:
             # 精灵
             UI.fps.FPS(self.ui, game=self)
             sprites.point.Point(self.sprite, game=self, setting=PLAYER_1)
             sprites.point.Point(self.sprite, game=self, setting=PLAYER_2)
 
         # 结束界面
-        elif self.state == 1:
-            # 更改地图
-            self.map.map = maps.map_0
-            self.map.make_rects()
-
+        elif self.state == 2:
             # 文字
-            UI.win.Win(self.ui)
+            UI.no_playing.Title(self.ui, text="WIN")
+            UI.no_playing.Tip(self.ui, text="Press any key to restart")
 
     def updateScreen(self) -> None:
         # 更新帧间隔时间(单位: S)
@@ -93,7 +93,8 @@ class Game:
         self.screen.fill(color=SCREEN_COLOR)
 
         # 绘制(地图 -> 角色附有 -> 角色 -> UI)
-        self.map.draw()
+        if self.state == 1:
+            self.map.draw()
         for sprite in self.sprite.sprites():
             self.screen.blit(sprite.image, sprite.rect)
             sprite.draw()

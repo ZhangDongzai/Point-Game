@@ -30,8 +30,6 @@ class Map:
         self.make_rects()
 
     def draw(self) -> None:
-        if self.game.state != 0:
-            return None
         for rect in self.rects:
             self.game.screen.blit(self.image, rect)
     

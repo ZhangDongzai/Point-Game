@@ -21,7 +21,6 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.clock = pygame.time.Clock()
         self.delta_time = 1
-        self.state = 0
 
         self.map = maps.Map(game=self, _map=maps.map_1)
 
@@ -29,8 +28,14 @@ class Game:
         self.ui = pygame.sprite.Group()
         self.sprite = pygame.sprite.Group()
 
-        # 界面
-        self.checkState()
+        # 渲染
+        """
+        state 数值
+        0 - 开始界面
+        1 - 游戏界面
+        2 - 结束界面
+        """
+        self.state = 0
         
         self.gameLoop()
 
@@ -48,17 +53,21 @@ class Game:
             # 运行
             elif event.type == pygame.KEYDOWN and self.state == 0:
                 self.state = 1
-                self.checkState()
             # 回到开始
             elif event.type == pygame.KEYDOWN and self.state == 2:
                 self.state = 0
-                self.checkState()
             # 回到开始
             elif pygame.key.get_pressed()[pygame.K_ESCAPE] and self.state == 1:
                 self.state = 0
-                self.checkState()
 
-    def checkState(self) -> None:
+    @property
+    def state(self) -> int:
+        return self.__state
+
+    @state.setter
+    def state(self, state: int) -> None:
+        self.__state = state
+        
         self.ui.empty()
         self.sprite.empty()
 

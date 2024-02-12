@@ -56,5 +56,5 @@ class Bullet(pygame.sprite.Sprite):
                 continue
             elif sprite.rect.colliderect(self.rect):
                 self.kill()
-                sprite.ui_health_point.hurt()
+                sprite.ui_health_point.number -= 10
                 break

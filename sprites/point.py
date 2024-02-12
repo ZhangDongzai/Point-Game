@@ -28,7 +28,7 @@ class Point(pygame.sprite.Sprite):
         self.x, self.y = setting["POS"]["POINT"]
         self.angle = setting["ANGLE"]["POINT"]          # 默认方向(单位: 弧度)(O朝右)
         self.bullets = pygame.sprite.Group()
-        self.ui_bullet = UI.bullet.Bullet(self.game.ui, game=self.game, setting=self.setting)
+        self.ui_bullet = UI.bullet.Bullet(self.game.ui, setting=self.setting)
         self.ui_health_point = UI.health_point.HealthPoint(self.game.ui, sprite=self, setting=setting)
         
         # 加载图像
@@ -41,9 +41,6 @@ class Point(pygame.sprite.Sprite):
                            radius=self.radius)
         
         # 设置位置
-        #   注意:
-        #   因为Rect实际在Surface的左上角,
-        #   所以计算Surface的中心要在Rect.x, Rect.y的基础上分别减一半的边长.
         self.rect = self.image.get_rect()
         self.rect.center = self.x, self.y
 
@@ -55,8 +52,8 @@ class Point(pygame.sprite.Sprite):
         self.movement(key_pressed)
 
         # 子弹
-        self.ui_bullet.check_reload_bullet(key_pressed)
-        if self.ui_bullet.check_launch_bullet(key_pressed):
+        self.ui_bullet.isReloadBullet(key_pressed)
+        if self.ui_bullet.isLaunchBullet(key_pressed):
             sprites.bullet.Bullet(self.bullets, game=self.game, sprite=self)
 
     def movement(self, key_pressed: pygame.key.ScancodeWrapper) -> None:
@@ -109,3 +106,7 @@ class Point(pygame.sprite.Sprite):
             for bullet in self.bullets.sprites():
                 bullet.update()
                 self.game.screen.blit(bullet.image, bullet.rect)
+
+    def kill(self) -> None:
+        self.bullets.empty()
+        super().kill()

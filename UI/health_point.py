@@ -15,7 +15,7 @@ class HealthPoint(pygame.sprite.Sprite):
         super().__init__(*groups)
 
         self.sprite = sprite
-        self.number = 100
+        self.__number = 100
         self.setting = setting
 
         self.draw() # 初始化图像
@@ -39,18 +39,18 @@ class HealthPoint(pygame.sprite.Sprite):
         # 绘制血量
         self.draw()
 
-    def checkHealth(self) -> None:
-        """检查血量"""
+    @property
+    def number(self) -> int:
+        return self.__number
+
+    @number.setter
+    def number(self, number: int) -> None:
+        """受伤"""
+        self.__number = number
+
         if self.number <= 0:
             self.sprite.kill()
             self.kill()
 
-            # 判断获胜
             if len(self.sprite.game.sprite.sprites()) == 1:
                 self.sprite.game.state = 2
-                self.sprite.game.checkState()
-
-    def hurt(self) -> None:
-        """受伤"""
-        self.number -= 10
-        self.checkHealth()

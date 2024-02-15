@@ -5,4 +5,5 @@
 from . import fps
 from . import bullet
 from . import health_point
-from . import no_playing
+from . import interface
+from . import state

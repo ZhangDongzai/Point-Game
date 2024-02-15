@@ -76,4 +76,4 @@ class HealthPoint(pygame.sprite.Sprite):
             self.kill()
 
             if len(self.sprite.game.sprite.sprites()) == 1:
-                self.sprite.game.state = 2
+                self.sprite.game.state.number = 2

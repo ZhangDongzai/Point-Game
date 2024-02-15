@@ -28,8 +28,10 @@ class Point(pygame.sprite.Sprite):
         self.x, self.y = setting["POS"]["POINT"]
         self.angle = setting["ANGLE"]["POINT"]          # 默认方向(单位: 弧度)(O朝右)
         self.bullets = pygame.sprite.Group()
-        self.ui_bullet = UI.bullet.Bullet(self.game.ui, setting=self.setting)
-        self.ui_health_point = UI.health_point.HealthPoint(self.game.ui, sprite=self, setting=setting)
+        self.bullet_number = 0
+        self.hurt_number = 0
+        self.ui_bullet = UI.bullet.Bullet(self.game.game_ui, setting=self.setting)
+        self.ui_health_point = UI.health_point.HealthPoint(self.game.game_ui, sprite=self, setting=setting)
         
         # 加载图像
         self.image = pygame.Surface(size=self.size)
@@ -54,6 +56,7 @@ class Point(pygame.sprite.Sprite):
         # 子弹
         self.ui_bullet.isReloadBullet(key_pressed)
         if self.ui_bullet.isLaunchBullet(key_pressed):
+            self.bullet_number += 1
             sprites.bullet.Bullet(self.bullets, game=self.game, sprite=self)
 
     def movement(self, key_pressed: pygame.key.ScancodeWrapper) -> None:

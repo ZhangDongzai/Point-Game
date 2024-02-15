@@ -10,33 +10,34 @@ import pygame
 
 class Game:
     def __init__(self) -> None:
-        # 初始化pygame
+        # 初始化基类
         pygame.init()
 
-        # 设置窗口属性
-        pygame.display.set_caption(SCREEN_TITLE)        # 设置标题
-        pygame.display.set_mode(SCREEN_SIZE)            # 设置大小
-
-        self.running = True
+        # 设置窗口
+        pygame.display.set_caption(SCREEN_TITLE) 
+        pygame.display.set_mode(SCREEN_SIZE)            
         self.screen = pygame.display.get_surface()
+
+        # 时钟
         self.clock = pygame.time.Clock()
         self.delta_time = 1
 
+        # 地图
         self.map = maps.Map(game=self, _map=maps.map_1)
 
         # 精灵组
-        self.ui = pygame.sprite.Group()
+        self.interface_ui = pygame.sprite.Group()
+        self.game_ui = pygame.sprite.Group()
         self.sprite = pygame.sprite.Group()
 
-        # 渲染
-        """
-        state 数值
-        0 - 开始界面
-        1 - 游戏界面
-        2 - 结束界面
-        """
-        self.state = 0
-        
+        # 绘制
+        self.draw()
+
+        # 运行属性
+        self.running = True
+        self.state = UI.state.State(game=self)
+
+        # 主循环     
         self.gameLoop()
 
     def gameLoop(self) -> None:
@@ -50,68 +51,49 @@ class Game:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 self.running = False
-            # 运行
-            elif event.type == pygame.KEYDOWN and self.state == 0:
-                self.state = 1
-            # 回到开始
-            elif event.type == pygame.KEYDOWN and self.state == 2:
-                self.state = 0
-            # 回到开始
-            elif pygame.key.get_pressed()[pygame.K_ESCAPE] and self.state == 1:
-                self.state = 0
 
-    @property
-    def state(self) -> int:
-        return self.__state
-
-    @state.setter
-    def state(self, state: int) -> None:
-        self.__state = state
-        
-        self.ui.empty()
-        self.sprite.empty()
-
-        # 开始界面
-        if self.state == 0:
-            # 文字
-            UI.no_playing.Title(self.ui, text="Point Game")
-            UI.no_playing.Tip(self.ui, text="Press any key to start")
-
-        # 游戏界面
-        elif self.state == 1:
-            # 精灵
-            UI.fps.FPS(self.ui, game=self)
-            sprites.point.Point(self.sprite, game=self, setting=PLAYER_1)
-            sprites.point.Point(self.sprite, game=self, setting=PLAYER_2)
-
-        # 结束界面
-        elif self.state == 2:
-            # 文字
-            UI.no_playing.Title(self.ui, text="WIN")
-            UI.no_playing.Tip(self.ui, text="Press any key to restart")
-
+            # 按键
+            elif event.type == pygame.KEYDOWN:
+                self.state.keyDown()
+    
     def updateScreen(self) -> None:
         # 更新帧间隔时间(单位: S)
         self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
         
         # 更新
-        self.ui.update()
+        self.game_ui.update()
         self.sprite.update()
 
-        # 绘制屏幕
+        # 清空
         self.screen.fill(color=SCREEN_COLOR)
 
-        # 绘制(地图 -> 角色附有 -> 角色 -> UI)
-        if self.state == 1:
-            self.map.draw()
-        for sprite in self.sprite.sprites():
-            self.screen.blit(sprite.image, sprite.rect)
-            sprite.draw()
-        for ui in self.ui.sprites():
-            self.screen.blit(ui.image, ui.rect)
+        # 绘制
+        if self.state.number == 1:  # 游戏界面
+            self.map.draw() # 渲染地图
+
+            for sprite in self.sprite.sprites():    # 绘制精灵
+                self.screen.blit(sprite.image, sprite.rect)
+                sprite.draw()
+
+            for ui in self.game_ui.sprites():    # 绘制UI
+                self.screen.blit(ui.image, ui.rect)
+        else:   # 开始、暂停、结束界面
+            for ui in self.interface_ui.sprites():  # 绘制UI
+                self.screen.blit(ui.image, ui.rect)
 
         # 更新缓存
         pygame.display.flip()
+
+    def draw(self) -> None:
+        # UI
+        UI.interface.Title(self.interface_ui)
+        UI.interface.Tip(self.interface_ui)
+
+        UI.fps.FPS(self.game_ui, game=self)
+
+        # 精灵
+        sprites.point.Point(self.sprite, game=self, setting=PLAYER_1)
+        sprites.point.Point(self.sprite, game=self, setting=PLAYER_2)
 
 
 if __name__ == "__main__":

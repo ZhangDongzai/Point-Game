@@ -9,22 +9,21 @@ from setting import *
 class BaseFont(pygame.sprite.Sprite):
     color: tuple[int, int, int]
     size: int
+    name: str
 
-    def __init__(self, *groups, text: str) -> None:
+    def __init__(self, *groups) -> None:
         super().__init__(*groups)
         
-        self.text = text
         self.font = pygame.font.Font(None, size=self.size)
+        self.draw(text="")
 
-        self.draw()
-        self.makeRect()
-
-    def draw(self) -> None:
+    def draw(self, text: str) -> None:
         # 生成图像
-        self.image = self.font.render(self.text, False, self.color)
+        self.image = self.font.render(text, False, self.color)
         
         # 生成位置
         self.rect = self.image.get_rect()
+        self.makeRect()
 
     def makeRect(self) -> None:
         pass
@@ -33,6 +32,7 @@ class BaseFont(pygame.sprite.Sprite):
 class Title(BaseFont):
     color = YELLOW
     size = int(250 * RATIO)
+    name = "TITLE"
 
     def makeRect(self) -> None:
         self.rect.midbottom = SCREEN_CENTER
@@ -41,6 +41,7 @@ class Title(BaseFont):
 class Tip(BaseFont):
     color = WHITE
     size = int(50 * RATIO)
+    name = "TIP"
 
     def makeRect(self) -> None:
         self.rect.midtop = SCREEN_CENTER

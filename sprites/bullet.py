@@ -60,6 +60,7 @@ class Bullet(pygame.sprite.Sprite):
                 continue
             elif sprite.rect.colliderect(self.rect):
                 self.kill()
+                self.sprite.bullet_number += 1
 
                 hurt = self.hurt
                 if random.choice(self.good_hurt_list):

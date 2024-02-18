@@ -1,7 +1,6 @@
 # 血量界面文件
 
 from setting import *
-import UI
 
 import pygame
 
@@ -12,7 +11,7 @@ class HealthPoint(pygame.sprite.Sprite):
     size = width, height = 400 * WIDTH_RATIO, 40 * HEIGHT_RATIO
     font_color = WHITE
     font_size = int(50 * RATIO)
-    
+
     def __init__(self, *groups, sprite: pygame.sprite.Sprite, setting: dict) -> None:
         super().__init__(*groups)
 
@@ -21,10 +20,10 @@ class HealthPoint(pygame.sprite.Sprite):
         self.__number = self.max_number
         self.setting = setting
         self.font = pygame.font.Font(None, size=self.font_size)
+        self.image = None
+        self.rect = None
 
-        self.draw() # 初始化图像
-
-        self.rect = self.image.get_rect() # 初始化位置
+        self.draw()  # 初始化图像
 
     def draw(self) -> None:
         """绘制血量"""
@@ -37,11 +36,11 @@ class HealthPoint(pygame.sprite.Sprite):
         self.image.fill(RED)
 
         # 设置位置
-        self.rect = self.image.get_rect() 
+        self.rect = self.image.get_rect()
 
-        if self.setting["NUMBER"] == 1: # 玩家1
+        if self.setting["NUMBER"] == 1:  # 玩家1
             self.rect.topright = SCREEN_WIDTH * 0.5 - 1, 0
-        elif self.setting["NUMBER"] == 2: # 玩家2
+        elif self.setting["NUMBER"] == 2:  # 玩家2
             self.rect.topleft = SCREEN_WIDTH * 0.5 + 1, 0
 
         # 绘制数值
@@ -50,9 +49,9 @@ class HealthPoint(pygame.sprite.Sprite):
 
         # 设置位置
         font_rect = font_image.get_rect()
-        if self.setting["NUMBER"] == 1: # 玩家1
-            font_rect.midright = self.width - 1, self.height / 2
-        elif self.setting["NUMBER"] == 2: # 玩家2
+        if self.setting["NUMBER"] == 1:  # 玩家1
+            font_rect.midright = self.rect.width - 1, self.height / 2
+        elif self.setting["NUMBER"] == 2:  # 玩家2
             font_rect.midleft = 1, self.height / 2
 
         # 绘制至图像上

@@ -1,7 +1,6 @@
 # 界面状态文件
 
 from setting import *
-import UI
 import sprites
 
 import pygame
@@ -14,7 +13,7 @@ class State:
         self.game = game
         self.__number = 0
         self.number = 0
-    
+
     @property
     def number(self) -> int:
         """界面代码
@@ -37,7 +36,7 @@ class State:
                     ui.draw(text="Point Game")
                 elif ui.name == "TIP":  # 提示
                     ui.draw(text="Press any key to start")
-        
+
         # 结束界面
         if self.__number == 2:
             # 遍历每一个UI
@@ -56,19 +55,19 @@ class State:
                 elif ui.name == "TIP":  # 提示
                     ui.draw(text="Press any key to continue")
 
-    def keyDown(self) -> None:
+    def key_down(self) -> None:
         if self.__number == 0:  # 开始 -> 游戏
             self.number = 1
-        elif self.__number == 1: # 游戏
-            if pygame.key.get_pressed()[pygame.K_ESCAPE]:   # 暂停
+        elif self.__number == 1:  # 游戏
+            if pygame.key.get_pressed()[pygame.K_ESCAPE]:  # 暂停
                 self.number = 3
-        elif self.__number == 2:    # 结束 -> 开始
+        elif self.__number == 2:  # 结束 -> 开始
             self.number = 0
- 
+
             # 精灵重置
             self.game.sprite.empty()
             self.game.game_ui.empty()
             sprites.point.Point(self.game.sprite, game=self.game, setting=PLAYER_1)
             sprites.point.Point(self.game.sprite, game=self.game, setting=PLAYER_2)
-        elif self.__number == 3:    # 暂停 -> 游戏
+        elif self.__number == 3:  # 暂停 -> 游戏
             self.number = 1

@@ -36,15 +36,15 @@ class Map:
     def make_rects(self) -> None:
         """使用`pygame.draw.rect`根据`self.map`的内容制作rects."""
         for y, row in enumerate(self.map):
-            for x, colnum in enumerate(row):
-                if colnum:
+            for x, column in enumerate(row):
+                if column:
                     rect = pygame.Rect(x * self.width,
                                        y * self.height,
                                        self.width,
                                        self.height)
                     self.rects.append(rect)
                     
-    def isHit(self, pos: tuple[float, float]) -> bool:
+    def is_hit(self, pos: tuple[float, float]) -> bool:
         """判断pos是否在墙内"""                    
         for rect in self.rects:
             if rect.collidepoint(pos):

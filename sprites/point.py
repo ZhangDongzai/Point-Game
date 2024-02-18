@@ -54,8 +54,8 @@ class Point(pygame.sprite.Sprite):
         self.movement(key_pressed)
 
         # 子弹
-        self.ui_bullet.isReloadBullet(key_pressed)
-        if self.ui_bullet.isLaunchBullet(key_pressed):
+        self.ui_bullet.is_reload_bullet(key_pressed)
+        if self.ui_bullet.is_launch_bullet(key_pressed):
             self.bullet_number += 1
             sprites.bullet.Bullet(self.bullets, game=self.game, sprite=self)
 
@@ -76,9 +76,9 @@ class Point(pygame.sprite.Sprite):
             y -= movement_speed_sin
 
         # 撞墙
-        if not self.game.map.isHit(pos = (self.x + x, self.y)):
+        if not self.game.map.is_hit(pos=(self.x + x, self.y)):
             self.x += x
-        if not self.game.map.isHit(pos = (self.x, self.y + y)):
+        if not self.game.map.is_hit(pos=(self.x, self.y + y)):
             self.y += y
         
         self.rect.center = self.x, self.y

@@ -24,7 +24,8 @@ class Bullet(pygame.sprite.Sprite):
         self.size = self.side, self.side
         self.radius = self.side / 2
         self.center = self.radius, self.radius
-        self.good_hurt_list = [True for _ in range(int(self.good_hurt * 100))] + [False for _ in range(int((1 - self.good_hurt) * 100))]
+        self.good_hurt_list = [True for _ in range(int(self.good_hurt * 100))] + \
+                              [False for _ in range(int((1 - self.good_hurt) * 100))]
 
         # 初始化图像
         self.image = pygame.Surface(size=self.size)
@@ -51,7 +52,7 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.center = self.x, self.y
 
         # 判定是否撞墙
-        if self.game.map.isHit((self.x, self.y)):
+        if self.game.map.is_hit((self.x, self.y)):
             self.kill()
 
         # 判断是否撞角色

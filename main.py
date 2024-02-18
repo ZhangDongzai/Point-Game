@@ -14,8 +14,8 @@ class Game:
         pygame.init()
 
         # 设置窗口
-        pygame.display.set_caption(SCREEN_TITLE) 
-        pygame.display.set_mode(SCREEN_SIZE)            
+        pygame.display.set_caption(SCREEN_TITLE)
+        pygame.display.set_mode(SCREEN_SIZE)
         self.screen = pygame.display.get_surface()
 
         # 时钟
@@ -38,14 +38,14 @@ class Game:
         self.state = UI.state.State(game=self)
 
         # 主循环     
-        self.gameLoop()
+        self.game_loop()
 
-    def gameLoop(self) -> None:
+    def game_loop(self) -> None:
         while self.running:
-            self.updateScreen()
-            self.checkEvent()
+            self.update_screen()
+            self.check_event()
 
-    def checkEvent(self) -> None:
+    def check_event(self) -> None:
         for event in pygame.event.get():
             # 窗口关闭
             if event.type == pygame.QUIT:
@@ -54,12 +54,12 @@ class Game:
 
             # 按键
             elif event.type == pygame.KEYDOWN:
-                self.state.keyDown()
-    
-    def updateScreen(self) -> None:
+                self.state.key_down()
+
+    def update_screen(self) -> None:
         # 更新帧间隔时间(单位: S)
         self.delta_time = self.clock.tick(SCREEN_FPS) / 1000
-        
+
         # 更新
         self.game_ui.update()
         self.sprite.update()
@@ -69,15 +69,15 @@ class Game:
 
         # 绘制
         if self.state.number == 1:  # 游戏界面
-            self.map.draw() # 渲染地图
+            self.map.draw()  # 渲染地图
 
-            for sprite in self.sprite.sprites():    # 绘制精灵
+            for sprite in self.sprite.sprites():  # 绘制精灵
                 self.screen.blit(sprite.image, sprite.rect)
                 sprite.draw()
 
-            for ui in self.game_ui.sprites():    # 绘制UI
+            for ui in self.game_ui.sprites():  # 绘制UI
                 self.screen.blit(ui.image, ui.rect)
-        else:   # 开始、暂停、结束界面
+        else:  # 开始、暂停、结束界面
             for ui in self.interface_ui.sprites():  # 绘制UI
                 self.screen.blit(ui.image, ui.rect)
 

@@ -15,6 +15,8 @@ class BaseFont(pygame.sprite.Sprite):
         super().__init__(*groups)
         
         self.font = pygame.font.Font(None, size=self.size)
+        self.image = None
+        self.rect = None
         self.draw(text="")
 
     def draw(self, text: str) -> None:
@@ -23,9 +25,9 @@ class BaseFont(pygame.sprite.Sprite):
         
         # 生成位置
         self.rect = self.image.get_rect()
-        self.makeRect()
+        self.make_rect()
 
-    def makeRect(self) -> None:
+    def make_rect(self) -> None:
         pass
 
 
@@ -34,7 +36,7 @@ class Title(BaseFont):
     size = int(250 * RATIO)
     name = "TITLE"
 
-    def makeRect(self) -> None:
+    def make_rect(self) -> None:
         self.rect.midbottom = SCREEN_CENTER
 
 
@@ -43,5 +45,5 @@ class Tip(BaseFont):
     size = int(50 * RATIO)
     name = "TIP"
 
-    def makeRect(self) -> None:
+    def make_rect(self) -> None:
         self.rect.midtop = SCREEN_CENTER

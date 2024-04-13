@@ -1,7 +1,8 @@
 import pygame
 
 import config
-import player
+import character.player
+import map
 
 
 class Game:
@@ -16,7 +17,8 @@ class Game:
 
         self.delta_time = 0
 
-        self.player = player.Player(rect=self.window.get_rect())
+        self.player = character.player.Player()
+        self.map = map.Map(path="data/map")
 
         self.run()
 
@@ -27,9 +29,10 @@ class Game:
                 if event.type == pygame.QUIT:
                     is_running = False
 
-            self.player.update()
+            self.player.update(delta_time=self.delta_time)
 
             self.window.fill(color=config.DATA["window"]["color"])
+            self.map.draw(window=self.window)
             self.window.blit(source=self.player.image, dest=self.player.rect)
             
             pygame.display.update()

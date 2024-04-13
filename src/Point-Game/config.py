@@ -7,7 +7,25 @@ DATA = {
     },
 
     "player": {
-        "radius": 50,
+        "radius": 20,
         "color": (255, 255, 255),
+        "speed": 200,
+    },
+
+    "map": {
+        "size": 40,
+        "row": 32,
+        "column": 18,
+    },
+}
+
+KEY = {
+    "player": {
+        1: {
+            "forward": ord('w'),
+            "backward": ord('s'),
+            "left": ord('a'),
+            "right": ord('d'),
+        },
     },
 }

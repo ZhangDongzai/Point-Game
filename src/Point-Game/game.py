@@ -18,7 +18,7 @@ class Game:
         self.delta_time = 0
 
         self.player = character.player.Player()
-        self.map = map.Map(path="data/map")
+        self.map = map.Map()
 
         self.run()
 
@@ -29,15 +29,18 @@ class Game:
                 if event.type == pygame.QUIT:
                     is_running = False
 
-            self.player.update(delta_time=self.delta_time)
+            self.player.update(delta_time=self.delta_time, map=self.map)
 
             self.window.fill(color=config.DATA["window"]["color"])
-            self.map.draw(window=self.window)
+            self.window.blit(source=self.map.image, dest=self.map.rect)
             self.window.blit(source=self.player.image, dest=self.player.rect)
             
             pygame.display.update()
 
             self.delta_time = self.clock.tick(config.DATA["window"]["fps"])
 
-    def __del__(self) -> None:
+    def quit(self) -> None:
         pygame.quit()
+
+    def __del__(self) -> None:
+        self.quit()

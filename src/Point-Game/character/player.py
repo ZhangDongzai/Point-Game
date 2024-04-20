@@ -1,6 +1,7 @@
 import pygame
 
 import config
+import map
 
 
 class Player(pygame.sprite.Sprite):
@@ -27,11 +28,12 @@ class Player(pygame.sprite.Sprite):
                                    config.DATA["player"]["radius"]),
                            radius=self.radius)
         
-    def update(self, delta_time: int) -> None:
+    def update(self, delta_time: int, map: map.Map) -> None:
         """Update player's position.
         
         Args:
             delta_time: ms
+            map: a map object
         """
         key_state = pygame.key.get_pressed()
         x, y = 0, 0
@@ -50,5 +52,9 @@ class Player(pygame.sprite.Sprite):
         if x and y:
             x *= 0.7071
             y *= 0.7071
-
-        self.rect.center = self.x, self.y = self.x + x, self.y + y
+        
+        # Check collide
+        if not map.check_collide(self.x + x, self.y):
+            self.rect.centerx = self.x = self.x + x
+        if not map.check_collide(self.x, self.y + y):
+            self.rect.centery = self.y = self.y + y

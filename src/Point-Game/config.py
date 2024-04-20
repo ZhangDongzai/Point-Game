@@ -13,9 +13,10 @@ DATA = {
     },
 
     "map": {
+        "path": "data/map",
         "size": 40,
-        "row": 32,
-        "column": 18,
+        "row": 18,
+        "column": 32,
     },
 }
 

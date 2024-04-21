@@ -11,6 +11,10 @@ COLOR = {
 
 class Map(pygame.sprite.Sprite):
     """Map module"""
+
+    path: str = config.DATA["map"]["path"]
+    size: int = config.DATA["map"]["size"]
+
     def __init__(self, *groups) -> None:
         super().__init__(*groups)
 
@@ -24,7 +28,7 @@ class Map(pygame.sprite.Sprite):
     
     def _load(self) -> None:
         """Load data from `map` file."""
-        with open(file=config.DATA["map"]["path"]) as file:
+        with open(file=self.path) as file:
             text = file.readlines()
         for row, row_str in enumerate(text):
             for column, column_str in enumerate(row_str.rstrip("\n")):
@@ -35,17 +39,21 @@ class Map(pygame.sprite.Sprite):
         """Render image from map data."""
         for position, color_code in self.map.items():
             row, column = position
-            rect = pygame.Rect(column*config.DATA["map"]["size"],
-                               row*config.DATA["map"]["size"],
-                               config.DATA["map"]["size"],
-                               config.DATA["map"]["size"])
-            pygame.draw.rect(surface=self.image,
-                             color=COLOR[color_code],
-                             rect=rect,
-                             width=1)
+            rect = pygame.Rect(column*self.size, row*self.size,
+                               self.size, self.size)
+            pygame.draw.rect(surface=self.image, color=COLOR[color_code],
+                             rect=rect, width=1)
             
-    def check_collide(self, x: int, y: int) -> bool:
-        """Check something collide or don't collide map."""
-        row = y // config.DATA["map"]["size"]
-        column = x // config.DATA["map"]["size"]
+    def check_collide(self, x: float, y: float) -> bool:
+        """Check something collide or don't collide map.
+
+        Args:
+            x: something's center position's x.
+            y: something's center position's y.
+        
+        Returns:
+            True if collide map, or False if don't collide map.
+        """
+        row = int(y // self.size)
+        column = int(x // self.size)
         return (row, column) in self.map

@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
         if key_state[config.KEY["player"][1]["left"]]:
             x -= self.speed * delta_time / 1000
 
-        # Press both two keys
+        # Move to two directions
         if x and y:
             x *= 0.7071
             y *= 0.7071

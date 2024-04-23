@@ -18,6 +18,11 @@ DATA = {
         "row": 18,
         "column": 32,
     },
+
+    "fps_counter": {
+        "size": 50,
+        "color": (255, 255, 0),
+    },
 }
 
 KEY = {

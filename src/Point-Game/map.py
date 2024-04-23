@@ -3,8 +3,8 @@ import pygame
 import config
 
 
+EMPTY_COLOR = 0
 COLOR = {
-    0: "black",
     1: "white",
 }
 
@@ -32,7 +32,7 @@ class Map(pygame.sprite.Sprite):
             text = file.readlines()
         for row, row_str in enumerate(text):
             for column, column_str in enumerate(row_str.rstrip("\n")):
-                if int(column_str) != 0:
+                if int(column_str) != EMPTY_COLOR:
                     self.map[(row, column)] = int(column_str)
     
     def _draw(self) -> None:
@@ -45,14 +45,14 @@ class Map(pygame.sprite.Sprite):
                              rect=rect, width=1)
             
     def check_collide(self, x: float, y: float) -> bool:
-        """Check something collide or don't collide map.
+        """Check sprite collide or don't collide map.
 
         Args:
-            x: something's center position's x.
-            y: something's center position's y.
+            x: sprite's center position's x.
+            y: sprite's center position's y.
         
         Returns:
-            True if collide map, or False if don't collide map.
+            sprite collide map or not.
         """
         row = int(y // self.size)
         column = int(x // self.size)

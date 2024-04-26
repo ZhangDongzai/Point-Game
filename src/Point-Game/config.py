@@ -1,3 +1,7 @@
+GAMEMODE_WELCOME = 0
+GAMEMODE_RUNNING = 1
+GAMEMODE_ENDING = 2
+
 DATA = {
     "window": {
         "title": "Point Game",
@@ -22,6 +26,25 @@ DATA = {
     "fps_counter": {
         "size": 50,
         "color": (255, 255, 0),
+    },
+
+    "main_menu": {
+        "title": {
+            "size": 200,
+            "color": (255, 255, 0),
+            "mode": {
+                GAMEMODE_WELCOME: "Point Game",
+                GAMEMODE_ENDING: "END",
+            },
+        },
+        "words": {
+            "size": 50,
+            "color": (255, 255, 255),
+            "mode": {
+                GAMEMODE_WELCOME: "Press any key to start.",
+                GAMEMODE_ENDING: "Press any key to restart.",
+            },
+        }
     },
 }
 

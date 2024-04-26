@@ -1,6 +1,6 @@
 import pygame
 
-import config
+from config import *
 
 
 EMPTY_COLOR = 0
@@ -12,13 +12,13 @@ COLOR = {
 class Map(pygame.sprite.Sprite):
     """Map module"""
 
-    path: str = config.DATA["map"]["path"]
-    size: int = config.DATA["map"]["size"]
+    path: str = DATA["map"]["path"]
+    size: int = DATA["map"]["size"]
 
     def __init__(self, *groups) -> None:
         super().__init__(*groups)
 
-        self.image = pygame.Surface(size=config.DATA["window"]["size"])
+        self.image = pygame.Surface(size=DATA["window"]["size"])
         self.rect = self.image.get_rect()
 
         self.map: dict[tuple, int] = {}

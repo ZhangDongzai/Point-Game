@@ -1,13 +1,13 @@
 import pygame
 
-import config
+from config import *
 
 
 class FPS_Counter(pygame.sprite.Sprite):
     """Show fps on the screen."""
 
-    size = config.DATA["fps_counter"]["size"]
-    color = config.DATA["fps_counter"]["color"]
+    size = DATA["fps_counter"]["size"]
+    color = DATA["fps_counter"]["color"]
 
     def __init__(self, *groups) -> None:
         super().__init__(*groups)

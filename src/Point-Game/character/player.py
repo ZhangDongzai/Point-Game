@@ -79,6 +79,3 @@ class Player(pygame.sprite.Sprite):
             self.rect.centery = self.y = self.y + y
 
         self.bullets.update(delta_time, maps)
-
-    def _launch(self) -> None:
-        pass

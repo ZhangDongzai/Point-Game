@@ -1,3 +1,11 @@
+from typing import Literal
+from math import cos, pi
+
+
+DirectionType = Literal["forward", "backward", "left", "right", None]
+
+COS45 = cos(pi / 4)
+
 GAMEMODE_WELCOME = 0
 GAMEMODE_RUNNING = 1
 GAMEMODE_ENDING = 2
@@ -14,6 +22,12 @@ DATA = {
         "radius": 20,
         "color": (255, 255, 255),
         "speed": 200,
+    },
+
+    "bullet": {
+        "radius": 10,
+        "color": (255, 255, 255),
+        "speed": 500,
     },
 
     "map": {
@@ -55,6 +69,7 @@ KEY = {
             "backward": ord('s'),
             "left": ord('a'),
             "right": ord('d'),
+            "launch": ord('j'),
         },
     },
 }

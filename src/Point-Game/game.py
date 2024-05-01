@@ -74,6 +74,10 @@ class Game:
             self.player.update(delta_time=self.delta_time, maps=self.maps)
 
             self.window.blit(source=self.maps.image, dest=self.maps.rect)
+
+            for bullet in self.player.bullets.sprites():
+                self.window.blit(source=bullet.image, dest=bullet.rect)
+
             self.window.blit(source=self.player.image, dest=self.player.rect)
 
         self.window.blit(source=self.fps_counter.image, dest=self.fps_counter.rect)

@@ -52,7 +52,7 @@ DATA = {
             },
         },
         "button": {
-            "font_size": 75,
+            "font_size": 50,
             "color": (255, 255, 255),
             "magnification": 1.5,
         },

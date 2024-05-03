@@ -6,19 +6,26 @@ from config import *
 class Button(pygame.sprite.Sprite):
     """A button of the menu."""
 
-    font_size = DATA["main_menu"]["button"]["font_size"]
+    size = DATA["main_menu"]["button"]["font_size"]
     magnification = DATA["main_menu"]["button"]["magnification"]
     color = DATA["main_menu"]["button"]["color"]
 
     def __init__(self, *groups, text: str, center: tuple[int, int]) -> None:
         super().__init__(*groups)
 
-        self.font = pygame.Font(None, self.font_size)
-        self.image = self.font.render(text=text, antialias=False,
-                                      color=self.color)
-        self.rect = self.image.get_rect()
-        self.rect.midtop = self.x, self.y = center
-        self.size = self.width, self.height = self.rect.size
+        self.small_font = pygame.Font(None, self.size)
+        self.large_font = pygame.Font(None, int(self.size * self.magnification))
+        self.small_image = self.small_font.render(text=text,
+                                                  antialias=False,
+                                                  color=self.color)
+        self.large_image = self.large_font.render(text=text,
+                                                  antialias=False,
+                                                  color=self.color)
+        self.small_rect = self.small_image.get_rect()
+        self.large_rect = self.large_image.get_rect()
+        self.small_rect.midtop = center
+        self.large_rect.center = self.small_rect.center
+        self.image, self.rect = self.small_image, self.small_rect
 
     def update(self) -> None:
         """Update the button's state."""
@@ -26,12 +33,12 @@ class Button(pygame.sprite.Sprite):
         mouse_x, mouse_y = pygame.mouse.get_pos()
         if (self.rect.left < mouse_x < self.rect.right
             and self.rect.top < mouse_y < self.rect.bottom):
-            self.size = (self.width*self.magnification, self.height*self.magnification)
-        elif (self.width, self.height) != self.size:
-            self.size = self.width, self.height
-        self.image = pygame.transform.scale(surface=self.image, size=self.size)
-        self.rect = self.image.get_rect()
-        self.rect.midtop = self.x, self.y
+            self.image = self.large_image
+            self.rect = self.large_rect
+        else:
+            self.image = self.small_image
+            self.rect = self.small_rect
+    
 
     def check(self) -> bool:
         """Determine if the mouse is pressed"""

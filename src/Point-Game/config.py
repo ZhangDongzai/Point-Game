@@ -51,14 +51,11 @@ DATA = {
                 GAMEMODE_ENDING: "END",
             },
         },
-        "words": {
-            "size": 50,
+        "button": {
+            "font_size": 75,
             "color": (255, 255, 255),
-            "mode": {
-                GAMEMODE_WELCOME: "Press any key to start.",
-                GAMEMODE_ENDING: "Press any key to restart.",
-            },
-        }
+            "magnification": 1.5,
+        },
     },
 }
 

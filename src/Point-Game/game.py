@@ -34,7 +34,7 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     is_running = False
-                elif event.type == pygame.KEYDOWN:
+                elif self.main_menu.button.check():
                     if self.mode == GAMEMODE_WELCOME:
                         self.mode = GAMEMODE_RUNNING
                     elif self.mode == GAMEMODE_ENDING:
@@ -58,7 +58,7 @@ class Game:
         self._mode = value
 
         if self.mode == GAMEMODE_WELCOME or self.mode == GAMEMODE_ENDING:
-            self.main_menu.update(game_mode=self.mode)
+            self.main_menu.draw(game_mode=self.mode)
         elif self.mode == GAMEMODE_RUNNING:
             self.player = character.player.Player()
             self.maps = maps.Map()
@@ -69,6 +69,7 @@ class Game:
         self.fps_counter.update(fps=self.clock.get_fps())
         
         if self.mode == GAMEMODE_WELCOME or self.mode == GAMEMODE_ENDING:
+            self.main_menu.update()
             self.window.blit(source=self.main_menu.image, dest=self.main_menu.rect)
         elif self.mode == GAMEMODE_RUNNING:
             self.player.update(delta_time=self.delta_time, maps=self.maps)

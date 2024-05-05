@@ -16,6 +16,7 @@ DATA = {
         "size": (1280, 720),
         "color": (0, 0, 0),
         "fps": 0,
+        "antialias": True,
     },
 
     "player": {

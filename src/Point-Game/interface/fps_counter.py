@@ -17,5 +17,5 @@ class FPS_Counter(pygame.sprite.Sprite):
 
     def update(self, fps: float) -> None:
         self.image = self.font.render(text=f"FPS: {round(fps, 2)}",
-                                      antialias=False,
+                                      antialias=DATA["window"]["antialias"],
                                       color=self.color)

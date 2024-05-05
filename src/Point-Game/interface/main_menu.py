@@ -15,12 +15,8 @@ class Button(pygame.sprite.Sprite):
 
         self.small_font = pygame.Font(None, self.size)
         self.large_font = pygame.Font(None, int(self.size * self.magnification))
-        self.small_image = self.small_font.render(text=text,
-                                                  antialias=False,
-                                                  color=self.color)
-        self.large_image = self.large_font.render(text=text,
-                                                  antialias=False,
-                                                  color=self.color)
+        self.small_image = self.small_font.render(text=text, antialias=DATA["window"]["antialias"], color=self.color)
+        self.large_image = self.large_font.render(text=text, antialias=DATA["window"]["antialias"], color=self.color)
         self.small_rect = self.small_image.get_rect()
         self.large_rect = self.large_image.get_rect()
         self.small_rect.midtop = center
@@ -71,8 +67,6 @@ class Main_Menu(pygame.sprite.Sprite):
         self.image.blit(source=self.button.image, dest=self.button.rect)
 
     def draw(self, game_mode: int) -> None:
-        self.title_image = self.title_font.render(text=DATA["main_menu"]["title"]["mode"][game_mode],
-                                                  antialias=False,
-                                                  color=DATA["main_menu"]["title"]["color"])
+        self.title_image = self.title_font.render(text=DATA["main_menu"]["title"]["mode"][game_mode], antialias=DATA["window"]["antialias"],color=DATA["main_menu"]["title"]["color"])
         self.title_rect = self.title_image.get_rect()
         self.title_rect.midbottom = self.rect.center

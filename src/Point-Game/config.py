@@ -1,10 +1,11 @@
 from typing import Literal
-from math import cos, pi
+from math import pi
 
 
-DirectionType = Literal["forward", "backward", "left", "right", None]
-
-COS45 = cos(pi / 4)
+ACCURACY = 4
+PI = round(pi, ACCURACY)
+HALF_PI = round(PI / 2, ACCURACY)
+QUARTER_PI = round(PI / 4, ACCURACY)
 
 GAMEMODE_WELCOME = 0
 GAMEMODE_RUNNING = 1
@@ -71,3 +72,6 @@ KEY = {
         },
     },
 }
+
+
+del pi

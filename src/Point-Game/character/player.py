@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = pygame.Surface(size=self.size)
         self.rect = self.image.get_rect()
-        self.direction: list[DirectionType] = ["forward", None]
+        self.direction = 0
         self.bullets = pygame.sprite.Group()
 
         self.image.set_colorkey("black")
@@ -42,22 +42,26 @@ class Player(pygame.sprite.Sprite):
         """
         key_state = pygame.key.get_pressed()
         x, y = 0, 0
-        direction: list[DirectionType] = [None, None]
+        direction = None
 
         # Check keys
         if key_state[KEY["player"][1]["forward"]]:
             y -= self.speed * delta_time / 1000
-            direction[0] = "forward"
+            direction = PI
         if key_state[KEY["player"][1]["backward"]]:
             y += self.speed * delta_time / 1000
-            direction[0] = "backward"
+            direction = 0
         if key_state[KEY["player"][1]["right"]]:
             x += self.speed * delta_time / 1000
-            direction[1] = "right"
+            if direction == None: direction = HALF_PI
+            elif direction == 0: direction -= QUARTER_PI
+            elif direction == PI: direction += QUARTER_PI
         if key_state[KEY["player"][1]["left"]]:
             x -= self.speed * delta_time / 1000
-            direction[1] = "left"
-        if direction[0] or direction[1]:
+            if direction == None: direction = -HALF_PI
+            elif direction == 0: direction += QUARTER_PI
+            elif direction == PI: direction -= QUARTER_PI
+        if direction != None:
             self.direction = direction
         if (key_state[KEY["player"][1]["launch"]]
             and time.time() - character.bullet.last_time 

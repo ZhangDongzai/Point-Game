@@ -1,3 +1,5 @@
+from math import cos, sin
+
 import pygame
 
 from config import *
@@ -18,31 +20,19 @@ class Bullet(pygame.sprite.Sprite):
     speed = DATA["bullet"]["speed"]
 
     def __init__(self, *groups,
-                 direction: list[DirectionType],
+                 direction: float,
                  rect: pygame.Rect) -> None:
         super().__init__(*groups)
 
         self.image = pygame.Surface(size=self.size)
         self.rect = self.image.get_rect()
         self.x, self.y = self.rect.center = rect.center
-        self.speed_x, self.speed_y = 0, 0
 
         pygame.draw.circle(surface=self.image, color=self.color,
                            center=(self.radius,) * 2, radius=self.radius)
         
-        match direction[0]:
-            case "forward":
-                self.speed_y = -self.speed
-            case "backward":
-                self.speed_y = self.speed
-        match direction[1]:
-            case "left":
-                self.speed_x = -self.speed
-            case "right":
-                self.speed_x = self.speed
-        if self.speed_x and self.speed_y:
-            self.speed_x *= COS45
-            self.speed_y *= COS45
+        self.speed_x = round(sin(direction), ACCURACY) * self.speed
+        self.speed_y = round(cos(direction), ACCURACY) * self.speed
 
 
     def update(self, delta_time: int, maps: maps.Map) -> None:

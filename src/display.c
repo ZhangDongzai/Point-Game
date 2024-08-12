@@ -1,7 +1,7 @@
 #include <display.h>
 
 
-void init_display() {
+void InitDisplay() {
     app.window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
     if (app.window == NULL) {
@@ -15,13 +15,13 @@ void init_display() {
 }
 
 
-void quit_display() {
+void QuitDisplay() {
     SDL_DestroyRenderer(app.renderer);
     SDL_DestroyWindow(app.window);
 }
 
 
-void draw_circle(SDL_Renderer *renderer, SDL_Point center, int radius, SDL_Color color) {
+void DrawCircle(SDL_Renderer *renderer, SDL_Point center, int radius, SDL_Color color) {
     int y = radius;
     int d = 3 - 2 * radius;
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);

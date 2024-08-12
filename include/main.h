@@ -5,7 +5,7 @@
 #include <display.h>
 #include <game.h>
 
-static void init_app();
-static void quit_app();
+static void InitApp();
+static void QuitApp();
 
 #endif // POINT_GAME_INCLUDE_MAIN_H_

@@ -4,11 +4,11 @@ App app;
 
 
 int main(int argc, char *argv[]) {
-    init_app();
-    init_display();
+    InitApp();
+    InitDisplay();
 
-    atexit(&quit_display);
-    atexit(&quit_app);
+    atexit(&QuitApp);
+    atexit(&QuitDisplay);
 
     run_game();
 
@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
 }
 
 
-static void init_app() {
+static void InitApp() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         HANDLE_ERROR("Init SDL");
     }
@@ -26,6 +26,6 @@ static void init_app() {
 }
 
 
-static void quit_app() {
+static void QuitApp() {
     SDL_Quit();
 }

@@ -14,6 +14,7 @@ typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
     const Uint8 *keyboard_state;
+    float delta_time_s;
 } App;
 
 extern App app;

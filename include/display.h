@@ -4,11 +4,11 @@
 #include <common.h>
 
 // Base function
-void init_display();
-void quit_display();
+void InitDisplay();
+void QuitDisplay();
 
 // Draw function
-void draw_circle(SDL_Renderer *renderer, SDL_Point center, int radius, SDL_Color color);
+void DrawCircle(SDL_Renderer *renderer, SDL_Point center, int radius, SDL_Color color);
 
 // Colors
 #define EMPTY (SDL_Color) {0, 0, 0, 0}

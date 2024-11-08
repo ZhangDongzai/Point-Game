@@ -1,0 +1,4 @@
+#ifndef POINT_GAME_INCLUDE_MAIN_H_
+#define POINT_GAME_INCLUDE_MAIN_H_
+
+#endif

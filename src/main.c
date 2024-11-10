@@ -1,20 +1,31 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
-#include <SDL3/SDL_events.h>
+#include <main.h>
 
 
 int main(int argc, char *argv[]) {
-    SDL_Init(SDL_INIT_VIDEO);
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        SDL_Log("Failed to init SDL: %s\n", SDL_GetError());
+        return 1;
+    }
 
-    SDL_Window *window = SDL_CreateWindow("Point Game", 1280, 720, 0);
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
-    SDL_FRect rect = {100, 100, 100, 100};
-    const int FPS_Time = 1000 / 60;
-    Uint32 _FPS_Timer;
+    window = SDL_CreateWindow(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+    if (!window) {
+        SDL_Log("Failed to create window: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    renderer = SDL_CreateRenderer(window, NULL);
+    if (!renderer) {
+        SDL_Log("Failed to create renderer: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    const int FPS_Time = 1000 / MAX_FPS;
+    int _FPS_Timer = 0;
 
     bool isRunning = true;
     while (isRunning)
     {
+        // Check events
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_EVENT_QUIT) {
@@ -22,22 +33,23 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        // Render
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderLine(renderer, 0, 0, 1280, 720);
-        SDL_RenderRect(renderer, &rect);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        drawFillCircle(renderer, 50, 640, 360);
 
         SDL_RenderPresent(renderer);
 
+        // Control fps
         if (SDL_GetTicks() - _FPS_Timer < FPS_Time) {
             SDL_Delay(FPS_Time - SDL_GetTicks() + _FPS_Timer);
         }
         _FPS_Timer = SDL_GetTicks();
     }
     
-
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
     return 0;

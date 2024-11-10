@@ -1,14 +1,8 @@
-#ifndef POINT_GAME_INCLUDE_MAIN_H_
-#define POINT_GAME_INCLUDE_MAIN_H_
+#ifndef POINT_GAME_INCLUDE_MAIN_H
+#define POINT_GAME_INCLUDE_MAIN_H
 
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
-#include <SDL3/SDL_events.h>
-
+#include <stdio.h>
+#include <stdbool.h>
 #include <common.h>
-#include <draw.h>
 
-SDL_Window *window;
-SDL_Renderer *renderer;
-
-#endif
+#endif // POINT_GAME_INCLUDE_MAIN_H

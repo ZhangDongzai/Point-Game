@@ -1,15 +1,14 @@
-cmake_minimum_required(VERSION 3.10)
-
-project(Point-Game C)
+cmake_minimum_required(VERSION 3.14)
+project(Point-Game)
 
 set(CMAKE_C_STANDARD 11)
 
 include_directories(include)
 
-add_executable(Point-Game
-    src/main.c
-    src/draw.c)
+add_executable(Point-Game src/main.c)
 
-find_package(SDL3 REQUIRED)
+find_package(SDL2)
 
-target_link_libraries(Point-Game PRIVATE SDL3::SDL3)
+target_link_libraries(Point-Game PRIVATE SDL2 SDL2main)
+
+target_compile_definitions(Point-Game PRIVATE SDL_MAIN_HANDLED)

@@ -1,10 +1,6 @@
-#ifndef POINT_GAME_INCLUDE_COMMON_H_
-#define POINT_GAME_INCLUDE_COMMON_H_
+#ifndef POINT_GAME_INCLUDE_COMMON_H
+#define POINT_GAME_INCLUDE_COMMON_H
 
-// Window
-#define WINDOW_TITLE "Point Game"
-#define WINDOW_WIDTH 1280
-#define WINDOW_HEIGHT 720
-#define MAX_FPS 60
+#include <SDL2/SDL.h>
 
-#endif
+#endif // POINT_GAME_INCLUDE_COMMON_H

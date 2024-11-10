@@ -54,9 +54,5 @@ dkms.conf
 # CMake builds
 build/
 
-# Vscode file
-.vscode/
-CMakePresets.json
-
 # Jetbrains IDE
 .idea/

@@ -13,18 +13,21 @@ Player* createPlayer(int x, int y, SDL_Color color) {
 
 
 void updatePlayer(Player *player, int deltaTimeMs) {
-    if (app.keyBoardState[SDL_SCANCODE_W]) {
-        player->fy -= PLAYER_SPEED_MS * deltaTimeMs;
+    float x = 0.0f;
+    float y = 0.0f;
+    float speed = PLAYER_SPEED_MS * deltaTimeMs;
+    if (app.keyBoardState[SDL_SCANCODE_W]) y -= speed;
+    if (app.keyBoardState[SDL_SCANCODE_S]) y += speed;
+    if (app.keyBoardState[SDL_SCANCODE_A]) x -= speed;
+    if (app.keyBoardState[SDL_SCANCODE_D]) x += speed;
+
+    if (x != 0 && y != 0) {
+        x *= COS_45;
+        y *= SIN_45;
     }
-    if (app.keyBoardState[SDL_SCANCODE_S]) {
-        player->fy += PLAYER_SPEED_MS * deltaTimeMs;
-    }
-    if (app.keyBoardState[SDL_SCANCODE_A]) {
-        player->fx -= PLAYER_SPEED_MS * deltaTimeMs;
-    }
-    if (app.keyBoardState[SDL_SCANCODE_D]) {
-        player->fx += PLAYER_SPEED_MS * deltaTimeMs;
-    }
+
+    player->fx += x;
+    player->fy += y;
     player->x = (int) player->fx;
     player->y = (int) player->fy;
 }

@@ -10,7 +10,7 @@
 
 typedef struct {
     int x, y;
-    double fx, fy;
+    float fx, fy;
     SDL_Color color;
 } Player;
 

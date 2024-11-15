@@ -3,6 +3,9 @@
 
 #include <SDL2/SDL.h>
 
+#define COS_45 0.7071
+#define SIN_45 COS_45
+
 #define WINDOW_NAME "Point Game"
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720

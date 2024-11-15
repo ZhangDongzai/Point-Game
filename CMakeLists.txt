@@ -5,7 +5,11 @@ set(CMAKE_C_STANDARD 11)
 
 include_directories(include)
 
-add_executable(Point-Game src/main.c)
+add_executable(Point-Game
+        src/main.c
+        src/player.c
+        src/draw.c
+)
 
 find_package(SDL2)
 

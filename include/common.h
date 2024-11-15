@@ -3,4 +3,17 @@
 
 #include <SDL2/SDL.h>
 
+#define WINDOW_NAME "Point Game"
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 720
+#define WINDOW_FPS 60
+
+typedef struct {
+    SDL_Window *window;
+    SDL_Renderer *renderer;
+    const Uint8 *keyBoardState;
+} App;
+
+extern App app;
+
 #endif // POINT_GAME_INCLUDE_COMMON_H

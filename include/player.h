@@ -1,6 +1,8 @@
 #ifndef POINT_GAME_INCLUDE_PLAYER_H
 #define POINT_GAME_INCLUDE_PLAYER_H
 
+#include <math.h>
+#include <stdio.h>
 #include <common.h>
 #include <draw.h>
 
@@ -11,6 +13,7 @@
 typedef struct {
     int x, y;
     float fx, fy;
+    float direction;
     SDL_Color color;
 } Player;
 

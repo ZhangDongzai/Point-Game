@@ -9,6 +9,7 @@ add_executable(Point-Game
         src/main.c
         src/player.c
         src/draw.c
+        src/map.c
 )
 
 find_package(SDL2)

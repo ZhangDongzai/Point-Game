@@ -6,5 +6,6 @@
 #include <common.h>
 #include <draw.h>
 #include <player.h>
+#include <map.h>
 
 #endif // POINT_GAME_INCLUDE_MAIN_H

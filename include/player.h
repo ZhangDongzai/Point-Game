@@ -18,7 +18,7 @@ typedef struct {
 } Player;
 
 Player* createPlayer(int x, int y, SDL_Color color);
-void updatePlayer(Player *player, int deltaTimeMs);
+void updatePlayer(Player *player, unsigned int deltaTimeMs);
 void renderPlayer(SDL_Renderer *renderer, Player *player);
 void destroyPlayer(Player *player);
 

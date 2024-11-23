@@ -10,9 +10,11 @@ int main(int argc, char* argv[]) {
     app.renderer = SDL_CreateRenderer(app.window, -1, 0);
     app.keyBoardState = SDL_GetKeyboardState(NULL);
     Player *player = createPlayer(640, 360, PLAYER_COLOR);
+    Map map = loadMap();
+
     Uint32 lastFrameTime = 0;
     const short frameTime = 1000 / WINDOW_FPS;
-    int deltaTimeMs = 0;
+    unsigned int deltaTimeMs = 0;
 
     bool isRunning = true;
     while (isRunning) {
@@ -30,16 +32,17 @@ int main(int argc, char* argv[]) {
         // Render
         SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 255);
         SDL_RenderClear(app.renderer);
+        renderMap(app.renderer, map);
         renderPlayer(app.renderer, player);
         SDL_RenderPresent(app.renderer);
 
         // Control fps
-        deltaTimeMs = SDL_GetTicks64() - lastFrameTime;
+        deltaTimeMs = SDL_GetTicks() - lastFrameTime;
         if (frameTime > deltaTimeMs) {
             SDL_Delay(frameTime - deltaTimeMs);
             deltaTimeMs = frameTime;
         }
-        lastFrameTime = SDL_GetTicks64();
+        lastFrameTime = SDL_GetTicks();
     }
 
     SDL_DestroyRenderer(app.renderer);

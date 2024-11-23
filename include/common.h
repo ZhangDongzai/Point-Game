@@ -11,6 +11,12 @@
 #define WINDOW_HEIGHT 720
 #define WINDOW_FPS 60
 
+#define MAP_PATH "../res/map"
+#define MAP_WIDTH 16
+#define MAP_HEIGHT 9
+#define MAP_COLOR_BLACK 0
+#define MAP_COLOR_WHITE 1
+
 typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;

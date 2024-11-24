@@ -2,8 +2,7 @@
 
 
 Map loadMap() {
-    Map map;
-    map = (int**) malloc(MAP_HEIGHT * sizeof(int*));
+    Map map = (int**) malloc(MAP_HEIGHT * sizeof(int*));
     for (int i = 0; i < MAP_HEIGHT; i++) {
         map[i] = (int*) malloc(MAP_WIDTH * sizeof(int));
     }
@@ -27,12 +26,17 @@ void renderMap(SDL_Renderer *renderer, Map map) {
         for (int column = 0; column < MAP_WIDTH; column++) {
             SDL_Rect rect = {column * squareWidth, row * squareHeight,
                 squareWidth, squareHeight};
-            if (map[row][column] == MAP_COLOR_BLACK) {
+            if (map[row][column] == MAP_AIR) {
                 SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-            } else if (map[row][column] == MAP_COLOR_WHITE) {
+            } else if (map[row][column] == MAP_WALL) {
                 SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             }
             SDL_RenderDrawRect(renderer, &rect);
         }
     }
+}
+
+
+bool isHitMap(Map map, int x, int y) {
+
 }

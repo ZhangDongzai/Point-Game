@@ -6,10 +6,6 @@
 #include <common.h>
 #include <draw.h>
 
-#define PLAYER_RADUIS 50
-#define PLAYER_COLOR (SDL_Color) {255, 255, 255, 255}
-#define PLAYER_SPEED_MS 0.2
-
 typedef struct {
     int x, y;
     float fx, fy;

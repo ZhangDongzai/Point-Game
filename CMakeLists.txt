@@ -10,6 +10,7 @@ add_executable(Point-Game
         src/player.c
         src/draw.c
         src/map.c
+        src/raycast.c
 )
 
 find_package(SDL2)

@@ -15,7 +15,7 @@ Player* createPlayer(int x, int y, SDL_Color color) {
 }
 
 
-void updatePlayer(Player *player, unsigned int deltaTimeMs) {
+void updatePlayer(Player *player, unsigned int deltaTimeMs, Map map) {
     float x = 0.0f;
     float y = 0.0f;
     float moveSpeed = PLAYER_MOVE_SPEED_MS * (float) deltaTimeMs;
@@ -43,19 +43,23 @@ void updatePlayer(Player *player, unsigned int deltaTimeMs) {
         player->direction += turnSpeed;
     }
 
-    player->fx += x;
-    player->fy += y;
-    player->x = (int) player->fx;
-    player->y = (int) player->fy;
+    if (!isHitMap(map, (int) (player->fx + x), player->y)) {
+        player->fx += x;
+        player->x = (int) player->fx;
+    }
+    if (!isHitMap(map, player->x, (int) (player->fy + y))) {
+        player->fy += y;
+        player->y = (int) player->fy;
+    }
 }
 
 
 void renderPlayer(SDL_Renderer *renderer, Player *player) {
     SDL_SetRenderDrawColor(renderer, player->color.r, player->color.g, player->color.b, player->color.a);
     drawFillCircle(renderer, PLAYER_RADIUS, player->x, player->y);
-    SDL_RenderDrawLine(renderer, player->x, player->y,
-        player->x + (int) floorf(1000.0f * cosf(player->direction)),
-        player->y + (int) floorf(1000.0f * sinf(player->direction)));
+    // SDL_RenderDrawLine(renderer, player->x, player->y,
+    //     player->x + (int) (cosf(player->direction) * 1000.0f),
+    //     player->y + (int) (sinf(player->direction) * 1000.0f));
 }
 
 

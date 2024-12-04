@@ -1,10 +1,10 @@
 #ifndef POINT_GAME_INCLUDE_PLAYER_H
 #define POINT_GAME_INCLUDE_PLAYER_H
 
-#include <math.h>
 #include <stdio.h>
 #include <common.h>
 #include <draw.h>
+#include <map.h>
 
 typedef struct {
     int x, y;
@@ -14,7 +14,7 @@ typedef struct {
 } Player;
 
 Player* createPlayer(int x, int y, SDL_Color color);
-void updatePlayer(Player *player, unsigned int deltaTimeMs);
+void updatePlayer(Player *player, unsigned int deltaTimeMs, Map map);
 void renderPlayer(SDL_Renderer *renderer, Player *player);
 void destroyPlayer(Player *player);
 

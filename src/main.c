@@ -27,12 +27,13 @@ int main(int argc, char* argv[]) {
         }
 
         // Update
-        updatePlayer(player, deltaTimeMs);
+        updatePlayer(player, deltaTimeMs, map);
 
         // Render
         SDL_SetRenderDrawColor(app.renderer, 0, 0, 0, 255);
         SDL_RenderClear(app.renderer);
         renderMap(app.renderer, map);
+        renderRaycast(app.renderer, player, map);
         renderPlayer(app.renderer, player);
         SDL_RenderPresent(app.renderer);
 

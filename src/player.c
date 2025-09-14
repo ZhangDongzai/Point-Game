@@ -9,6 +9,10 @@ int* Player_GetPos(Player *player) {
     return player->pos;
 }
 
+float Player_GetDirection(Player *player) {
+    return player->direction;
+}
+
 void Player_Delete(Player *player) {
     free(player);
 }

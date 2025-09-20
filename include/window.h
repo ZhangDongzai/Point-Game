@@ -3,6 +3,8 @@
 
 #define SDL_MAIN_USE_CALLBACKS
 
+#include <camera.h>
+#include <player.h>
 #include <common.h>
 #include <SDL3/SDL_main.h>
 
@@ -11,9 +13,10 @@
 #define WINDOW_WIDTH 1280
 #define WINDOW_HEIGHT 720
 
-struct {
+typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
-} app;
+    Player *player;
+} App;
 
 #endif /* INCLUDE_MAIN_H */

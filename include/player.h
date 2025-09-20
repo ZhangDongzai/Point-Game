@@ -1,11 +1,13 @@
 #ifndef INCLUDE_PLAYER_H
 #define INCLUDE_PLAYER_H
 
+#include <camera.h>
 #include <common.h>
 
 #define PLAYER_DEFAULT_DIRECTION 0
-#define PLAYER_DEFAULT_POS (int[]) {5, 5}
-#define PLAYER_SIZE 10
+#define PLAYER_DEFAULT_POS (float[]) {640, 360}
+#define PLAYER_SIZE 100
+#define PLAYER_COLOR (SDL_Color) {255, 255, 255, 255}
 
 /**
  * The struct used as an opaque handle to a player
@@ -14,7 +16,7 @@
  */
 typedef struct 
 {
-    int pos[2];         /* Player's position */
+    float pos[2];         // The player's position
     float direction;
 } Player;
 
@@ -36,7 +38,7 @@ Player* Player_Create();
  * 
  * \sa Player_Create
  */
-int* Player_GetPos(Player *player);
+float* Player_GetPos(Player *player);
 
 /**
  * Get the player's direction
@@ -48,6 +50,18 @@ int* Player_GetPos(Player *player);
  * \sa Player_Create
  */
 float Player_GetDirection(Player *player);
+
+/**
+ * Get a render context for camera.
+ * If the function has been ran, it will return the same ptr.
+ * 
+ * \param player the player context
+ * 
+ * \returns a render context
+ * 
+ * \sa Player_Create
+ */
+Render_Object* Player_GetRenderObject(Player *player);
 
 /**
  * Delete the player

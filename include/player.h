@@ -9,6 +9,8 @@
 #define PLAYER_SIZE 100
 #define PLAYER_COLOR (SDL_Color) {255, 255, 255, 255}
 #define PLAYER_SHAPE RENDER_SHAPE_CIRCLE
+#define PLAYER_MOVE_SPEED 200   // pixel/s
+#define PLAYER_TURN_SPEED 2     // rad/s
 
 /**
  * The struct used as an opaque handle to a player
@@ -18,7 +20,7 @@
 typedef struct 
 {
     float pos[2];         // The player's position
-    float direction;
+    float direction;      // The player's direction with rads
 } Player;
 
 /**
@@ -63,6 +65,15 @@ float Player_GetDirection(Player *player);
  * \sa Player_Create
  */
 Render_Object* Player_GetRenderObject(Player *player);
+
+/**
+ * Check keyboard and update player's position
+ * 
+ * \param player the player context
+ * 
+ * \sa Player_Create
+ */
+void Player_Update(Player *player, Uint64 deltaTime);
 
 /**
  * Delete the player

@@ -21,6 +21,7 @@ typedef struct {
     float size;             // The size of render object
     SDL_Color color;        // The color of render object
     Render_Shape shape;     // The shape of render object
+    float direction;        // The direction (rad) of render object
 } Render_Object;
 
 /**

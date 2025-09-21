@@ -22,8 +22,27 @@ Render_Object* Player_GetRenderObject(Player *player) {
     object->size = PLAYER_SIZE;
     object->color = PLAYER_COLOR;
     object->shape = PLAYER_SHAPE;
+    object->direction = player->direction;
 
     return object;
+}
+
+void Player_Update(Player *player, Uint64 deltaTime) {
+    const bool *keyboardState = SDL_GetKeyboardState(NULL);
+    float sin = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_sinf(player->direction);
+    float cos = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_cosf(player->direction);
+    float turn = PLAYER_TURN_SPEED * deltaTime / 1000.0f;
+    if (keyboardState[SDL_SCANCODE_W]) {
+        player->pos[0] += cos;
+        player->pos[1] += sin;
+    } if (keyboardState[SDL_SCANCODE_S]) {
+        player->pos[0] -= cos;
+        player->pos[1] -= sin;
+    } if (keyboardState[SDL_SCANCODE_A]) {
+        player->direction -= turn;
+    } if (keyboardState[SDL_SCANCODE_D]) {
+        player->direction += turn;
+    }
 }
 
 void Player_Delete(Player *player) {

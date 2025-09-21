@@ -23,14 +23,20 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
     app->player = Player_Create();
 
+    app->preFrameTime = SDL_GetTicks();
+    app->deltaTime = 0;
+
     return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 {
+    App *app = appstate;
+
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;
     }
+
     return SDL_APP_CONTINUE;
 }
 
@@ -38,11 +44,20 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
     App *app = appstate;
 
+    Player_Update(app->player, app->deltaTime);
+
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
     Camera_RenderObject(Player_GetRenderObject(app->player));
     
     SDL_RenderPresent(app->renderer);
+
+    app->deltaTime = SDL_GetTicks() - app->preFrameTime;
+    if (WINDOW_DELTA_TIME > app->deltaTime) {
+        SDL_Delay(WINDOW_DELTA_TIME - app->deltaTime);
+        app->deltaTime = WINDOW_DELTA_TIME;
+    }
+    app->preFrameTime = SDL_GetTicks();
 
     return SDL_APP_CONTINUE; 
 }

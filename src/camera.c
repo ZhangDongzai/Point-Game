@@ -50,6 +50,10 @@ void Camera_RenderObject(Render_Object *object) {
                 error += (tx - diameter);
             }
         }
+
+        SDL_RenderLine(Camera_Renderer, object->pos[0], object->pos[1],
+            object->pos[0] + SDL_cosf(object->direction) * 100,
+            object->pos[1] + SDL_sinf(object->direction) * 100);
         break;
     }
 }

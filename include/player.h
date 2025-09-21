@@ -8,6 +8,7 @@
 #define PLAYER_DEFAULT_POS (float[]) {640, 360}
 #define PLAYER_SIZE 100
 #define PLAYER_COLOR (SDL_Color) {255, 255, 255, 255}
+#define PLAYER_SHAPE RENDER_SHAPE_CIRCLE
 
 /**
  * The struct used as an opaque handle to a player

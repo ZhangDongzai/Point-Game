@@ -21,7 +21,7 @@ Render_Object* Player_GetRenderObject(Player *player) {
     memcpy(object->pos, player->pos, sizeof(player->pos));
     object->size = PLAYER_SIZE;
     object->color = PLAYER_COLOR;
-    object->shape = RENDER_SHAPE_CIRCLE;
+    object->shape = PLAYER_SHAPE;
 
     return object;
 }

@@ -17,7 +17,11 @@ float Player_GetDirection(Player *player) {
 }
 
 Render_Object* Player_GetRenderObject(Player *player) {
-    Render_Object *object = (Render_Object *)malloc(sizeof(Render_Object));
+    static Render_Object *object = NULL;
+    if (object == NULL) {
+        object = (Render_Object *)malloc(sizeof(Render_Object));
+    }
+    
     memcpy(object->pos, player->pos, sizeof(player->pos));
     object->size = PLAYER_SIZE;
     object->color = PLAYER_COLOR;

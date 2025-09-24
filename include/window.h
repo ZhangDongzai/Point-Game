@@ -1,12 +1,9 @@
-#ifndef INCLUDE_MAIN_H
-#define INCLUDE_MAIN_H
-
-#define SDL_MAIN_USE_CALLBACKS
+#ifndef INCLUDE_WINDOW_H
+#define INCLUDE_WINDOW_H
 
 #include <camera.h>
 #include <player.h>
 #include <common.h>
-#include <SDL3/SDL_main.h>
 
 // Window info
 #define WINDOW_NAME "Point Game"
@@ -23,4 +20,4 @@ typedef struct {
     Uint64 deltaTime;
 } App;
 
-#endif /* INCLUDE_MAIN_H */
+#endif /* INCLUDE_WINDOW_H */

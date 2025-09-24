@@ -1,5 +1,6 @@
+#define SDL_MAIN_USE_CALLBACKS
 #include <window.h>
-
+#include <SDL3/SDL_main.h>
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
@@ -19,7 +20,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
 
-    Camera_BindRenderer(app->renderer);
+    Camera_BindRenderer(app->renderer, PLAYER_DEFAULT_POS);
 
     app->player = Player_Create();
 

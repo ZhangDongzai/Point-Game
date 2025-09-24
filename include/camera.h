@@ -14,6 +14,14 @@ typedef enum {
 } Render_Shape;
 
 /**
+ * A camera to render object
+ */
+typedef struct {
+    SDL_Renderer *renderer;
+    float pos[2];
+} Camera;
+
+/**
  * The object can be rendered on the screen
  */
 typedef struct {
@@ -25,13 +33,14 @@ typedef struct {
 } Render_Object;
 
 /**
- * Bind the renderer used to render
+ * Bind the renderer used to render and set the position
  * 
  * \param renderer the renderer context
+ * \param pos the position of camera
  * 
  * \sa SDL_Renderer
  */
-void Camera_BindRenderer(SDL_Renderer *renderer);
+void Camera_BindRenderer(SDL_Renderer *renderer, float *pos);
 
 /**
  * Render something on the screen
@@ -41,5 +50,14 @@ void Camera_BindRenderer(SDL_Renderer *renderer);
  * \sa Render_Object
  */
 void Camera_RenderObject(Render_Object *object);
+
+/**
+ * Update camera's pos
+ * 
+ * \param object the object which will be render in the center
+ * 
+ * \sa Render_Object
+ */
+void Camera_Update(Render_Object *object);
 
 #endif /* INCLUDE_CAMERA_H */

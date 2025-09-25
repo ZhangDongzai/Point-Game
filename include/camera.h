@@ -33,6 +33,26 @@ typedef struct {
 } Render_Object;
 
 /**
+ * The node of objects
+ */
+typedef struct
+{
+    Render_Object *object;
+    void *next;
+} Render_ObjectNode;
+
+/**
+ * The boundary of a object
+ */
+typedef struct
+{
+    float up;
+    float down;
+    float left;
+    float right;
+} Render_Boundary;
+
+/**
  * Bind the renderer used to render and set the position
  * 
  * \param renderer the renderer context
@@ -51,6 +71,14 @@ void Camera_BindRenderer(SDL_Renderer *renderer, float *pos);
  */
 void Camera_RenderObject(Render_Object *object);
 
+/** Render a series of objects 
+ * 
+ * \param objectNode the node of objects
+ * 
+ * \sa Render_ObjectNode
+*/
+void Camera_RenderObjects(Render_ObjectNode *objectNode);
+
 /**
  * Update camera's pos
  * 
@@ -58,6 +86,6 @@ void Camera_RenderObject(Render_Object *object);
  * 
  * \sa Render_Object
  */
-void Camera_Update(Render_Object *object);
+void Camera_Update(Render_Object *object, Render_Boundary *boundary);
 
 #endif /* INCLUDE_CAMERA_H */

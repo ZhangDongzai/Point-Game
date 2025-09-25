@@ -1,3 +1,4 @@
+#include <map.h>
 #include <window.h>
 #include <camera.h>
 
@@ -61,6 +62,25 @@ void Camera_RenderObject(Render_Object *object) {
     }
 }
 
-void Camera_Update(Render_Object *object) {
+void Camera_RenderObjects(Render_ObjectNode *objectNode) {
+    for (Render_ObjectNode *node = objectNode; node != NULL; node = node->next) {
+        Camera_RenderObject(node->object);
+    }
+}
+
+void Camera_Update(Render_Object *object, Render_Boundary *boundary) {
     memcpy(camera.pos, object->pos, sizeof(camera.pos));
+    float left = boundary->left + WINDOW_WIDTH / 2.0f;
+    float right = boundary->right - WINDOW_WIDTH / 2.0f;
+    float up = boundary->up + WINDOW_HEIGHT / 2.0f;
+    float down = boundary->down - WINDOW_HEIGHT / 2.0f;
+    if (object->pos[0] < left) {
+        camera.pos[0] = left;
+    } else if (object->pos[0] > right) {
+        camera.pos[0] = right;
+    } if (object->pos[1] < up) {
+        camera.pos[1] = up;
+    } else if (object->pos[1] > down) {
+        camera.pos[1] = down;
+    }
 }

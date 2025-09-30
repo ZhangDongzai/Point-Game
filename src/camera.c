@@ -13,17 +13,18 @@ void Camera_RenderObject(Render_Object *object) {
     SDL_SetRenderDrawColor(camera.renderer, object->color.r,
         object->color.g, object->color.b, object->color.a);
 
-    float objectX = object->pos[0] - camera.pos[0] + (WINDOW_WIDTH / 2.0f);
-    float objectY = object->pos[1] - camera.pos[1] + (WINDOW_HEIGHT / 2.0f);
+    float objectX = (object->pos[0] - camera.pos[0]) * WINDOW_SCALE + WINDOW_WIDTH / 2.0f;
+    float objectY = (object->pos[1] - camera.pos[1]) * WINDOW_SCALE + WINDOW_HEIGHT / 2.0f;
 
     switch (object->shape) {
     case RENDER_SHAPE_RECTANGLE:
-        SDL_FRect rect = {objectX - (object->size / 2), objectY - (object->size / 2),
-            object->size, object->size};
+        SDL_FRect rect = {objectX - (object->size / 2) * WINDOW_SCALE,
+            objectY - (object->size / 2) * WINDOW_SCALE,
+            object->size * WINDOW_SCALE, object->size * WINDOW_SCALE};
         SDL_RenderRect(camera.renderer, &rect);
         break;
     case RENDER_SHAPE_CIRCLE:
-        const float radius = object->size / 2.0f;
+        const float radius = object->size * WINDOW_SCALE / 2.0f;
         const float diameter = radius * 2.0f;
 
         float x = radius - 1.0f;
@@ -70,10 +71,10 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode) {
 
 void Camera_Update(Render_Object *object, Render_Boundary *boundary) {
     memcpy(camera.pos, object->pos, sizeof(camera.pos));
-    float left = boundary->left + WINDOW_WIDTH / 2.0f;
-    float right = boundary->right - WINDOW_WIDTH / 2.0f;
-    float up = boundary->up + WINDOW_HEIGHT / 2.0f;
-    float down = boundary->down - WINDOW_HEIGHT / 2.0f;
+    float left = boundary->left + WINDOW_WIDTH_SCALE / 2.0f;
+    float right = boundary->right - WINDOW_WIDTH_SCALE / 2.0f;
+    float up = boundary->up + WINDOW_HEIGHT_SCALE / 2.0f;
+    float down = boundary->down - WINDOW_HEIGHT_SCALE / 2.0f;
     if (object->pos[0] < left) {
         camera.pos[0] = left;
     } else if (object->pos[0] > right) {

@@ -36,13 +36,22 @@ void Player_Update(Player *player, Uint64 deltaTime) {
     float sin = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_sinf(player->direction);
     float cos = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_cosf(player->direction);
     float turn = PLAYER_TURN_SPEED * deltaTime / 1000.0f;
+    float x, y;
     if (keyboardState[SDL_SCANCODE_W]) {
-        player->pos[0] += cos;
-        player->pos[1] += sin;
+        x = cos;
+        y = sin;
     } if (keyboardState[SDL_SCANCODE_S]) {
-        player->pos[0] -= cos;
-        player->pos[1] -= sin;
-    } if (keyboardState[SDL_SCANCODE_A]) {
+        x = -cos;
+        y = -sin;
+    }
+
+    if (Map_IsHit(player->pos[0] + x, player->pos[1]) == false) {
+        player->pos[0] += x;
+    } if (Map_IsHit(player->pos[0], player->pos[1] + y) == false) {
+        player->pos[1] += y;
+    }
+    
+    if (keyboardState[SDL_SCANCODE_A]) {
         player->direction -= turn;
     } if (keyboardState[SDL_SCANCODE_D]) {
         player->direction += turn;

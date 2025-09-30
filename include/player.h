@@ -2,15 +2,8 @@
 #define INCLUDE_PLAYER_H
 
 #include <camera.h>
+#include <map.h>
 #include <common.h>
-
-#define PLAYER_DEFAULT_DIRECTION 0
-#define PLAYER_DEFAULT_POS (float[]) {640, 360}
-#define PLAYER_SIZE 100
-#define PLAYER_COLOR (SDL_Color) {255, 255, 255, 255}
-#define PLAYER_SHAPE RENDER_SHAPE_CIRCLE
-#define PLAYER_MOVE_SPEED 200   // pixel/s
-#define PLAYER_TURN_SPEED 2     // rad/s
 
 /**
  * The struct used as an opaque handle to a player

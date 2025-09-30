@@ -24,10 +24,10 @@ Render_ObjectNode *Map_GetObjects() {
             
             object->color = map[row][column] == 1 ? MAP_COLOR_WALL : MAP_COLOR_AIR;
             object->direction = 0;
-            object->pos[0] = (column + 0.5) * MAP_SIZE;
-            object->pos[1] = (row + 0.5) * MAP_SIZE;
+            object->pos[0] = column + 0.5;
+            object->pos[1] = row + 0.5;
             object->shape = RENDER_SHAPE_RECTANGLE;
-            object->size = MAP_SIZE;
+            object->size = 1;
 
             if (lastNode != NULL) {
                 lastNode->next = node;
@@ -47,9 +47,16 @@ Render_ObjectNode *Map_GetObjects() {
 Render_Boundary* Map_GetBoundary() {
     Render_Boundary *boundary = (Render_Boundary *)malloc(sizeof(Render_Boundary));
     boundary->left = boundary->up = 0;
-    boundary->right = MAP_WIDTH * MAP_SIZE;
-    boundary->down = MAP_HEIGHT * MAP_SIZE;
+    boundary->right = MAP_WIDTH;
+    boundary->down = MAP_HEIGHT;
     return boundary;
+}
+
+bool Map_IsHit(float x, float y) {
+    if (map[(int)SDL_floorf(y)][(int)SDL_floorf(x)] == 1) {
+        return true;
+    }
+    return false;
 }
 
 void Map_Delete(Render_ObjectNode *objectNode) {

@@ -4,16 +4,12 @@
 #include <camera.h>
 #include <common.h>
 
-#define MAP_WIDTH 15
-#define MAP_HEIGHT 10
-#define MAP_SIZE 100
-#define MAP_COLOR_WALL (SDL_Color) {255, 255, 255, 255}
-#define MAP_COLOR_AIR (SDL_Color) {0, 0, 0, 0}
-
 extern int map[MAP_HEIGHT][MAP_WIDTH];
 
 /**
  * Get a node of render objects
+ * 
+ * \returns the render objects context
  * 
  * \sa Render_ObjectNode
  */
@@ -22,9 +18,21 @@ Render_ObjectNode* Map_GetObjects();
 /**
  * Get the boundary of a map
  * 
+ * \returns the render boundary context
+ * 
  * \sa Map_Boundary
  */
 Render_Boundary *Map_GetBoundary();
+
+/**
+ * Tell the object if it hits walls
+ * 
+ * \param x the object's pos x
+ * \param y the object's pos y
+ * 
+ * \returns a bool value
+ */
+bool Map_IsHit(float x, float y);
 
 /**
  * Free memory of the map

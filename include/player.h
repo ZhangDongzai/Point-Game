@@ -1,8 +1,8 @@
 #ifndef INCLUDE_PLAYER_H
 #define INCLUDE_PLAYER_H
 
-#include <camera.h>
 #include <map.h>
+#include <camera.h>
 #include <common.h>
 
 /**

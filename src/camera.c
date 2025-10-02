@@ -1,5 +1,3 @@
-#include <map.h>
-#include <window.h>
 #include <camera.h>
 
 static Camera camera;
@@ -47,9 +45,7 @@ void Camera_RenderObject(Render_Object *object) {
                 ++y;
                 error += ty;
                 ty += 2;
-            }
-
-            if (error > 0) {
+            } else {
                 --x;
                 tx += 2;
                 error += (tx - diameter);

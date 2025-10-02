@@ -1,11 +1,12 @@
-#define SDL_MAIN_USE_CALLBACKS
 #include <window.h>
+
+// NOTE: SDL_main is only in window.c
+#define SDL_MAIN_USE_CALLBACKS
 #include <SDL3/SDL_main.h>
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 {
-    App *app = (App *)malloc(sizeof(App));
-    *appstate = app;
+    App *app = *appstate = (App *)malloc(sizeof(App));
 
     SDL_SetAppMetadata(WINDOW_NAME, "1.0", "com.point-game.zhangdongzai");
 

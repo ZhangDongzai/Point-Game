@@ -36,7 +36,7 @@ void Player_Update(Player *player, Uint64 deltaTime) {
     float sin = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_sinf(player->direction);
     float cos = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_cosf(player->direction);
     float turn = PLAYER_TURN_SPEED * deltaTime / 1000.0f;
-    float x, y;
+    float x = 0, y = 0;
     if (keyboardState[SDL_SCANCODE_W]) {
         x = cos;
         y = sin;

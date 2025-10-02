@@ -48,13 +48,13 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     App *app = appstate;
 
     Player_Update(app->player, app->deltaTime);
-    Camera_Update(Player_GetRenderObject(app->player), Map_GetBoundary());
+    Camera_Update(app->player, Map_GetBoundary());
 
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
 
     Camera_RenderObjects(app->map);
-    Camera_RenderObject(Player_GetRenderObject(app->player));
+    Camera_RenderObject(app->player);
     
     SDL_RenderPresent(app->renderer);
 

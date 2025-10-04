@@ -1,6 +1,7 @@
 #ifndef INCLUDE_PLAYER_H
 #define INCLUDE_PLAYER_H
 
+#include <bullet.h>
 #include <map.h>
 #include <camera.h>
 #include <common.h>
@@ -26,7 +27,7 @@ Player* Player_Create();
  * 
  * \sa Player_Create
  */
-void Player_Update(Player *player, Uint64 deltaTime);
+void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList);
 
 /**
  * Delete the player

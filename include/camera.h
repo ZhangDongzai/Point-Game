@@ -9,8 +9,8 @@
  * \sa Render_Object
  */
 typedef enum {
-    RENDER_SHAPE_RECTANGLE,     // Rectangle
-    RENDER_SHAPE_CIRCLE         // Circle
+    RENDER_SHAPE_RECT,
+    RENDER_SHAPE_CIRCLE
 } Render_Shape;
 
 /**
@@ -25,20 +25,19 @@ typedef struct {
  * The object can be rendered on the screen
  */
 typedef struct {
-    float pos[2];           // The position of render object
-    float size;             // The size of render object
-    SDL_Color color;        // The color of render object
-    Render_Shape shape;     // The shape of render object
-    float direction;        // The direction (rad) of render object
+    SDL_FRect rect;
+    SDL_Color color;
+    Render_Shape shape;
+    float direction;
 } Render_Object;
 
 /**
  * The node of objects
  */
-typedef struct
+typedef struct Render_ObjectNode
 {
     Render_Object *object;
-    void *next;
+    struct Render_ObjectNode *next;
 } Render_ObjectNode;
 
 /**

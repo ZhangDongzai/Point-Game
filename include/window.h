@@ -1,6 +1,7 @@
 #ifndef INCLUDE_WINDOW_H
 #define INCLUDE_WINDOW_H
 
+#include <bullet.h>
 #include <player.h>
 #include <map.h>
 #include <camera.h>
@@ -11,6 +12,7 @@ typedef struct {
     SDL_Renderer *renderer;
     
     Player *player;
+    BulletList *bulletList;
     Render_ObjectNode *map;
     
     Uint64 preFrameTime;

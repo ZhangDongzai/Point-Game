@@ -3,15 +3,16 @@
 
 Player* Player_Create() {
     Player* player = (Player *)calloc(1, sizeof(Player));
-    memcpy(player->pos, PLAYER_DEFAULT_POS, sizeof(PLAYER_DEFAULT_POS));
+    player->rect.x = PLAYER_DEFAULT_POS[0];
+    player->rect.y = PLAYER_DEFAULT_POS[1];
+    player->rect.w = player->rect.h = PLAYER_SIZE;
     player->direction = PLAYER_DEFAULT_DIRECTION;
     player->color = PLAYER_COLOR;
     player->shape = PLAYER_SHAPE;
-    player->size = PLAYER_SIZE;
     return player;
 }
 
-void Player_Update(Player *player, Uint64 deltaTime) {
+void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList) {
     const bool *keyboardState = SDL_GetKeyboardState(NULL);
     float sin = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_sinf(player->direction);
     float cos = PLAYER_MOVE_SPEED * deltaTime / 1000.0f * SDL_cosf(player->direction);
@@ -25,16 +26,20 @@ void Player_Update(Player *player, Uint64 deltaTime) {
         y = -sin;
     }
 
-    if (Map_IsHit(player->pos[0] + x, player->pos[1]) == false) {
-        player->pos[0] += x;
-    } if (Map_IsHit(player->pos[0], player->pos[1] + y) == false) {
-        player->pos[1] += y;
+    if (Map_IsHit(player->rect.x + x, player->rect.y) == false) {
+        player->rect.x += x;
+    } if (Map_IsHit(player->rect.x, player->rect.y + y) == false) {
+        player->rect.y += y;
     }
     
     if (keyboardState[SDL_SCANCODE_A]) {
         player->direction -= turn;
     } if (keyboardState[SDL_SCANCODE_D]) {
         player->direction += turn;
+    }
+
+    if (keyboardState[SDL_SCANCODE_J]) {
+        Bullet_Create(player, bulletList);
     }
 }
 

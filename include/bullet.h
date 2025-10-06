@@ -34,7 +34,7 @@ void Bullet_Create(Render_Object *object, BulletList *bullets);
  * \param bullets the list of bullet contexts
  * \param deltaTime the delta time between frames
  */
-void Bullet_UpdateList(BulletList **bullets, Uint64 deltaTime);
+void Bullet_UpdateList(BulletList *bullets, Uint64 deltaTime);
 
 /**
  * Delete the bullet

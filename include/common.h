@@ -19,7 +19,7 @@
 #define PLAYER_DEFAULT_DIRECTION 0
 #define PLAYER_DEFAULT_POS (float[]) {6, 3}
 #define PLAYER_SIZE 1
-#define PLAYER_COLOR (SDL_Color) {255, 255, 255, 255}
+#define PLAYER_COLOR (SDL_Color) {0, 255, 0, 255}
 #define PLAYER_SHAPE RENDER_SHAPE_CIRCLE
 #define PLAYER_MOVE_SPEED 2
 #define PLAYER_TURN_SPEED 2
@@ -27,7 +27,10 @@
 // Map
 #define MAP_WIDTH 15
 #define MAP_HEIGHT 10
-#define MAP_COLOR (SDL_Color) {255, 255, 255, 255}
+#define MAP_CODE_WALL 1
+#define MAP_CODE_FLOOR 0
+#define MAP_COLOR_WALL (SDL_Color) {255, 255, 255, 255}
+#define MAP_COLOR_FLOOR (SDL_Color) {169, 169, 169, 255}
 
 // Bullet
 #define BULLET_WIDTH 0.1f

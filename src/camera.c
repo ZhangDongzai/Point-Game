@@ -19,7 +19,7 @@ void Camera_RenderObject(Render_Object *object) {
         SDL_FRect rect = {objectX - (object->rect.w / 2.0f) * WINDOW_SCALE,
             objectY - (object->rect.h / 2.0f) * WINDOW_SCALE,
             object->rect.w * WINDOW_SCALE, object->rect.h * WINDOW_SCALE};
-        SDL_RenderRect(camera.renderer, &rect);
+        SDL_RenderFillRect(camera.renderer, &rect);
         break;
     case RENDER_SHAPE_CIRCLE:
         const float radius = object->rect.w * WINDOW_SCALE / 2.0f;
@@ -61,9 +61,7 @@ void Camera_RenderObject(Render_Object *object) {
 
 void Camera_RenderObjects(Render_ObjectNode *objectNode) {
     for (Render_ObjectNode *node = objectNode; node != NULL; node = node->next) {
-        if (!node->object) {
-            continue;
-        }
+        if (!node->object) continue;
         Camera_RenderObject(node->object);
     }
 }

@@ -48,7 +48,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
     App *app = appstate;
 
-    Bullet_UpdateList(&app->bulletList, app->deltaTime);
+    Bullet_UpdateList(app->bulletList, app->deltaTime);
     Player_Update(app->player, app->deltaTime, app->bulletList);
     Camera_Update(app->player, Map_GetBoundary());
 

@@ -9,6 +9,7 @@ void Bullet_Create(Render_Object *object, BulletList *bulletList) {
     for (; bulletList->object; bulletList = bulletList->next) {
         if (!bulletList->next) {
             bulletList->next = Bullet_CreateList();
+            bulletList->next->prev = bulletList;
         }
     }
 
@@ -24,25 +25,26 @@ void Bullet_Create(Render_Object *object, BulletList *bulletList) {
     bulletList->object = bullet;
 }
 
-void Bullet_UpdateList(BulletList **bulletList, Uint64 deltaTime) {
-    for (BulletList *list = *bulletList; list != NULL; list = list->next) {
-        if (!list->object) continue;
+void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime) {
+    for (; bulletList; bulletList = bulletList->next) {
+        if (!bulletList->object) continue;
+
+        bulletList->object->rect.x += SDL_cosf(bulletList->object->direction) 
+                                        * BULLET_SPEED * deltaTime / 1000.0f;
+        bulletList->object->rect.y += SDL_sinf(bulletList->object->direction) 
+                                        * BULLET_SPEED * deltaTime / 1000.0f;
         
-        list->object->rect.x += BULLET_SPEED * deltaTime / 1000.0f * SDL_cosf(list->object->direction);
-        list->object->rect.y += BULLET_SPEED * deltaTime / 1000.0f * SDL_sinf(list->object->direction);
-
-        if (Map_IsHit(list->object->rect.x, list->object->rect.y)) {
-            Bullet_Delete(list->object);
-            list->object = NULL;
+        if (!Map_IsHit(bulletList->object->rect.x, bulletList->object->rect.y)) {
+            continue;
         }
-    }
 
-    for (BulletList *list = *bulletList; list->next != NULL; list = list->next) {
-        if (list->object) continue;
-        BulletList *nextList = list->next;
-        if (!nextList->next) break;
-        list->next = nextList->next;
-        free(nextList);
+        Bullet_Delete(bulletList->object);
+        bulletList->object = NULL;
+
+        if (bulletList->prev && bulletList->next) {
+            bulletList->prev->next = bulletList->next;
+            bulletList->next->prev = bulletList->prev;
+        }
     }
 }
 

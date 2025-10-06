@@ -37,6 +37,7 @@ typedef struct {
 typedef struct Render_ObjectNode
 {
     Render_Object *object;
+    struct Render_ObjectNode *prev;
     struct Render_ObjectNode *next;
 } Render_ObjectNode;
 

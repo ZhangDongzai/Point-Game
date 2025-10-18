@@ -4,7 +4,9 @@
 #include <camera.h>
 #include <common.h>
 
-extern int map[MAP_HEIGHT][MAP_WIDTH];
+extern int mapList[MAP_HEIGHT][MAP_WIDTH];
+
+typedef Render_Object Map;
 
 /**
  * Get a node of render objects
@@ -13,7 +15,7 @@ extern int map[MAP_HEIGHT][MAP_WIDTH];
  * 
  * \sa Render_ObjectNode
  */
-Render_ObjectNode* Map_GetObjects();
+Map* Map_Create();
 
 /**
  * Get the boundary of a map

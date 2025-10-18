@@ -13,7 +13,7 @@ typedef struct {
     
     Player *player;
     BulletList *bulletList;
-    Render_ObjectNode *map;
+    Map *map;
     
     Uint64 preFrameTime;
     Uint64 deltaTime;

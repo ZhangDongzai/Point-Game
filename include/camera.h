@@ -26,8 +26,7 @@ typedef struct {
  */
 typedef struct {
     SDL_FRect rect;
-    SDL_Color color;
-    Render_Shape shape;
+    SDL_Texture *texture;
     float direction;
 } Render_Object;
 
@@ -70,6 +69,8 @@ void Camera_BindRenderer(SDL_Renderer *renderer, float *pos);
  * \sa Render_Object
  */
 void Camera_RenderObject(Render_Object *object);
+
+SDL_Texture* Camera_CreateTextureFromSurface(SDL_Surface *surface);
 
 /** Render a series of objects 
  * 

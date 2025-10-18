@@ -7,56 +7,19 @@ void Camera_BindRenderer(SDL_Renderer *renderer, float *pos) {
     memcpy(camera.pos, pos, sizeof(camera.pos));
 }
 
+SDL_Texture* Camera_CreateTextureFromSurface(SDL_Surface *surface) {
+    return SDL_CreateTextureFromSurface(camera.renderer, surface);
+}
+
 void Camera_RenderObject(Render_Object *object) {
-    SDL_SetRenderDrawColor(camera.renderer, object->color.r,
-        object->color.g, object->color.b, object->color.a);
-
-    float objectX = (object->rect.x - camera.pos[0]) * WINDOW_SCALE + WINDOW_WIDTH / 2.0f;
-    float objectY = (object->rect.y - camera.pos[1]) * WINDOW_SCALE + WINDOW_HEIGHT / 2.0f;
-
-    switch (object->shape) {
-    case RENDER_SHAPE_RECT:
-        SDL_FRect rect = {objectX - (object->rect.w / 2.0f) * WINDOW_SCALE,
-            objectY - (object->rect.h / 2.0f) * WINDOW_SCALE,
-            object->rect.w * WINDOW_SCALE, object->rect.h * WINDOW_SCALE};
-        SDL_RenderFillRect(camera.renderer, &rect);
-        break;
-    case RENDER_SHAPE_CIRCLE:
-        const float radius = object->rect.w * WINDOW_SCALE / 2.0f;
-        const float diameter = radius * 2.0f;
-
-        float x = radius - 1.0f;
-        float y = 0.0f;
-        float tx = 1.0f;
-        float ty = 1.0f;
-        float error = tx - diameter;
-
-        while (x >= y) {
-            SDL_RenderPoint(camera.renderer, objectX + x, objectY - y);
-            SDL_RenderPoint(camera.renderer, objectX + x, objectY + y);
-            SDL_RenderPoint(camera.renderer, objectX - x, objectY - y);
-            SDL_RenderPoint(camera.renderer, objectX - x, objectY + y);
-            SDL_RenderPoint(camera.renderer, objectX + y, objectY - x);
-            SDL_RenderPoint(camera.renderer, objectX + y, objectY + x);
-            SDL_RenderPoint(camera.renderer, objectX - y, objectY - x);
-            SDL_RenderPoint(camera.renderer, objectX - y, objectY + x);
-
-            if (error <= 0) {
-                ++y;
-                error += ty;
-                ty += 2;
-            } else {
-                --x;
-                tx += 2;
-                error += (tx - diameter);
-            }
-        }
-
-        SDL_RenderLine(camera.renderer, objectX, objectY,
-            objectX + SDL_cosf(object->direction) * 100,
-            objectY + SDL_sinf(object->direction) * 100);
-        break;
-    }
+    SDL_FRect rect = {
+        (object->rect.x - camera.pos[0]) * WINDOW_SCALE + WINDOW_WIDTH / 2.0f,
+        (object->rect.y - camera.pos[1]) * WINDOW_SCALE + WINDOW_HEIGHT / 2.0f,
+        object->rect.w * WINDOW_SCALE,
+        object->rect.h * WINDOW_SCALE
+    };
+    double angle = object->direction / SDL_PI_D * 180;
+    SDL_RenderTextureRotated(camera.renderer, object->texture, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
 }
 
 void Camera_RenderObjects(Render_ObjectNode *objectNode) {

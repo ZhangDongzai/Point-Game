@@ -15,8 +15,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
         return SDL_APP_FAILURE;
     }
 
-    if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, 0,
-         &app->window, &app->renderer)) {
+    if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH, WINDOW_HEIGHT, 0, &app->window, &app->renderer)) {
         SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -24,7 +23,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     Camera_BindRenderer(app->renderer, PLAYER_DEFAULT_POS);
 
     app->player = Player_Create();
-    app->map = Map_GetObjects();
+    app->map = Map_Create();
     app->bulletList = Bullet_CreateList();
 
     app->preFrameTime = SDL_GetTicks();
@@ -55,7 +54,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
     SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
     SDL_RenderClear(app->renderer);
 
-    Camera_RenderObjects(app->map);
+    Camera_RenderObject(app->map);
     Camera_RenderObjects(app->bulletList);
     Camera_RenderObject(app->player);
     

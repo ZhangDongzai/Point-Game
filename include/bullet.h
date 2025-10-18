@@ -18,7 +18,7 @@ typedef Render_ObjectNode BulletList;
 /**
  * Create a list of bullets
  */
-BulletList* Bullet_CreateList();
+BulletList *Bullet_CreateList();
 
 /**
  * Create a bullet

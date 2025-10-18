@@ -13,7 +13,7 @@ typedef Render_Object Map;
  * 
  * \returns the map context
  */
-Map* Map_Create();
+Map *Map_Create();
 
 /**
  * Get the boundary of a map

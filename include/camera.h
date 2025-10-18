@@ -8,47 +8,42 @@
  * 
  * \sa Render_Object
  */
-typedef enum {
-    RENDER_SHAPE_RECT,
-    RENDER_SHAPE_CIRCLE
-} Render_Shape;
+typedef enum { RENDER_SHAPE_RECT, RENDER_SHAPE_CIRCLE } Render_Shape;
 
 /**
  * A camera to render object
  */
 typedef struct {
-    SDL_Renderer *renderer;
-    float pos[2];
+	SDL_Renderer *renderer;
+	float pos[2];
 } Camera;
 
 /**
  * The object can be rendered on the screen
  */
 typedef struct {
-    SDL_FRect rect;
-    SDL_Texture *texture;
-    float direction;
+	SDL_FRect rect;
+	SDL_Texture *texture;
+	float direction;
 } Render_Object;
 
 /**
  * The node of objects
  */
-typedef struct Render_ObjectNode
-{
-    Render_Object *object;
-    struct Render_ObjectNode *prev;
-    struct Render_ObjectNode *next;
+typedef struct Render_ObjectNode {
+	Render_Object *object;
+	struct Render_ObjectNode *prev;
+	struct Render_ObjectNode *next;
 } Render_ObjectNode;
 
 /**
  * The boundary of a object
  */
-typedef struct
-{
-    float up;
-    float down;
-    float left;
-    float right;
+typedef struct {
+	float up;
+	float down;
+	float left;
+	float right;
 } Render_Boundary;
 
 /**
@@ -71,7 +66,7 @@ void Camera_RenderObject(Render_Object *object);
  *
  * \param surface the surface context
  */
-SDL_Texture* Camera_CreateTextureFromSurface(SDL_Surface *surface);
+SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface);
 
 /** Render a series of objects 
  * 

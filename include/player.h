@@ -16,7 +16,7 @@ typedef Render_Object Player;
  * 
  * \returns the player struct context
  */
-Player* Player_Create();
+Player *Player_Create();
 
 /**
  * Check keyboard and update player's position

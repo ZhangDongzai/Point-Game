@@ -8,15 +8,15 @@
 #include <common.h>
 
 typedef struct {
-    SDL_Window *window;
-    SDL_Renderer *renderer;
-    
-    Player *player;
-    BulletList *bulletList;
-    Map *map;
-    
-    Uint64 preFrameTime;
-    Uint64 deltaTime;
+	SDL_Window *window;
+	SDL_Renderer *renderer;
+
+	Player *player;
+	BulletList *bulletList;
+	Map *map;
+
+	Uint64 preFrameTime;
+	Uint64 deltaTime;
 } App;
 
 #endif /* INCLUDE_WINDOW_H */

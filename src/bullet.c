@@ -7,6 +7,13 @@ BulletList *Bullet_CreateList()
 
 void Bullet_Create(Render_Object *object, BulletList *bulletList)
 {
+	static Uint64 _prevShootTime = 0;
+
+	if (SDL_GetTicks() - _prevShootTime < BULLET_SHOOT_DELTA) {
+		return;
+	}
+	_prevShootTime = SDL_GetTicks();
+
 	for (; bulletList->object; bulletList = bulletList->next) {
 		if (!bulletList->next) {
 			bulletList->next = Bullet_CreateList();

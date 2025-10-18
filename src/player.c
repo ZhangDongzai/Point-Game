@@ -9,9 +9,9 @@ Player* Player_Create() {
     player->direction = PLAYER_DEFAULT_DIRECTION;
     
     SDL_Surface *surface = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE, PLAYER_SIZE * WINDOW_SCALE, SDL_PIXELFORMAT_RGBA32);
-    SDL_Renderer *surfaceRenderer = SDL_CreateSoftwareRenderer(surface);
+    SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
 
-    SDL_SetRenderDrawColor(surfaceRenderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     
     float radius = PLAYER_SIZE * WINDOW_SCALE * 0.5f;
     float diameter = radius * 2.0f;
@@ -20,14 +20,14 @@ Player* Player_Create() {
     float error = tx - diameter;
 
     while (x >= y) {
-        SDL_RenderPoint(surfaceRenderer, radius + x, radius - y);
-        SDL_RenderPoint(surfaceRenderer, radius + x, radius + y);
-        SDL_RenderPoint(surfaceRenderer, radius - x, radius - y);
-        SDL_RenderPoint(surfaceRenderer, radius - x, radius + y);
-        SDL_RenderPoint(surfaceRenderer, radius + y, radius - x);
-        SDL_RenderPoint(surfaceRenderer, radius + y, radius + x);
-        SDL_RenderPoint(surfaceRenderer, radius - y, radius - x);
-        SDL_RenderPoint(surfaceRenderer, radius - y, radius + x);
+        SDL_RenderPoint(renderer, radius + x, radius - y);
+        SDL_RenderPoint(renderer, radius + x, radius + y);
+        SDL_RenderPoint(renderer, radius - x, radius - y);
+        SDL_RenderPoint(renderer, radius - x, radius + y);
+        SDL_RenderPoint(renderer, radius + y, radius - x);
+        SDL_RenderPoint(renderer, radius + y, radius + x);
+        SDL_RenderPoint(renderer, radius - y, radius - x);
+        SDL_RenderPoint(renderer, radius - y, radius + x);
 
         if (error <= 0) {
             ++y;
@@ -40,12 +40,15 @@ Player* Player_Create() {
         }
     }
 
-    SDL_RenderLine(surfaceRenderer, radius, radius,
+    SDL_RenderLine(renderer, radius, radius,
         radius + SDL_cosf(player->direction) * 100,
         radius + SDL_sinf(player->direction) * 100);
     
-    SDL_RenderPresent(surfaceRenderer);
+    SDL_RenderPresent(renderer);
     player->texture = Camera_CreateTextureFromSurface(surface);
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroySurface(surface);
 
     return player;
 }
@@ -82,5 +85,6 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList) {
 }
 
 void Player_Delete(Player *player) {
+    SDL_DestroyTexture(player->texture);
     free(player);
 }

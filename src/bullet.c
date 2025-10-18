@@ -29,6 +29,9 @@ void Bullet_Create(Render_Object *object, BulletList *bulletList) {
 
     bullet->texture = Camera_CreateTextureFromSurface(surface);
 
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroySurface(surface);
+
     bulletList->object = bullet;
 }
 
@@ -56,5 +59,6 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime) {
 }
 
 void Bullet_Delete(Bullet *bullet) {
+    SDL_DestroyTexture(bullet->texture);
     free(bullet);
 }

@@ -65,8 +65,7 @@ bool Map_IsHit(float x, float y) {
     return false;
 }
 
-void Map_Delete(Render_ObjectNode *objectNode) {
-    for (Render_ObjectNode *node = objectNode; node != NULL; node = node->next) {
-        free(node->object);
-    }
+void Map_Delete(Map *map) {
+    SDL_DestroyTexture(map->texture);
+    free(map);
 }

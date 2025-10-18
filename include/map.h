@@ -9,11 +9,9 @@ extern int mapList[MAP_HEIGHT][MAP_WIDTH];
 typedef Render_Object Map;
 
 /**
- * Get a node of render objects
+ * Get a renderable object of map
  * 
- * \returns the render objects context
- * 
- * \sa Render_ObjectNode
+ * \returns the map context
  */
 Map* Map_Create();
 
@@ -21,8 +19,6 @@ Map* Map_Create();
  * Get the boundary of a map
  * 
  * \returns the render boundary context
- * 
- * \sa Map_Boundary
  */
 Render_Boundary *Map_GetBoundary();
 
@@ -39,10 +35,8 @@ bool Map_IsHit(float x, float y);
 /**
  * Free memory of the map
  * 
- * \param objectNode the node of map
- * 
- * \sa Map_GetObjects
+ * \param map the map context
  */
-void Map_Delete(Render_ObjectNode *objectNode);
+void Map_Delete(Map *map);
 
 #endif /* INCLUDE_MAP_H */

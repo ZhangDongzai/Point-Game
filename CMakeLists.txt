@@ -12,7 +12,11 @@ add_executable(Point-Game
     src/map.c
     src/bullet.c
     src/painter.c
+    src/infoLabel.c
 )
 
 find_package(SDL3 REQUIRED)
 target_link_libraries(Point-Game PRIVATE SDL3::SDL3)
+
+find_package(SDL3_ttf REQUIRED)
+target_link_libraries(Point-Game PRIVATE SDL3_ttf::SDL3_ttf)

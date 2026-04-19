@@ -2,6 +2,7 @@
 #define INCLUDE_COMMON_H
 
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -39,5 +40,10 @@
 #define BULLET_SHAPE RENDER_SHAPE_RECT
 #define BULLET_SPEED 10.0f
 #define BULLET_SHOOT_DELTA 100.0f
+
+// Info label
+#define INFOLABEL_COLOR (SDL_Color){ 255, 255, 255, 255 }
+#define INFOLABEL_FONT "/usr/share/fonts/truetype/noto/NotoSerif-Thin.ttf"
+#define INFOLABEL_FONT_SIZE 20
 
 #endif /* INCLUDE_COMMON_H */

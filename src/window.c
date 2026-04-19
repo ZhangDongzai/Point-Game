@@ -1,3 +1,4 @@
+#include <complex.h>
 #include <window.h>
 
 // NOTE: SDL_main is only in window.c
@@ -15,6 +16,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		return SDL_APP_FAILURE;
 	}
 
+	if (!TTF_Init()) {
+		SDL_Log("Couldn't initialize SDL_ttf: %s\n", SDL_GetError());
+		return SDL_APP_FAILURE;
+	}
+
 	if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH,
 					 WINDOW_HEIGHT, 0, &app->window,
 					 &app->renderer)) {
@@ -27,6 +33,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	app->player = Player_Create();
 	app->map = Map_Create();
 	app->bulletList = Bullet_CreateList();
+	app->infoLabel = InfoLabel_Create();
 
 	app->preFrameTime = SDL_GetTicks();
 	app->deltaTime = 0;
@@ -51,6 +58,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 	Bullet_UpdateList(app->bulletList, app->deltaTime);
 	Player_Update(app->player, app->deltaTime, app->bulletList);
+	InfoLabel_Update(app->infoLabel, app->player);
 	Camera_Update(app->player, Map_GetBoundary());
 
 	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
@@ -59,6 +67,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	Camera_RenderObject(app->map);
 	Camera_RenderObjects(app->bulletList);
 	Camera_RenderObject(app->player);
+	Camera_RenderObject(app->infoLabel->object);
 
 	SDL_RenderPresent(app->renderer);
 

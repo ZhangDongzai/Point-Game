@@ -3,6 +3,7 @@
 
 #include <bullet.h>
 #include <player.h>
+#include <infoLabel.h>
 #include <map.h>
 #include <camera.h>
 #include <common.h>
@@ -12,6 +13,7 @@ typedef struct {
 	SDL_Renderer *renderer;
 
 	Player *player;
+	InfoLabel *infoLabel;
 	BulletList *bulletList;
 	Map *map;
 

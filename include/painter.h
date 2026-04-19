@@ -15,4 +15,15 @@
  */
 SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid);
 
+/**
+ * Draw an info label
+ *
+ * \param text the text
+ * \param font the font of text
+ * \param length the length of text
+ * \param color the color of text
+ */
+SDL_Texture *Painter_DrawInfoLabel(char *text, TTF_Font *font, int length,
+				   SDL_Color color);
+
 #endif /* INCLUDE_PAINTER_H */

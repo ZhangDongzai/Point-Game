@@ -8,9 +8,11 @@
 #include <common.h>
 
 /**
- * The player conext
+ * The player context
  */
-typedef Render_Object Player;
+typedef struct {
+	Render_Object *object;
+} Player;
 
 /**
  * Create a player

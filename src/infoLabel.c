@@ -13,7 +13,7 @@ InfoLabel *InfoLabel_Create()
 
 void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 {
-	infoLabel->object->rect = player->rect;
+	infoLabel->object->rect = player->object->rect;
 	infoLabel->object->rect.x += 1;
 	infoLabel->object->rect.y += 1;
 

@@ -3,11 +3,12 @@
 Player *Player_Create()
 {
 	Player *player = (Player *)calloc(1, sizeof(Player));
-	player->rect.x = PLAYER_DEFAULT_POS[0];
-	player->rect.y = PLAYER_DEFAULT_POS[1];
-	player->rect.w = player->rect.h = PLAYER_SIZE;
-	player->direction = PLAYER_DEFAULT_DIRECTION;
-	player->texture =
+	player->object = (Render_Object *)calloc(1, sizeof(Render_Object));
+	player->object->rect.x = PLAYER_DEFAULT_POS[0];
+	player->object->rect.y = PLAYER_DEFAULT_POS[1];
+	player->object->rect.w = player->object->rect.h = PLAYER_SIZE;
+	player->object->direction = PLAYER_DEFAULT_DIRECTION;
+	player->object->texture =
 		Painter_DrawCircle(PLAYER_SIZE / 2.0f, PLAYER_COLOR, true);
 
 	return player;
@@ -17,9 +18,9 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 {
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 	float sin = PLAYER_MOVE_SPEED * deltaTime / 1000.0f *
-		    SDL_sinf(player->direction);
+		    SDL_sinf(player->object->direction);
 	float cos = PLAYER_MOVE_SPEED * deltaTime / 1000.0f *
-		    SDL_cosf(player->direction);
+		    SDL_cosf(player->object->direction);
 	float turn = PLAYER_TURN_SPEED * deltaTime / 1000.0f;
 	float x = 0, y = 0;
 	if (keyboardState[SDL_SCANCODE_W]) {
@@ -31,27 +32,28 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		y = -sin;
 	}
 
-	if (Map_IsHit(player->rect.x + x, player->rect.y) == false) {
-		player->rect.x += x;
+	if (Map_IsHit(player->object->rect.x + x, player->object->rect.y) == false) {
+		player->object->rect.x += x;
 	}
-	if (Map_IsHit(player->rect.x, player->rect.y + y) == false) {
-		player->rect.y += y;
+	if (Map_IsHit(player->object->rect.x, player->object->rect.y + y) == false) {
+		player->object->rect.y += y;
 	}
 
 	if (keyboardState[SDL_SCANCODE_A]) {
-		player->direction -= turn;
+		player->object->direction -= turn;
 	}
 	if (keyboardState[SDL_SCANCODE_D]) {
-		player->direction += turn;
+		player->object->direction += turn;
 	}
 
 	if (keyboardState[SDL_SCANCODE_J]) {
-		Bullet_Create(player, bulletList);
+		Bullet_Create(player->object, bulletList);
 	}
 }
 
 void Player_Delete(Player *player)
 {
-	SDL_DestroyTexture(player->texture);
+	SDL_DestroyTexture(player->object->texture);
+	free(player->object);
 	free(player);
 }

@@ -40,6 +40,7 @@
 #define BULLET_SHAPE RENDER_SHAPE_RECT
 #define BULLET_SPEED 10.0f
 #define BULLET_SHOOT_DELTA 100.0f
+#define BULLET_MAX_COUNT 30
 
 // Info label
 #define INFOLABEL_COLOR (SDL_Color){ 255, 255, 255, 255 }

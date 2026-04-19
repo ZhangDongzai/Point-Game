@@ -3,6 +3,7 @@
 Player *Player_Create()
 {
 	Player *player = (Player *)calloc(1, sizeof(Player));
+	player->bulletNumber = BULLET_MAX_COUNT;
 	player->object = (Render_Object *)calloc(1, sizeof(Render_Object));
 	player->object->rect.x = PLAYER_DEFAULT_POS[0];
 	player->object->rect.y = PLAYER_DEFAULT_POS[1];
@@ -32,10 +33,12 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		y = -sin;
 	}
 
-	if (Map_IsHit(player->object->rect.x + x, player->object->rect.y) == false) {
+	if (Map_IsHit(player->object->rect.x + x, player->object->rect.y) ==
+	    false) {
 		player->object->rect.x += x;
 	}
-	if (Map_IsHit(player->object->rect.x, player->object->rect.y + y) == false) {
+	if (Map_IsHit(player->object->rect.x, player->object->rect.y + y) ==
+	    false) {
 		player->object->rect.y += y;
 	}
 
@@ -46,8 +49,11 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		player->object->direction += turn;
 	}
 
-	if (keyboardState[SDL_SCANCODE_J]) {
-		Bullet_Create(player->object, bulletList);
+	if (keyboardState[SDL_SCANCODE_J] && player->bulletNumber > 0) {
+		if (Bullet_Create(player->object, bulletList))
+			player->bulletNumber--;
+	} else if (keyboardState[SDL_SCANCODE_R]) {
+		player->bulletNumber = BULLET_MAX_COUNT;
 	}
 }
 

@@ -11,6 +11,7 @@
  * The player context
  */
 typedef struct {
+	short bulletNumber;
 	Render_Object *object;
 } Player;
 

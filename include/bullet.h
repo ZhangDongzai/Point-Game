@@ -25,8 +25,10 @@ BulletList *Bullet_CreateList();
  * 
  * \param object the bullet's shooter
  * \param bullets the list of bullets
+ *
+ * \return true if the bullet is created successfully, otherwise false
  */
-void Bullet_Create(Render_Object *object, BulletList *bullets);
+bool Bullet_Create(Render_Object *object, BulletList *bullets);
 
 /**
  * Update the position of bullet

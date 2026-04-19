@@ -5,12 +5,12 @@ BulletList *Bullet_CreateList()
 	return (BulletList *)calloc(1, sizeof(BulletList));
 }
 
-void Bullet_Create(Render_Object *object, BulletList *bulletList)
+bool Bullet_Create(Render_Object *object, BulletList *bulletList)
 {
 	static Uint64 _prevShootTime = 0;
 
 	if (SDL_GetTicks() - _prevShootTime < BULLET_SHOOT_DELTA) {
-		return;
+		return false;
 	}
 	_prevShootTime = SDL_GetTicks();
 
@@ -45,6 +45,8 @@ void Bullet_Create(Render_Object *object, BulletList *bulletList)
 	SDL_DestroySurface(surface);
 
 	bulletList->object = bullet;
+
+	return true;
 }
 
 void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime)

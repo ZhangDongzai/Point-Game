@@ -2,6 +2,7 @@
 #define INCLUDE_PLAYER_H
 
 #include <bullet.h>
+#include <painter.h>
 #include <map.h>
 #include <camera.h>
 #include <common.h>

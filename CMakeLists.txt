@@ -11,6 +11,7 @@ add_executable(Point-Game
     src/camera.c
     src/map.c
     src/bullet.c
+    src/painter.c
 )
 
 find_package(SDL3 REQUIRED)

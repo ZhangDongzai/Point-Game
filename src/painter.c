@@ -1,0 +1,46 @@
+#include <painter.h>
+
+
+SDL_Texture* Painter_DrawHollowCircle(float radius, SDL_Color color)
+{
+	radius = radius * WINDOW_SCALE;
+	float diameter = radius * 2.0f;
+	float x = radius - 1.0f, y = 0.0f;
+	float tx = 1.0f, ty = 1.0f;
+	float error = tx - diameter;
+
+	SDL_Surface *surface = SDL_CreateSurface(diameter, diameter,
+						 SDL_PIXELFORMAT_RGBA32);
+	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
+
+	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+
+	while (x >= y) {
+		SDL_RenderPoint(renderer, radius + x, radius - y);
+		SDL_RenderPoint(renderer, radius + x, radius + y);
+		SDL_RenderPoint(renderer, radius - x, radius - y);
+		SDL_RenderPoint(renderer, radius - x, radius + y);
+		SDL_RenderPoint(renderer, radius + y, radius - x);
+		SDL_RenderPoint(renderer, radius + y, radius + x);
+		SDL_RenderPoint(renderer, radius - y, radius - x);
+		SDL_RenderPoint(renderer, radius - y, radius + x);
+
+		if (error <= 0) {
+			++y;
+			error += ty;
+			ty += 2;
+		} else {
+			--x;
+			tx += 2;
+			error += (tx - diameter);
+		}
+	}
+
+	SDL_RenderPresent(renderer);
+	SDL_Texture *texture = Camera_CreateTextureFromSurface(surface);
+
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroySurface(surface);
+
+	return texture;
+}

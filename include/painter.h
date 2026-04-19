@@ -13,6 +13,6 @@
  *
  * \returns a SDL_Texture pointer
  */
-SDL_Texture* Painter_DrawCircle(float radius, SDL_Color color, bool isSolid);
+SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid);
 
 #endif /* INCLUDE_PAINTER_H */

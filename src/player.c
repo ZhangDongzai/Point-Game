@@ -7,8 +7,8 @@ Player *Player_Create()
 	player->rect.y = PLAYER_DEFAULT_POS[1];
 	player->rect.w = player->rect.h = PLAYER_SIZE;
 	player->direction = PLAYER_DEFAULT_DIRECTION;
-	player->texture = Painter_DrawCircle(
-		PLAYER_SIZE / 2.0f, PLAYER_COLOR, true);
+	player->texture =
+		Painter_DrawCircle(PLAYER_SIZE / 2.0f, PLAYER_COLOR, true);
 
 	return player;
 }

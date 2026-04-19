@@ -1,7 +1,6 @@
 #include <painter.h>
 
-
-SDL_Texture* Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
+SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
 {
 	radius = radius * WINDOW_SCALE;
 	float diameter = radius * 2.0f;
@@ -9,18 +8,22 @@ SDL_Texture* Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
 	float tx = 1.0f, ty = 1.0f;
 	float error = tx - diameter;
 
-	SDL_Surface *surface = SDL_CreateSurface(diameter, diameter,
-						 SDL_PIXELFORMAT_RGBA32);
+	SDL_Surface *surface =
+		SDL_CreateSurface(diameter, diameter, SDL_PIXELFORMAT_RGBA32);
 	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
 
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
 	while (x >= y) {
 		if (isSolid) {
-			SDL_RenderLine(renderer, radius + x, radius - y, radius - x, radius + y);
-			SDL_RenderLine(renderer, radius + x, radius + y, radius - x, radius - y);
-			SDL_RenderLine(renderer, radius + y, radius + x, radius - y, radius - x);
-			SDL_RenderLine(renderer, radius + y, radius - x, radius - y, radius + x);
+			SDL_RenderLine(renderer, radius + x, radius - y,
+				       radius - x, radius + y);
+			SDL_RenderLine(renderer, radius + x, radius + y,
+				       radius - x, radius - y);
+			SDL_RenderLine(renderer, radius + y, radius + x,
+				       radius - y, radius - x);
+			SDL_RenderLine(renderer, radius + y, radius - x,
+				       radius - y, radius + x);
 		} else {
 			SDL_RenderPoint(renderer, radius + x, radius - y);
 			SDL_RenderPoint(renderer, radius + x, radius + y);

@@ -11,7 +11,7 @@
  */
 typedef struct {
 	TTF_Font *font;
-	char *text;
+	char text[10];
 	Render_Object *object;
 } InfoLabel;
 

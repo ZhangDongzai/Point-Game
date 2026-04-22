@@ -11,7 +11,7 @@
  * The player context
  */
 typedef struct {
-	short bulletNumber;
+	BulletMagazine magazine;
 	Render_Object *object;
 } Player;
 
@@ -20,7 +20,7 @@ typedef struct {
  * 
  * \returns the player struct context
  */
-Player *Player_Create();
+Player *Player_Create(BulletList *bulletList);
 
 /**
  * Check keyboard and update player's position

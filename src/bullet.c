@@ -5,19 +5,21 @@ BulletList *Bullet_CreateList()
 	return (BulletList *)calloc(1, sizeof(BulletList));
 }
 
-bool Bullet_Create(Render_Object *object, BulletList *bulletList)
+bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 {
-	static Uint64 _prevShootTime = 0;
-
-	if (SDL_GetTicks() - _prevShootTime < BULLET_SHOOT_DELTA) {
+	if (SDL_GetTicks() - magazine->prevShootTime < BULLET_SHOOT_DELTA)
 		return false;
-	}
-	_prevShootTime = SDL_GetTicks();
+	magazine->prevShootTime = SDL_GetTicks();
 
-	for (; bulletList->object; bulletList = bulletList->next) {
-		if (!bulletList->next) {
-			bulletList->next = Bullet_CreateList();
-			bulletList->next->prev = bulletList;
+	if (magazine->bulletNumber <= 0)
+		return false;
+	magazine->bulletNumber--;
+
+	for (; magazine->bulletList->object;
+	     magazine->bulletList = magazine->bulletList->next) {
+		if (!magazine->bulletList->next) {
+			magazine->bulletList->next = Bullet_CreateList();
+			magazine->bulletList->next->prev = magazine->bulletList;
 		}
 	}
 
@@ -44,7 +46,7 @@ bool Bullet_Create(Render_Object *object, BulletList *bulletList)
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroySurface(surface);
 
-	bulletList->object = bullet;
+	magazine->bulletList->object = bullet;
 
 	return true;
 }

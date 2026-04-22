@@ -16,6 +16,15 @@ typedef Render_Object Bullet;
 typedef Render_ObjectNode BulletList;
 
 /**
+ * Magazine status
+ */
+typedef struct {
+	BulletList *bulletList;
+	short bulletNumber;
+	Uint64 prevShootTime;
+} BulletMagazine;
+
+/**
  * Create a list of bullets
  */
 BulletList *Bullet_CreateList();
@@ -23,12 +32,12 @@ BulletList *Bullet_CreateList();
 /**
  * Create a bullet
  * 
- * \param object the bullet's shooter
- * \param bullets the list of bullets
+ * \param magazine the player's magazine
+ * \param object the player's render object
  *
  * \return true if the bullet is created successfully, otherwise false
  */
-bool Bullet_Create(Render_Object *object, BulletList *bullets);
+bool Bullet_Create(BulletMagazine *magazine, Render_Object *object);
 
 /**
  * Update the position of bullet

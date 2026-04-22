@@ -14,7 +14,8 @@ InfoLabel *InfoLabel_Create()
 
 void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 {
-	sprintf(infoLabel->text, "%d/%d", player->bulletNumber, BULLET_MAX_COUNT);
+	sprintf(infoLabel->text, "%d/%d", player->magazine.bulletNumber,
+		BULLET_MAX_COUNT);
 	infoLabel->object->rect.x = player->object->rect.x + 1;
 	infoLabel->object->rect.y = player->object->rect.y + 1;
 	infoLabel->object->rect.w = strlen(infoLabel->text) * 0.4f;

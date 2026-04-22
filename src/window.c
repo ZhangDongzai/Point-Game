@@ -30,9 +30,9 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 	Camera_BindRenderer(app->renderer, PLAYER_DEFAULT_POS);
 
-	app->player = Player_Create();
-	app->map = Map_Create();
 	app->bulletList = Bullet_CreateList();
+	app->player = Player_Create(app->bulletList);
+	app->map = Map_Create();
 	app->infoLabel = InfoLabel_Create();
 
 	app->preFrameTime = SDL_GetTicks();

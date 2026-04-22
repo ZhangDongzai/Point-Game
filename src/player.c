@@ -53,7 +53,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 	if (keyboardState[SDL_SCANCODE_J]) {
 		Bullet_Create(&player->magazine, player->object);
 	} else if (keyboardState[SDL_SCANCODE_R]) {
-		player->magazine.bulletNumber = BULLET_MAX_COUNT;
+		Bullet_ReloadMagazine(&player->magazine);
 	}
 }
 

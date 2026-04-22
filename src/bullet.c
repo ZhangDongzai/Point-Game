@@ -7,9 +7,14 @@ BulletList *Bullet_CreateList()
 
 bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 {
-	if (SDL_GetTicks() - magazine->prevShootTime < BULLET_SHOOT_DELTA)
+	Uint64 now = SDL_GetTicks();
+
+	if (now - magazine->prevShootTime < BULLET_SHOOT_DELTA)
 		return false;
-	magazine->prevShootTime = SDL_GetTicks();
+	magazine->prevShootTime = now;
+
+	if (now - magazine->prevReloadTime < BULLET_RELOAD_TIME_MS)
+		return false;
 
 	if (magazine->bulletNumber <= 0)
 		return false;
@@ -49,6 +54,14 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 	magazine->bulletList->object = bullet;
 
 	return true;
+}
+
+void Bullet_ReloadMagazine(BulletMagazine *magazine)
+{
+	if (SDL_GetTicks() - magazine->prevReloadTime > BULLET_RELOAD_TIME_MS) {
+		magazine->prevReloadTime = SDL_GetTicks();
+		magazine->bulletNumber = BULLET_MAX_COUNT;
+	}
 }
 
 void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime)

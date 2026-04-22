@@ -41,6 +41,7 @@
 #define BULLET_SPEED 10.0f
 #define BULLET_SHOOT_DELTA 100.0f
 #define BULLET_MAX_COUNT 30
+#define BULLET_RELOAD_TIME_MS 1000.0f
 
 // Info label
 #define INFOLABEL_COLOR (SDL_Color){ 255, 255, 255, 255 }

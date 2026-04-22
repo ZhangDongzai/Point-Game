@@ -21,6 +21,7 @@ typedef Render_ObjectNode BulletList;
 typedef struct {
 	BulletList *bulletList;
 	short bulletNumber;
+	Uint64 prevReloadTime;
 	Uint64 prevShootTime;
 } BulletMagazine;
 
@@ -38,6 +39,13 @@ BulletList *Bullet_CreateList();
  * \return true if the bullet is created successfully, otherwise false
  */
 bool Bullet_Create(BulletMagazine *magazine, Render_Object *object);
+
+/**
+ * Reload magazine
+ *
+ * \param magazine the player's magazine
+ */
+void Bullet_ReloadMagazine(BulletMagazine *magazine);
 
 /**
  * Update the position of bullet

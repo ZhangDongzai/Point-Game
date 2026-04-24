@@ -83,6 +83,11 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
+	App *app = appstate;
+	Bullet_DeleteList(app->bulletList);
+	Player_Delete(app->player);
+	Map_Delete(app->map);
+	InfoLabel_Delete(app->infoLabel);
 	free(appstate);
 	return;
 }

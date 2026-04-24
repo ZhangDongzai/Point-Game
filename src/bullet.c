@@ -97,3 +97,12 @@ void Bullet_Delete(Bullet *bullet)
 	SDL_DestroyTexture(bullet->texture);
 	free(bullet);
 }
+
+void Bullet_DeleteList(BulletList *bulletList)
+{
+	for (; bulletList; bulletList = bulletList->next) {
+		Bullet_Delete(bulletList->object);
+	}
+
+	free(bulletList);
+}

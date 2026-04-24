@@ -62,4 +62,11 @@ void Bullet_UpdateList(BulletList *bullets, Uint64 deltaTime);
  */
 void Bullet_Delete(Bullet *bullet);
 
+/** 
+ * Delete the bullet list
+ * 
+ * \param bulletList the list of bullet
+ */
+void Bullet_DeleteList(BulletList *bulletList);
+
 #endif /* INCLUDE_BULLET_H */

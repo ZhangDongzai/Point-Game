@@ -54,10 +54,3 @@ SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
 
 	return texture;
 }
-
-SDL_Texture *Painter_DrawInfoLabel(char *text, TTF_Font *font, int length,
-				   SDL_Color color)
-{
-	return Camera_CreateTextureFromSurface(
-		TTF_RenderText_Solid(font, text, length, color));
-}

@@ -20,9 +20,9 @@ void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 	infoLabel->object->rect.y = player->object->rect.y + 1;
 	infoLabel->object->rect.w = strlen(infoLabel->text) * 0.4f;
 
-	infoLabel->object->texture =
-		Painter_DrawInfoLabel(infoLabel->text, infoLabel->font,
-				      strlen(infoLabel->text), INFOLABEL_COLOR);
+	infoLabel->object->texture = Camera_CreateTextureFromSurface(
+		TTF_RenderText_Solid(infoLabel->font, infoLabel->text,
+				     strlen(infoLabel->text), INFOLABEL_COLOR));
 }
 
 void InfoLabel_Delete(InfoLabel *infoLabel)

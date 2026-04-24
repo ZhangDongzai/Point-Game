@@ -15,6 +15,8 @@ add_executable(Point-Game
     src/infoLabel.c
 )
 
+file(COPY sources/fusion-pixel-10px-monospaced-zh_hans.ttf DESTINATION ${CMAKE_BINARY_DIR}/sources/)
+
 find_package(SDL3 REQUIRED)
 target_link_libraries(Point-Game PRIVATE SDL3::SDL3)
 

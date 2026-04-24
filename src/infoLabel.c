@@ -18,8 +18,12 @@ void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 	infoLabel->object->rect.x = player->object->rect.x + 1;
 	infoLabel->object->rect.y = player->object->rect.y + 1;
 
-	sprintf(infoLabel->text, "%02d/%d", player->magazine.bulletNumber,
-		BULLET_MAX_COUNT);
+	if (SDL_GetTicks() - player->magazine.prevReloadTime <
+	    BULLET_RELOAD_TIME_MS)
+		sprintf(infoLabel->text, "    /%d", BULLET_MAX_COUNT);
+	else
+		sprintf(infoLabel->text, "%02d/%d",
+			player->magazine.bulletNumber, BULLET_MAX_COUNT);
 
 	TTF_TextEngine *textEngine = TTF_CreateSurfaceTextEngine();
 	TTF_Text *text = TTF_CreateText(textEngine, infoLabel->font,

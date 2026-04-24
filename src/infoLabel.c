@@ -20,7 +20,7 @@ void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 
 	if (SDL_GetTicks() - player->magazine.prevReloadTime <
 	    BULLET_RELOAD_TIME_MS)
-		sprintf(infoLabel->text, "    /%d", BULLET_MAX_COUNT);
+		sprintf(infoLabel->text, "  /%d", BULLET_MAX_COUNT);
 	else
 		sprintf(infoLabel->text, "%02d/%d",
 			player->magazine.bulletNumber, BULLET_MAX_COUNT);

@@ -45,7 +45,7 @@
 
 // Info label
 #define INFOLABEL_COLOR (SDL_Color){ 255, 255, 255, 255 }
-#define INFOLABEL_FONT "/usr/share/fonts/truetype/noto/NotoSerif-Thin.ttf"
+#define INFOLABEL_FONT "./sources/fusion-pixel-10px-monospaced-zh_hans.ttf"
 #define INFOLABEL_FONT_SIZE WINDOW_SCALE * 0.8f
 
 #endif /* INCLUDE_COMMON_H */

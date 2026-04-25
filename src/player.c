@@ -34,13 +34,18 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		y = -sin;
 	}
 
-	if (Map_IsHit(player->object->rect.x + x, player->object->rect.y) ==
-	    false) {
-		player->object->rect.x += x;
+	player->object->rect.x += x;
+	if (Map_IsHit(player->object->rect.x, player->object->rect.y) ||
+	    Map_IsHit(player->object->rect.x + player->object->rect.w,
+		      player->object->rect.y + player->object->rect.h)) {
+		player->object->rect.x -= x;
 	}
-	if (Map_IsHit(player->object->rect.x, player->object->rect.y + y) ==
-	    false) {
-		player->object->rect.y += y;
+
+	player->object->rect.y += y;
+	if (Map_IsHit(player->object->rect.x, player->object->rect.y) ||
+	    Map_IsHit(player->object->rect.x + player->object->rect.w,
+		      player->object->rect.y + player->object->rect.h)) {
+		player->object->rect.y -= y;
 	}
 
 	if (keyboardState[SDL_SCANCODE_A]) {

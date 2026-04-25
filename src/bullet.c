@@ -94,6 +94,7 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime)
 
 void Bullet_Delete(Bullet *bullet)
 {
+	if (!bullet) return;
 	SDL_DestroyTexture(bullet->texture);
 	free(bullet);
 }

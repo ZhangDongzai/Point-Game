@@ -6,8 +6,8 @@ Player *Player_Create(BulletList *bulletList)
 	player->magazine.bulletList = bulletList;
 	player->magazine.bulletNumber = BULLET_MAX_COUNT;
 	player->object = (Render_Object *)calloc(1, sizeof(Render_Object));
-	player->object->rect.x = PLAYER_DEFAULT_POS[0];
-	player->object->rect.y = PLAYER_DEFAULT_POS[1];
+	player->object->rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE / 2.0f;
+	player->object->rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE / 2.0f;
 	player->object->rect.w = player->object->rect.h = PLAYER_SIZE;
 	player->object->direction = PLAYER_DEFAULT_DIRECTION;
 	player->object->texture =
@@ -109,18 +109,14 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		y = -sin;
 	}
 
-	player->object->rect.x += x;
-	if (Map_IsHit(player->object->rect.x, player->object->rect.y) ||
-	    Map_IsHit(player->object->rect.x + player->object->rect.w,
-		      player->object->rect.y + player->object->rect.h)) {
-		player->object->rect.x -= x;
+	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f + x,
+		       player->object->rect.y + PLAYER_SIZE / 2.0f)) {
+		player->object->rect.x += x;
 	}
 
-	player->object->rect.y += y;
-	if (Map_IsHit(player->object->rect.x, player->object->rect.y) ||
-	    Map_IsHit(player->object->rect.x + player->object->rect.w,
-		      player->object->rect.y + player->object->rect.h)) {
-		player->object->rect.y -= y;
+	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f,
+		      player->object->rect.y + PLAYER_SIZE / 2.0f + y)) {
+		player->object->rect.y += y;
 	}
 
 	if (keyboardState[SDL_SCANCODE_A]) {

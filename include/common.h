@@ -18,12 +18,12 @@
 
 // Player
 #define PLAYER_DEFAULT_DIRECTION 0.0f
-#define PLAYER_DEFAULT_POS (float[]){ 6.0f, 3.0f }
-#define PLAYER_SIZE 1.0f
+#define PLAYER_DEFAULT_POS (float[]){ 6.0f, 4.0f }
+#define PLAYER_SIZE 0.5f
 #define PLAYER_COLOR (SDL_Color){ 0, 255, 0, 255 }
 #define PLAYER_SHAPE RENDER_SHAPE_CIRCLE
-#define PLAYER_MOVE_SPEED 2.0f
-#define PLAYER_TURN_SPEED 2.0f
+#define PLAYER_MOVE_SPEED 3.0f
+#define PLAYER_TURN_SPEED 3.0f
 
 // Map
 #define MAP_WIDTH 15

@@ -23,6 +23,14 @@ typedef struct {
 Player *Player_Create(BulletList *bulletList);
 
 /**
+ * Draw the player's sight
+ * 
+ * \param renderer the renderer context
+ * \param player the player context
+ */
+void Player_DrawSight(SDL_Renderer *renderer, Player *player);
+
+/**
  * Check keyboard and update player's position
  * 
  * \param player the player context

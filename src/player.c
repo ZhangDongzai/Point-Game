@@ -16,6 +16,81 @@ Player *Player_Create(BulletList *bulletList)
 	return player;
 }
 
+void Player_DrawSight(SDL_Renderer *renderer, Player *player)
+{
+	float deltaX, deltaY;
+	float verticalX, verticalY, horizontalX, horizontalY;
+	float verticalDepth, horizontalDepth, deltaDepth;
+	float sin, cos;
+	int VeriticesCount = 0;
+	SDL_Vertex vertices[3];
+	SDL_FPoint startPos, endPos;
+	SDL_FPoint pos = { player->object->rect.x + (PLAYER_SIZE / 2.0f),
+			   player->object->rect.y + (PLAYER_SIZE / 2.0f) };
+
+	vertices[0].position = Camera_GetPosOnScreen(&pos);
+	vertices[0].color = vertices[1].color = vertices[2].color =
+		(SDL_FColor){ 255, 0, 0, 255 };
+
+	for (float degree = player->object->direction - 0.5f;
+	     degree < player->object->direction + 0.5f; degree += 0.01f) {
+		sin = SDL_sinf(degree);
+		cos = SDL_cosf(degree);
+
+		// Vertical
+		deltaX = cos < 0 ? -1.0f : 1.0f;
+		verticalX = cos < 0 ? (int)pos.x - 1e-6 : (int)pos.x + 1;
+		verticalDepth = (verticalX - pos.x) / cos;
+		verticalY = pos.y + verticalDepth * sin;
+		deltaDepth = deltaX / cos;
+		deltaY = deltaDepth * sin;
+		for (int i = 0; i < 20; i++) {
+			if (Map_IsHit(verticalX, verticalY))
+				break;
+			verticalX += deltaX;
+			verticalY += deltaY;
+			verticalDepth += deltaDepth;
+		}
+
+		// Horizontal
+		deltaY = sin < 0 ? -1.0f : +1.0f;
+		horizontalY = sin < 0 ? (int)pos.y - 1e-6 : (int)pos.y + 1;
+		horizontalDepth = (horizontalY - pos.y) / sin;
+		horizontalX = pos.x + horizontalDepth * cos;
+		deltaDepth = deltaY / sin;
+		deltaX = deltaDepth * cos;
+		for (int i = 0; i < 20; i++) {
+			if (Map_IsHit(horizontalX, horizontalY))
+				break;
+			horizontalX += deltaX;
+			horizontalY += deltaY;
+			horizontalDepth += deltaDepth;
+		}
+
+		if (horizontalDepth < verticalDepth) {
+			endPos.x = horizontalX;
+			endPos.y = horizontalY;
+		} else {
+			endPos.x = verticalX;
+			endPos.y = verticalY;
+		}
+
+		// startPos = Camera_GetPosOnScreen(&pos);
+		// endPos = Camera_GetPosOnScreen(&endPos);
+		// SDL_RenderLine(renderer, startPos.x, startPos.y, endPos.x,
+		// 	       endPos.y);
+
+		if (VeriticesCount < 2) {
+			vertices[++VeriticesCount].position =
+				Camera_GetPosOnScreen(&endPos);
+			continue;
+		}
+		vertices[1].position = vertices[2].position;
+		vertices[2].position = Camera_GetPosOnScreen(&endPos);
+		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
+	}
+}
+
 void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 {
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);

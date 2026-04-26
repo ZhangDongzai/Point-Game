@@ -81,4 +81,12 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode);
  */
 void Camera_Update(Render_Object *object, Render_Boundary *boundary);
 
+/**
+ * Get the position of object on the screen
+ * 
+ * \param point the pos of object
+ * \returns the position of object on the screen
+ */
+SDL_FPoint Camera_GetPosOnScreen(SDL_FPoint *point);
+
 #endif /* INCLUDE_CAMERA_H */

@@ -57,3 +57,11 @@ void Camera_Update(Render_Object *object, Render_Boundary *boundary)
 		camera.pos[1] = down;
 	}
 }
+
+SDL_FPoint Camera_GetPosOnScreen(SDL_FPoint *point)
+{
+	return (SDL_FPoint){
+		(point->x - camera.pos[0]) * WINDOW_SCALE + WINDOW_WIDTH / 2.0f,
+		(point->y - camera.pos[1]) * WINDOW_SCALE + WINDOW_HEIGHT / 2.0f
+	};
+}

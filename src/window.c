@@ -65,6 +65,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	SDL_RenderClear(app->renderer);
 
 	Camera_RenderObject(app->map);
+	Player_DrawSight(app->renderer, app->player);
 	Camera_RenderObjects(app->bulletList);
 	Camera_RenderObject(app->player->object);
 	Camera_RenderObject(app->infoLabel->object);

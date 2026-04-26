@@ -12,6 +12,9 @@
 typedef struct {
 	TTF_Font *font;
 	char text[10];
+	SDL_Surface *surface;
+	SDL_Renderer *renderer;
+	TTF_TextEngine *textEngine;
 	Render_Object *object;
 } InfoLabel;
 

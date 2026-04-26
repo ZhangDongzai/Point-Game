@@ -30,7 +30,10 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
 	vertices[0].color = vertices[1].color = vertices[2].color =
-		(SDL_FColor){ 255, 0, 0, 255 };
+		(SDL_FColor){ 1.0f, 1.0f, 1.0f, 0.8f };
+
+	Map_Clean();
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 	for (float degree = player->object->direction - 0.5f;
 	     degree < player->object->direction + 0.5f; degree += 0.01f) {
@@ -75,11 +78,6 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 			endPos.y = verticalY;
 		}
 
-		// startPos = Camera_GetPosOnScreen(&pos);
-		// endPos = Camera_GetPosOnScreen(&endPos);
-		// SDL_RenderLine(renderer, startPos.x, startPos.y, endPos.x,
-		// 	       endPos.y);
-
 		if (VeriticesCount < 2) {
 			vertices[++VeriticesCount].position =
 				Camera_GetPosOnScreen(&endPos);
@@ -88,7 +86,10 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 		vertices[1].position = vertices[2].position;
 		vertices[2].position = Camera_GetPosOnScreen(&endPos);
 		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
+
+		Map_SetLightWall(endPos.x, endPos.y);
 	}
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }
 
 void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
@@ -115,7 +116,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 	}
 
 	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f,
-		      player->object->rect.y + PLAYER_SIZE / 2.0f + y)) {
+		       player->object->rect.y + PLAYER_SIZE / 2.0f + y)) {
 		player->object->rect.y += y;
 	}
 

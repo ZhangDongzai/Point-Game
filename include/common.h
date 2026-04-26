@@ -28,10 +28,9 @@
 // Map
 #define MAP_WIDTH 15
 #define MAP_HEIGHT 10
-#define MAP_CODE_WALL 1
-#define MAP_CODE_FLOOR 0
-#define MAP_COLOR_WALL (SDL_Color){ 255, 255, 255, 255 }
-#define MAP_COLOR_FLOOR (SDL_Color){ 169, 169, 169, 255 }
+#define MAP_COLOR_WALL (SDL_Color){ 150, 150, 150, 255 }
+#define MAP_COLOR_WALL_LIGHT (SDL_Color){ 255, 255, 255, 255 }
+#define MAP_COLOR_FLOOR (SDL_Color){ 50, 50, 50, 255 }
 
 // Bullet
 #define BULLET_WIDTH 0.2f

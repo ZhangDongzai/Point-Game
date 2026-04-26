@@ -19,7 +19,21 @@ Map *Map_Create()
 	map->rect.x = map->rect.y = 0;
 	map->rect.w = MAP_WIDTH;
 	map->rect.h = MAP_HEIGHT;
+	return map;
+}
 
+void Map_Clean()
+{
+	for (int row = 0; row < MAP_HEIGHT; row++) {
+		for (int column = 0; column < MAP_WIDTH; column++) {
+			if (mapList[row][column] == MAP_CODE_WALL_LIGHT)
+				mapList[row][column] = MAP_CODE_WALL;
+		}
+	}
+}
+
+void Map_Update(Map *map)
+{
 	SDL_Surface *surface = SDL_CreateSurface(MAP_WIDTH * WINDOW_SCALE,
 						 MAP_HEIGHT * WINDOW_SCALE,
 						 SDL_PIXELFORMAT_RGBA32);
@@ -29,6 +43,13 @@ Map *Map_Create()
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		for (int column = 0; column < MAP_WIDTH; column++) {
 			switch (mapList[row][column]) {
+			case MAP_CODE_WALL_LIGHT:
+				SDL_SetRenderDrawColor(renderer,
+						       MAP_COLOR_WALL_LIGHT.r,
+						       MAP_COLOR_WALL_LIGHT.g,
+						       MAP_COLOR_WALL_LIGHT.b,
+						       MAP_COLOR_WALL_LIGHT.a);
+				break;
 			case MAP_CODE_WALL:
 				SDL_SetRenderDrawColor(renderer,
 						       MAP_COLOR_WALL.r,
@@ -51,11 +72,10 @@ Map *Map_Create()
 	}
 	SDL_RenderPresent(renderer);
 
+	SDL_DestroyTexture(map->texture);
 	map->texture = Camera_CreateTextureFromSurface(surface);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroySurface(surface);
-
-	return map;
 }
 
 Render_Boundary *Map_GetBoundary()
@@ -72,10 +92,16 @@ bool Map_IsHit(float x, float y)
 {
 	if (x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT) {
 		return true;
-	} else if (mapList[(int)y][(int)x] == 1) {
+	} else if (mapList[(int)y][(int)x] == MAP_CODE_WALL ||
+		   mapList[(int)y][(int)x] == MAP_CODE_WALL_LIGHT) {
 		return true;
 	}
 	return false;
+}
+
+void Map_SetLightWall(float x, float y)
+{
+	mapList[(int)y][(int)x] = MAP_CODE_WALL_LIGHT;
 }
 
 void Map_Delete(Map *map)

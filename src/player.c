@@ -6,12 +6,12 @@ Player *Player_Create(BulletList *bulletList)
 	player->magazine.bulletList = bulletList;
 	player->magazine.bulletNumber = BULLET_MAX_COUNT;
 	player->object = (Render_Object *)calloc(1, sizeof(Render_Object));
-	player->object->rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE / 2.0f;
-	player->object->rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE / 2.0f;
+	player->object->rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE_HALF;
+	player->object->rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE_HALF;
 	player->object->rect.w = player->object->rect.h = PLAYER_SIZE;
 	player->object->direction = PLAYER_DEFAULT_DIRECTION;
-	player->object->texture =
-		Painter_DrawCircle(PLAYER_SIZE / 2.0f, PLAYER_COLOR, true);
+	player->object->texture = Painter_DrawCircle(
+		PLAYER_SIZE_HALF, PLAYER_COLOR, true);
 
 	return player;
 }
@@ -25,8 +25,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 	int VeriticesCount = 0;
 	SDL_Vertex vertices[3];
 	SDL_FPoint startPos, endPos;
-	SDL_FPoint pos = { player->object->rect.x + (PLAYER_SIZE / 2.0f),
-			   player->object->rect.y + (PLAYER_SIZE / 2.0f) };
+	SDL_FPoint pos = { player->object->rect.x + PLAYER_SIZE_HALF,
+			   player->object->rect.y + PLAYER_SIZE_HALF };
 
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
 	vertices[0].color = vertices[1].color = vertices[2].color =
@@ -97,8 +97,8 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
 	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-	SDL_FPoint playerPos = { player->object->rect.x + PLAYER_SIZE / 2.0f,
-				 player->object->rect.y + PLAYER_SIZE / 2.0f };
+	SDL_FPoint playerPos = { player->object->rect.x + PLAYER_SIZE_HALF,
+				 player->object->rect.y + PLAYER_SIZE_HALF };
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
 	player->object->direction =
@@ -120,12 +120,12 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f + x,
-		       player->object->rect.y + PLAYER_SIZE / 2.0f)) {
+	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE_HALF + x,
+		       player->object->rect.y + PLAYER_SIZE_HALF)) {
 		player->object->rect.x += x;
 	}
-	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f,
-		       player->object->rect.y + PLAYER_SIZE / 2.0f + y)) {
+	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE_HALF,
+		       player->object->rect.y + PLAYER_SIZE_HALF + y)) {
 		player->object->rect.y += y;
 	}
 

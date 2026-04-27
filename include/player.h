@@ -6,6 +6,7 @@
 #include <map.h>
 #include <camera.h>
 #include <common.h>
+#include <SDL3/SDL_mouse.h>
 
 /**
  * The player context

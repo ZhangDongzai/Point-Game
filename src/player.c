@@ -94,40 +94,43 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 
 void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 {
+	float x = 0, y = 0, mouseX, mouseY, speed;
+
+	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
+	SDL_FPoint playerPos = { player->object->rect.x + PLAYER_SIZE / 2.0f,
+				 player->object->rect.y + PLAYER_SIZE / 2.0f };
+	playerPos = Camera_GetPosOnScreen(&playerPos);
+	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
+	player->object->direction =
+		SDL_atan2f(mouseY - playerPos.y, mouseX - playerPos.x);
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
-	float sin = PLAYER_MOVE_SPEED * deltaTime / 1000.0f *
-		    SDL_sinf(player->object->direction);
-	float cos = PLAYER_MOVE_SPEED * deltaTime / 1000.0f *
-		    SDL_cosf(player->object->direction);
-	float turn = PLAYER_TURN_SPEED * deltaTime / 1000.0f;
-	float x = 0, y = 0;
-	if (keyboardState[SDL_SCANCODE_W]) {
-		x = cos;
-		y = sin;
-	}
-	if (keyboardState[SDL_SCANCODE_S]) {
-		x = -cos;
-		y = -sin;
+
+	// Move
+	if (keyboardState[SDL_SCANCODE_W])
+		y -= speed;
+	if (keyboardState[SDL_SCANCODE_S])
+		y += speed;
+	if (keyboardState[SDL_SCANCODE_A])
+		x -= speed;
+	if (keyboardState[SDL_SCANCODE_D])
+		x += speed;
+
+	if (x && y) {
+		x *= SDL_cosf(SDL_PI_F * 0.25f);
+		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
 	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f + x,
 		       player->object->rect.y + PLAYER_SIZE / 2.0f)) {
 		player->object->rect.x += x;
 	}
-
 	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE / 2.0f,
 		       player->object->rect.y + PLAYER_SIZE / 2.0f + y)) {
 		player->object->rect.y += y;
 	}
 
-	if (keyboardState[SDL_SCANCODE_A]) {
-		player->object->direction -= turn;
-	}
-	if (keyboardState[SDL_SCANCODE_D]) {
-		player->object->direction += turn;
-	}
-
-	if (keyboardState[SDL_SCANCODE_J]) {
+	// Shoot & reload
+	if (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
 		Bullet_Create(&player->magazine, player->object);
 	} else if (keyboardState[SDL_SCANCODE_R]) {
 		Bullet_ReloadMagazine(&player->magazine);

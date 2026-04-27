@@ -47,7 +47,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 		verticalY = pos.y + verticalDepth * sin;
 		deltaDepth = deltaX / cos;
 		deltaY = deltaDepth * sin;
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
 			if (Map_IsHit(verticalX, verticalY))
 				break;
 			verticalX += deltaX;
@@ -62,7 +62,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 		horizontalX = pos.x + horizontalDepth * cos;
 		deltaDepth = deltaY / sin;
 		deltaX = deltaDepth * cos;
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
 			if (Map_IsHit(horizontalX, horizontalY))
 				break;
 			horizontalX += deltaX;

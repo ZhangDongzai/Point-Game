@@ -29,6 +29,7 @@
 // Map
 #define MAP_WIDTH 15
 #define MAP_HEIGHT 10
+#define MAP_MAX_LENGTH (MAP_WIDTH + MAP_HEIGHT)
 #define MAP_COLOR_WALL (SDL_Color){ 150, 150, 150, 255 }
 #define MAP_COLOR_WALL_LIGHT (SDL_Color){ 255, 255, 255, 255 }
 #define MAP_COLOR_FLOOR (SDL_Color){ 50, 50, 50, 255 }

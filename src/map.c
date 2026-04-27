@@ -101,7 +101,8 @@ bool Map_IsHit(float x, float y)
 
 void Map_SetLightWall(float x, float y)
 {
-	mapList[(int)y][(int)x] = MAP_CODE_WALL_LIGHT;
+	if (mapList[(int)y][(int)x] == MAP_CODE_WALL)
+		mapList[(int)y][(int)x] = MAP_CODE_WALL_LIGHT;
 }
 
 void Map_Delete(Map *map)

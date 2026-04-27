@@ -11,7 +11,7 @@ Player *Player_Create(BulletList *bulletList)
 	player->object->rect.w = player->object->rect.h = PLAYER_SIZE;
 	player->object->direction = PLAYER_DEFAULT_DIRECTION;
 	player->object->texture = Painter_DrawCircle(
-		PLAYER_SIZE_HALF, PLAYER_COLOR, true);
+		PLAYER_SIZE_HALF * WINDOW_SCALE, PLAYER_COLOR, true);
 
 	return player;
 }

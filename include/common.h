@@ -27,9 +27,11 @@
 #define PLAYER_TURN_SPEED 3.0f
 
 // Map
-#define MAP_COLOR_WALL (SDL_Color){ 150, 150, 150, 255 }
-#define MAP_COLOR_WALL_LIGHT (SDL_Color){ 255, 255, 255, 255 }
 #define MAP_COLOR_FLOOR (SDL_Color){ 50, 50, 50, 255 }
+#define MAP_COLOR_WALL (SDL_Color){ 150, 150, 150, 255 }
+#define MAP_COLOR_WATER (SDL_Color){ 0, 0, 255, 255 }
+#define MAP_COLOR_GRASS (SDL_Color){ 0, 255, 0, 255 }
+#define MAP_COLOR_WALL_LIGHT (SDL_Color){ 255, 255, 255, 255 }
 #define MAP_FILE "./sources/map.txt"
 
 // Bullet

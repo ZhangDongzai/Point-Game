@@ -9,9 +9,11 @@ extern int MAP_HEIGHT;
 extern int MAP_MAX_LENGTH;
 
 typedef enum {
+	MAP_CODE_WALL_LIGHT = -1,
 	MAP_CODE_FLOOR,
 	MAP_CODE_WALL,
-	MAP_CODE_WALL_LIGHT,
+	MAP_CODE_WATER,
+	MAP_CODE_GRASS,
 } MAP_CODE;
 
 typedef struct {

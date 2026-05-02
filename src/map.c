@@ -63,6 +63,13 @@ void Map_Update(Map *map)
 						       MAP_COLOR_WALL_LIGHT.b,
 						       MAP_COLOR_WALL_LIGHT.a);
 				break;
+			case MAP_CODE_FLOOR:
+				SDL_SetRenderDrawColor(renderer,
+						       MAP_COLOR_FLOOR.r,
+						       MAP_COLOR_FLOOR.g,
+						       MAP_COLOR_FLOOR.b,
+						       MAP_COLOR_FLOOR.a);
+				break;
 			case MAP_CODE_WALL:
 				SDL_SetRenderDrawColor(renderer,
 						       MAP_COLOR_WALL.r,
@@ -70,12 +77,19 @@ void Map_Update(Map *map)
 						       MAP_COLOR_WALL.b,
 						       MAP_COLOR_WALL.a);
 				break;
-			case MAP_CODE_FLOOR:
+			case MAP_CODE_WATER:
 				SDL_SetRenderDrawColor(renderer,
-						       MAP_COLOR_FLOOR.r,
-						       MAP_COLOR_FLOOR.g,
-						       MAP_COLOR_FLOOR.b,
-						       MAP_COLOR_FLOOR.a);
+						       MAP_COLOR_WATER.r,
+						       MAP_COLOR_WATER.g,
+						       MAP_COLOR_WATER.b,
+						       MAP_COLOR_WATER.a);
+				break;
+			case MAP_CODE_GRASS:
+				SDL_SetRenderDrawColor(renderer,
+						       MAP_COLOR_GRASS.r,
+						       MAP_COLOR_GRASS.g,
+						       MAP_COLOR_GRASS.b,
+						       MAP_COLOR_GRASS.a);
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;

@@ -25,7 +25,7 @@ typedef struct {
  *
  * \returns the map context
  */
-Map *Map_Init();
+Map Map_Init();
 
 /**
  * Clean up light walls on the map

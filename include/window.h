@@ -15,7 +15,7 @@ typedef struct {
 	Player player;
 	InfoLabel infoLabel;
 	BulletList *bulletList;
-	Map *map;
+	Map map;
 
 	Uint64 preFrameTime;
 	Uint64 deltaTime;

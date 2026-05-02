@@ -1,4 +1,3 @@
-#include <complex.h>
 #include <window.h>
 
 // NOTE: SDL_main is only in window.c

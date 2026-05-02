@@ -1,7 +1,6 @@
 #ifndef INCLUDE_INFOLABEL_H
 #define INCLUDE_INFOLABEL_H
 
-#include <SDL3_ttf/SDL_ttf.h>
 #include <player.h>
 #include <camera.h>
 #include <common.h>

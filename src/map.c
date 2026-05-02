@@ -1,5 +1,4 @@
 #include <map.h>
-#include <stdio.h>
 
 int MAP_WIDTH = 0;
 int MAP_HEIGHT = 0;

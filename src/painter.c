@@ -1,3 +1,5 @@
+#include <SDL3/SDL_blendmode.h>
+#include <SDL3/SDL_render.h>
 #include <painter.h>
 
 SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
@@ -53,4 +55,12 @@ SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
 	SDL_DestroySurface(surface);
 
 	return texture;
+}
+
+void Painter_DrawDarkOverlay(SDL_Renderer *renderer)
+{
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+	SDL_RenderFillRect(renderer, NULL);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }

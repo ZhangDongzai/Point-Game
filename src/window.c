@@ -1,3 +1,4 @@
+#include "painter.h"
 #include <window.h>
 
 // NOTE: SDL_main is only in window.c
@@ -65,8 +66,9 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	SDL_RenderClear(app->renderer);
 
 	Camera_RenderObject(&app->map.object);
-	Player_DrawSight(app->renderer, &app->player, &app->map);
 	Camera_RenderObjects(app->bulletList);
+	Painter_DrawDarkOverlay(app->renderer);
+	Player_DrawSight(app->renderer, &app->player, &app->map);
 	Camera_RenderObject(&app->player.object);
 	Camera_RenderObject(&app->infoLabel.object);
 

@@ -29,10 +29,10 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
 	vertices[0].color = vertices[1].color = vertices[2].color =
-		(SDL_FColor){ 1.0f, 1.0f, 1.0f, 0.8f };
+		(SDL_FColor){ 1.0f, 1.0f, 1.0f, 0.5f };
 
 	Map_Clean(map);
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
 
 	for (float degree = player->object.direction - 0.5f;
 	     degree < player->object.direction + 0.5f; degree += 0.01f) {

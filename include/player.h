@@ -28,15 +28,17 @@ Player *Player_Create(BulletList *bulletList);
  * 
  * \param renderer the renderer context
  * \param player the player context
+ * \param map the map
  */
-void Player_DrawSight(SDL_Renderer *renderer, Player *player);
+void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map);
 
 /**
  * Check keyboard and update player's position
  * 
  * \param player the player context
+ * \param map the map
  */
-void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList);
+void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList, Map *map);
 
 /**
  * Delete the player

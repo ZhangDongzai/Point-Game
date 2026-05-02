@@ -16,7 +16,7 @@ Player *Player_Create(BulletList *bulletList)
 	return player;
 }
 
-void Player_DrawSight(SDL_Renderer *renderer, Player *player)
+void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
 	float deltaX, deltaY;
 	float verticalX, verticalY, horizontalX, horizontalY;
@@ -32,7 +32,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 	vertices[0].color = vertices[1].color = vertices[2].color =
 		(SDL_FColor){ 1.0f, 1.0f, 1.0f, 0.8f };
 
-	Map_Clean();
+	Map_Clean(map);
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
 	for (float degree = player->object->direction - 0.5f;
@@ -48,7 +48,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 		deltaDepth = deltaX / cos;
 		deltaY = deltaDepth * sin;
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
-			if (Map_IsHit(verticalX, verticalY))
+			if (Map_IsHit(map, verticalX, verticalY))
 				break;
 			verticalX += deltaX;
 			verticalY += deltaY;
@@ -63,7 +63,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 		deltaDepth = deltaY / sin;
 		deltaX = deltaDepth * cos;
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
-			if (Map_IsHit(horizontalX, horizontalY))
+			if (Map_IsHit(map, horizontalX, horizontalY))
 				break;
 			horizontalX += deltaX;
 			horizontalY += deltaY;
@@ -87,12 +87,12 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player)
 		vertices[2].position = Camera_GetPosOnScreen(&endPos);
 		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
 
-		Map_SetLightWall(endPos.x, endPos.y);
+		Map_SetLightWall(map, endPos.x, endPos.y);
 	}
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }
 
-void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
+void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList, Map *map)
 {
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
@@ -120,11 +120,11 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList)
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE_HALF + x,
+	if (!Map_IsHit(map, player->object->rect.x + PLAYER_SIZE_HALF + x,
 		       player->object->rect.y + PLAYER_SIZE_HALF)) {
 		player->object->rect.x += x;
 	}
-	if (!Map_IsHit(player->object->rect.x + PLAYER_SIZE_HALF,
+	if (!Map_IsHit(map, player->object->rect.x + PLAYER_SIZE_HALF,
 		       player->object->rect.y + PLAYER_SIZE_HALF + y)) {
 		player->object->rect.y += y;
 	}

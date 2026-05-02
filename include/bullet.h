@@ -52,8 +52,9 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine);
  * 
  * \param bullets the list of bullet contexts
  * \param deltaTime the delta time between frames
+ * \param map the map
  */
-void Bullet_UpdateList(BulletList *bullets, Uint64 deltaTime);
+void Bullet_UpdateList(BulletList *bullets, Uint64 deltaTime, Map *map);
 
 /**
  * Delete the bullet

@@ -32,7 +32,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 	app->bulletList = Bullet_CreateList();
 	app->player = Player_Create(app->bulletList);
-	app->map = Map_Create();
+	app->map = Map_Init();
 	app->infoLabel = InfoLabel_Create();
 
 	app->preFrameTime = SDL_GetTicks();
@@ -56,8 +56,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
 	App *app = appstate;
 
-	Bullet_UpdateList(app->bulletList, app->deltaTime);
-	Player_Update(app->player, app->deltaTime, app->bulletList);
+	Bullet_UpdateList(app->bulletList, app->deltaTime, app->map);
+	Player_Update(app->player, app->deltaTime, app->bulletList, app->map);
 	InfoLabel_Update(app->infoLabel, app->player);
 	Map_Update(app->map);
 	Camera_Update(app->player->object, Map_GetBoundary());
@@ -65,8 +65,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
 	SDL_RenderClear(app->renderer);
 
-	Camera_RenderObject(app->map);
-	Player_DrawSight(app->renderer, app->player);
+	Camera_RenderObject(&app->map->object);
+	Player_DrawSight(app->renderer, app->player, app->map);
 	Camera_RenderObjects(app->bulletList);
 	Camera_RenderObject(app->player->object);
 	Camera_RenderObject(app->infoLabel->object);

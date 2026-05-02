@@ -64,7 +64,7 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine)
 	}
 }
 
-void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime)
+void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
 {
 	for (; bulletList; bulletList = bulletList->next) {
 		if (!bulletList->object)
@@ -77,7 +77,7 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime)
 			SDL_sinf(bulletList->object->direction) * BULLET_SPEED *
 			deltaTime / 1000.0f;
 
-		if (!Map_IsHit(bulletList->object->rect.x,
+		if (!Map_IsHit(map, bulletList->object->rect.x,
 			       bulletList->object->rect.y)) {
 			continue;
 		}

@@ -1,33 +1,46 @@
 #include <map.h>
+#include <stdio.h>
 
-int mapList[MAP_HEIGHT][MAP_WIDTH] = {
-	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
-	{ 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1 },
-	{ 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1 },
-	{ 1, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1 },
-	{ 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-	{ 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1 },
-	{ 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1 },
-	{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
-};
+int MAP_WIDTH = 0;
+int MAP_HEIGHT = 0;
+int MAP_MAX_LENGTH = 0;
 
-Map *Map_Create()
+Map *Map_Init()
 {
 	Map *map = (Map *)calloc(1, sizeof(Map));
-	map->rect.x = map->rect.y = 0;
-	map->rect.w = MAP_WIDTH;
-	map->rect.h = MAP_HEIGHT;
+	map->object.rect.x = map->object.rect.y = 0;
+
+	char line[1024];
+	FILE *file = fopen(MAP_FILE, "r");
+	if (!file) {
+		perror("Fail to open map file");
+		exit(EXIT_FAILURE);
+	}
+
+	fgets(line, sizeof(line), file);
+	sscanf(line, "%d %d", &MAP_WIDTH, &MAP_HEIGHT);
+	map->object.rect.w = MAP_WIDTH;
+	map->object.rect.h = MAP_HEIGHT;
+	MAP_MAX_LENGTH = MAP_WIDTH + MAP_HEIGHT;
+	map->list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
+	
+	for (int row = 0; row < MAP_HEIGHT; row++) {
+		fgets(line, sizeof(line), file);
+		for (int column = 0; column < MAP_WIDTH; column++) {
+			map->list[row * MAP_WIDTH + column] = line[column] - '0';
+		}
+	}
+
+	fclose(file);
 	return map;
 }
 
-void Map_Clean()
+void Map_Clean(Map *map)
 {
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		for (int column = 0; column < MAP_WIDTH; column++) {
-			if (mapList[row][column] == MAP_CODE_WALL_LIGHT)
-				mapList[row][column] = MAP_CODE_WALL;
+			if (map->list[row * MAP_WIDTH + column] == MAP_CODE_WALL_LIGHT)
+				map->list[row * MAP_WIDTH + column] = MAP_CODE_WALL;
 		}
 	}
 }
@@ -42,7 +55,7 @@ void Map_Update(Map *map)
 
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		for (int column = 0; column < MAP_WIDTH; column++) {
-			switch (mapList[row][column]) {
+			switch (map->list[row * MAP_WIDTH + column]) {
 			case MAP_CODE_WALL_LIGHT:
 				SDL_SetRenderDrawColor(renderer,
 						       MAP_COLOR_WALL_LIGHT.r,
@@ -72,8 +85,8 @@ void Map_Update(Map *map)
 	}
 	SDL_RenderPresent(renderer);
 
-	SDL_DestroyTexture(map->texture);
-	map->texture = Camera_CreateTextureFromSurface(surface);
+	SDL_DestroyTexture(map->object.texture);
+	map->object.texture = Camera_CreateTextureFromSurface(surface);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroySurface(surface);
 }
@@ -88,25 +101,26 @@ Render_Boundary *Map_GetBoundary()
 	return boundary;
 }
 
-bool Map_IsHit(float x, float y)
+bool Map_IsHit(Map *map, float x, float y)
 {
 	if (x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT) {
 		return true;
-	} else if (mapList[(int)y][(int)x] == MAP_CODE_WALL ||
-		   mapList[(int)y][(int)x] == MAP_CODE_WALL_LIGHT) {
+	} else if (map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL ||
+		   map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL_LIGHT) {
 		return true;
 	}
 	return false;
 }
 
-void Map_SetLightWall(float x, float y)
+void Map_SetLightWall(Map *map, float x, float y)
 {
-	if (mapList[(int)y][(int)x] == MAP_CODE_WALL)
-		mapList[(int)y][(int)x] = MAP_CODE_WALL_LIGHT;
+	if (map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL)
+		map->list[(int)y * MAP_WIDTH + (int)x] = MAP_CODE_WALL_LIGHT;
 }
 
 void Map_Delete(Map *map)
 {
-	SDL_DestroyTexture(map->texture);
+	SDL_DestroyTexture(map->object.texture);
+	free(map->list);
 	free(map);
 }

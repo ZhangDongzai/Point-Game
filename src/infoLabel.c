@@ -24,8 +24,8 @@ InfoLabel *InfoLabel_Create()
 
 void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 {
-	infoLabel->object->rect.x = player->object->rect.x + PLAYER_SIZE;
-	infoLabel->object->rect.y = player->object->rect.y + PLAYER_SIZE;
+	infoLabel->object->rect.x = player->object.rect.x + PLAYER_SIZE;
+	infoLabel->object->rect.y = player->object.rect.y + PLAYER_SIZE;
 
 	if (SDL_GetTicks() - player->magazine.prevReloadTime <
 	    BULLET_RELOAD_TIME_MS)

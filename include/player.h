@@ -13,7 +13,7 @@
  */
 typedef struct {
 	BulletMagazine magazine;
-	Render_Object *object;
+	Render_Object object;
 } Player;
 
 /**
@@ -21,7 +21,7 @@ typedef struct {
  * 
  * \returns the player struct context
  */
-Player *Player_Create(BulletList *bulletList);
+Player Player_Create(BulletList *bulletList);
 
 /**
  * Draw the player's eye sight

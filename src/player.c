@@ -1,16 +1,15 @@
 #include <player.h>
 
-Player *Player_Create(BulletList *bulletList)
+Player Player_Create(BulletList *bulletList)
 {
-	Player *player = (Player *)calloc(1, sizeof(Player));
-	player->magazine.bulletList = bulletList;
-	player->magazine.bulletNumber = BULLET_MAX_COUNT;
-	player->object = (Render_Object *)calloc(1, sizeof(Render_Object));
-	player->object->rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE_HALF;
-	player->object->rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE_HALF;
-	player->object->rect.w = player->object->rect.h = PLAYER_SIZE;
-	player->object->direction = PLAYER_DEFAULT_DIRECTION;
-	player->object->texture = Painter_DrawCircle(
+	Player player;
+	player.magazine.bulletList = bulletList;
+	player.magazine.bulletNumber = BULLET_MAX_COUNT;
+	player.object.rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE_HALF;
+	player.object.rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE_HALF;
+	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
+	player.object.direction = PLAYER_DEFAULT_DIRECTION;
+	player.object.texture = Painter_DrawCircle(
 		PLAYER_SIZE_HALF * WINDOW_SCALE, PLAYER_COLOR, true);
 
 	return player;
@@ -25,8 +24,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	int VeriticesCount = 0;
 	SDL_Vertex vertices[3];
 	SDL_FPoint startPos, endPos;
-	SDL_FPoint pos = { player->object->rect.x + PLAYER_SIZE_HALF,
-			   player->object->rect.y + PLAYER_SIZE_HALF };
+	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
+			   player->object.rect.y + PLAYER_SIZE_HALF };
 
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
 	vertices[0].color = vertices[1].color = vertices[2].color =
@@ -35,8 +34,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	Map_Clean(map);
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-	for (float degree = player->object->direction - 0.5f;
-	     degree < player->object->direction + 0.5f; degree += 0.01f) {
+	for (float degree = player->object.direction - 0.5f;
+	     degree < player->object.direction + 0.5f; degree += 0.01f) {
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
 
@@ -92,16 +91,17 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }
 
-void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList, Map *map)
+void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
+		   Map *map)
 {
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
 	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-	SDL_FPoint playerPos = { player->object->rect.x + PLAYER_SIZE_HALF,
-				 player->object->rect.y + PLAYER_SIZE_HALF };
+	SDL_FPoint playerPos = { player->object.rect.x + PLAYER_SIZE_HALF,
+				 player->object.rect.y + PLAYER_SIZE_HALF };
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
-	player->object->direction =
+	player->object.direction =
 		SDL_atan2f(mouseY - playerPos.y, mouseX - playerPos.x);
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 
@@ -120,18 +120,18 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList, Map
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	if (!Map_IsHit(map, player->object->rect.x + PLAYER_SIZE_HALF + x,
-		       player->object->rect.y + PLAYER_SIZE_HALF)) {
-		player->object->rect.x += x;
+	if (!Map_IsHit(map, player->object.rect.x + PLAYER_SIZE_HALF + x,
+		       player->object.rect.y + PLAYER_SIZE_HALF)) {
+		player->object.rect.x += x;
 	}
-	if (!Map_IsHit(map, player->object->rect.x + PLAYER_SIZE_HALF,
-		       player->object->rect.y + PLAYER_SIZE_HALF + y)) {
-		player->object->rect.y += y;
+	if (!Map_IsHit(map, player->object.rect.x + PLAYER_SIZE_HALF,
+		       player->object.rect.y + PLAYER_SIZE_HALF + y)) {
+		player->object.rect.y += y;
 	}
 
 	// Shoot & reload
 	if (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
-		Bullet_Create(&player->magazine, player->object);
+		Bullet_Create(&player->magazine, &player->object);
 	} else if (keyboardState[SDL_SCANCODE_R]) {
 		Bullet_ReloadMagazine(&player->magazine);
 	}
@@ -139,7 +139,5 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList, Map
 
 void Player_Delete(Player *player)
 {
-	SDL_DestroyTexture(player->object->texture);
-	free(player->object);
-	free(player);
+	SDL_DestroyTexture(player->object.texture);
 }

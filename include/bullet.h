@@ -31,10 +31,7 @@ typedef struct {
 BulletList *Bullet_CreateList();
 
 /**
- * Create a bullet
- * 
- * \param magazine the player's magazine
- * \param object the player's render object
+ * Create a bullet and shoot
  *
  * \return true if the bullet is created successfully, otherwise false
  */
@@ -42,31 +39,21 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object);
 
 /**
  * Reload magazine
- *
- * \param magazine the player's magazine
  */
 void Bullet_ReloadMagazine(BulletMagazine *magazine);
 
 /**
  * Update the position of bullet
- * 
- * \param bullets the list of bullet contexts
- * \param deltaTime the delta time between frames
- * \param map the map
  */
 void Bullet_UpdateList(BulletList *bullets, Uint64 deltaTime, Map *map);
 
 /**
- * Delete the bullet
- * 
- * \param bullet tthe bullet context
+ * Delete a bullet
  */
 void Bullet_Delete(Bullet *bullet);
 
 /** 
- * Delete the bullet list
- * 
- * \param bulletList the list of bullet
+ * Delete a bullet list
  */
 void Bullet_DeleteList(BulletList *bulletList);
 

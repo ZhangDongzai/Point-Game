@@ -5,8 +5,6 @@
 
 /**
  * The shape of render object
- * 
- * \sa Render_Object
  */
 typedef enum { RENDER_SHAPE_RECT, RENDER_SHAPE_CIRCLE } Render_Shape;
 
@@ -48,43 +46,31 @@ typedef struct {
 
 /**
  * Bind the renderer used to render and set the position
- * 
- * \param renderer the renderer context
- * \param pos the position of camera
  */
 void Camera_BindRenderer(SDL_Renderer *renderer, float *pos);
 
 /**
  * Render something on the screen
- * 
- * \param object the thing will be rendered
  */
 void Camera_RenderObject(Render_Object *object);
 
 /**
  * Create a texture from surface
- *
- * \param surface the surface context
  */
 SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface);
 
 /** Render a series of objects 
- * 
- * \param objectNode the node of objects
 */
 void Camera_RenderObjects(Render_ObjectNode *objectNode);
 
 /**
  * Update camera's pos
- * 
- * \param object the object which will be render in the center
  */
 void Camera_Update(Render_Object *object, Render_Boundary boundary);
 
 /**
  * Get the position of object on the screen
- * 
- * \param point the pos of object
+ *
  * \returns the position of object on the screen
  */
 SDL_FPoint Camera_GetPosOnScreen(SDL_FPoint *point);

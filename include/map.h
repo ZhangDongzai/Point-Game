@@ -42,32 +42,22 @@ Render_Boundary Map_GetBoundary();
 /**
  * Tell the object if it hits walls
  *
- * \param x the object's pos x
- * \param y the object's pos y
- *
  * \returns a bool value
  */
 bool Map_IsHit(Map *map, float x, float y);
 
 /**
  * Update the map
- *
- * \param map the map context
  */
 void Map_Update(Map *map);
 
 /**
- * Set the light wall
- *
- * \param x the wall's pos x
- * \param y the wall's pos y
+ * Set a wall to light
  */
 void Map_SetLightWall(Map *map, float x, float y);
 
 /**
- * Free memory of the map
- *
- * \param map the map context
+ * Delete a map
  */
 void Map_Delete(Map *map);
 

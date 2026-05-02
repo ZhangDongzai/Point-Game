@@ -27,15 +27,11 @@ InfoLabel *InfoLabel_Create();
 
 /**
  * Update info
- *
- * \param infoLabel The info label object
  */
 void InfoLabel_Update(InfoLabel *infoLabel, Player *player);
 
 /**
  * Delete an info label
- *
- * \param infoLabel The info label object
  */
 void InfoLabel_Delete(InfoLabel *infoLabel);
 

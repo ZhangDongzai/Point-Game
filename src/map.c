@@ -91,13 +91,12 @@ void Map_Update(Map *map)
 	SDL_DestroySurface(surface);
 }
 
-Render_Boundary *Map_GetBoundary()
+Render_Boundary Map_GetBoundary()
 {
-	Render_Boundary *boundary =
-		(Render_Boundary *)malloc(sizeof(Render_Boundary));
-	boundary->left = boundary->up = 0;
-	boundary->right = MAP_WIDTH;
-	boundary->down = MAP_HEIGHT;
+	Render_Boundary boundary;
+	boundary.left = boundary.up = 0;
+	boundary.right = MAP_WIDTH;
+	boundary.down = MAP_HEIGHT;
 	return boundary;
 }
 

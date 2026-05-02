@@ -3,7 +3,6 @@
 InfoLabel *InfoLabel_Create()
 {
 	InfoLabel *infoLabel = (InfoLabel *)calloc(1, sizeof(InfoLabel));
-	infoLabel->font = TTF_OpenFont(INFOLABEL_FONT, INFOLABEL_FONT_SIZE);
 	strcpy(infoLabel->text, "00");
 
 	infoLabel->object = (Render_Object *)calloc(1, sizeof(Render_Object));
@@ -18,6 +17,7 @@ InfoLabel *InfoLabel_Create()
 	infoLabel->renderer = SDL_CreateSoftwareRenderer(infoLabel->surface);
 	infoLabel->textEngine =
 		TTF_CreateRendererTextEngine(infoLabel->renderer);
+	infoLabel->font = TTF_OpenFont(INFOLABEL_FONT, INFOLABEL_FONT_SIZE);
 
 	return infoLabel;
 }
@@ -56,6 +56,7 @@ void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 
 void InfoLabel_Delete(InfoLabel *infoLabel)
 {
+	TTF_CloseFont(infoLabel->font);
 	TTF_DestroySurfaceTextEngine(infoLabel->textEngine);
 	SDL_DestroyRenderer(infoLabel->renderer);
 	SDL_DestroySurface(infoLabel->surface);

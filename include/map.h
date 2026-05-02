@@ -37,7 +37,7 @@ void Map_Clean(Map *map);
  *
  * \returns the render boundary context
  */
-Render_Boundary *Map_GetBoundary();
+Render_Boundary Map_GetBoundary();
 
 /**
  * Tell the object if it hits walls

@@ -79,7 +79,7 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode);
  * 
  * \param object the object which will be render in the center
  */
-void Camera_Update(Render_Object *object, Render_Boundary *boundary);
+void Camera_Update(Render_Object *object, Render_Boundary boundary);
 
 /**
  * Get the position of object on the screen

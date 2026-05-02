@@ -36,25 +36,25 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode)
 	}
 }
 
-void Camera_Update(Render_Object *object, Render_Boundary *boundary)
+void Camera_Update(Render_Object *object, Render_Boundary boundary)
 {
 	camera.pos[0] = object->rect.x;
 	camera.pos[1] = object->rect.y;
 
-	float left = boundary->left + WINDOW_WIDTH_SCALE / 2.0f;
-	float right = boundary->right - WINDOW_WIDTH_SCALE / 2.0f;
-	float up = boundary->up + WINDOW_HEIGHT_SCALE / 2.0f;
-	float down = boundary->down - WINDOW_HEIGHT_SCALE / 2.0f;
+	boundary.left += WINDOW_WIDTH_SCALE / 2.0f;
+	boundary.right -= WINDOW_WIDTH_SCALE / 2.0f;
+	boundary.up += WINDOW_HEIGHT_SCALE / 2.0f;
+	boundary.down -= WINDOW_HEIGHT_SCALE / 2.0f;
 
-	if (object->rect.x < left) {
-		camera.pos[0] = left;
-	} else if (object->rect.x > right) {
-		camera.pos[0] = right;
+	if (object->rect.x < boundary.left) {
+		camera.pos[0] = boundary.left;
+	} else if (object->rect.x > boundary.right) {
+		camera.pos[0] = boundary.right;
 	}
-	if (object->rect.y < up) {
-		camera.pos[1] = up;
-	} else if (object->rect.y > down) {
-		camera.pos[1] = down;
+	if (object->rect.y < boundary.up) {
+		camera.pos[1] = boundary.up;
+	} else if (object->rect.y > boundary.down) {
+		camera.pos[1] = boundary.down;
 	}
 }
 

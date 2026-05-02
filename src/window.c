@@ -91,5 +91,6 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 	Map_Delete(app->map);
 	InfoLabel_Delete(app->infoLabel);
 	free(appstate);
+	TTF_Quit();
 	return;
 }

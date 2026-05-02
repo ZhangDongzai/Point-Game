@@ -13,7 +13,7 @@ typedef struct {
 	SDL_Renderer *renderer;
 
 	Player player;
-	InfoLabel *infoLabel;
+	InfoLabel infoLabel;
 	BulletList *bulletList;
 	Map *map;
 

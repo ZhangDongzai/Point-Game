@@ -14,7 +14,7 @@ typedef struct {
 	SDL_Surface *surface;
 	SDL_Renderer *renderer;
 	TTF_TextEngine *textEngine;
-	Render_Object *object;
+	Render_Object object;
 } InfoLabel;
 
 /**
@@ -22,7 +22,7 @@ typedef struct {
  *
  * \returns The info label object
  */
-InfoLabel *InfoLabel_Create();
+InfoLabel InfoLabel_Create();
 
 /**
  * Update info

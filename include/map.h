@@ -9,7 +9,6 @@ extern int MAP_HEIGHT;
 extern int MAP_MAX_LENGTH;
 
 typedef enum {
-	MAP_CODE_WALL_LIGHT = -1,
 	MAP_CODE_FLOOR,
 	MAP_CODE_WALL,
 	MAP_CODE_WATER,
@@ -30,11 +29,6 @@ typedef struct {
 Map Map_Init();
 
 /**
- * Clean up light walls on the map
- */
-void Map_Clean(Map *map);
-
-/**
  * Get the boundary of a map
  *
  * \returns the render boundary context
@@ -52,11 +46,6 @@ bool Map_IsHit(Map *map, float x, float y);
  * Update the map
  */
 void Map_Update(Map *map);
-
-/**
- * Set a wall to light
- */
-void Map_SetLightWall(Map *map, float x, float y);
 
 /**
  * Delete a map

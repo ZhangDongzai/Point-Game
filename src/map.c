@@ -35,16 +35,6 @@ Map Map_Init()
 	return map;
 }
 
-void Map_Clean(Map *map)
-{
-	for (int row = 0; row < MAP_HEIGHT; row++) {
-		for (int column = 0; column < MAP_WIDTH; column++) {
-			if (map->list[row * MAP_WIDTH + column] == MAP_CODE_WALL_LIGHT)
-				map->list[row * MAP_WIDTH + column] = MAP_CODE_WALL;
-		}
-	}
-}
-
 void Map_Update(Map *map)
 {
 	SDL_Surface *surface = SDL_CreateSurface(MAP_WIDTH * WINDOW_SCALE,
@@ -56,13 +46,6 @@ void Map_Update(Map *map)
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		for (int column = 0; column < MAP_WIDTH; column++) {
 			switch (map->list[row * MAP_WIDTH + column]) {
-			case MAP_CODE_WALL_LIGHT:
-				SDL_SetRenderDrawColor(renderer,
-						       MAP_COLOR_WALL_LIGHT.r,
-						       MAP_COLOR_WALL_LIGHT.g,
-						       MAP_COLOR_WALL_LIGHT.b,
-						       MAP_COLOR_WALL_LIGHT.a);
-				break;
 			case MAP_CODE_FLOOR:
 				SDL_SetRenderDrawColor(renderer,
 						       MAP_COLOR_FLOOR.r,
@@ -118,17 +101,10 @@ bool Map_IsHit(Map *map, float x, float y)
 {
 	if (x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT) {
 		return true;
-	} else if (map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL ||
-		   map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL_LIGHT) {
+	} else if (map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL) {
 		return true;
 	}
 	return false;
-}
-
-void Map_SetLightWall(Map *map, float x, float y)
-{
-	if (map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL)
-		map->list[(int)y * MAP_WIDTH + (int)x] = MAP_CODE_WALL_LIGHT;
 }
 
 void Map_Delete(Map *map)

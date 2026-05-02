@@ -31,7 +31,6 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	vertices[0].color = vertices[1].color = vertices[2].color =
 		(SDL_FColor){ 1.0f, 1.0f, 1.0f, 0.5f };
 
-	Map_Clean(map);
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
 
 	for (float degree = player->object.direction - 0.5f;
@@ -85,8 +84,6 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		vertices[1].position = vertices[2].position;
 		vertices[2].position = Camera_GetPosOnScreen(&endPos);
 		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
-
-		Map_SetLightWall(map, endPos.x, endPos.y);
 	}
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 }

@@ -6,9 +6,8 @@
 
 /**
  * Draw a circle
- *
- * \returns a SDL_Texture pointer
  */
-SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid);
+void Painter_DrawCircle(SDL_Renderer *renderer, float centerX, float centerY,
+			float radius, SDL_Color color, bool isSolid);
 
 #endif /* INCLUDE_PAINTER_H */

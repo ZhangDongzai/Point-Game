@@ -1,38 +1,34 @@
 #include <painter.h>
 
-SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
+void Painter_DrawCircle(SDL_Renderer *renderer, float centerX, float centerY,
+			float radius, SDL_Color color, bool isSolid)
 {
-	radius = radius * WINDOW_SCALE;
 	float diameter = radius * 2.0f;
 	float x = radius - 1.0f, y = 0.0f;
 	float tx = 1.0f, ty = 1.0f;
 	float error = tx - diameter;
-
-	SDL_Surface *surface =
-		SDL_CreateSurface(diameter, diameter, SDL_PIXELFORMAT_RGBA32);
-	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
-
+	
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
 	while (x >= y) {
 		if (isSolid) {
-			SDL_RenderLine(renderer, radius + x, radius - y,
-				       radius - x, radius + y);
-			SDL_RenderLine(renderer, radius + x, radius + y,
-				       radius - x, radius - y);
-			SDL_RenderLine(renderer, radius + y, radius + x,
-				       radius - y, radius - x);
-			SDL_RenderLine(renderer, radius + y, radius - x,
-				       radius - y, radius + x);
+			SDL_RenderLine(renderer, centerX + x, centerY - y,
+				       centerX - x, centerY + y);
+			SDL_RenderLine(renderer, centerX + x, centerY + y,
+				       centerX - x, centerY - y);
+			SDL_RenderLine(renderer, centerX + y, centerY + x,
+				       centerX - y, centerY - x);
+			SDL_RenderLine(renderer, centerX + y, centerY - x,
+				       centerX - y, centerY + x);
 		} else {
-			SDL_RenderPoint(renderer, radius + x, radius - y);
-			SDL_RenderPoint(renderer, radius + x, radius + y);
-			SDL_RenderPoint(renderer, radius - x, radius - y);
-			SDL_RenderPoint(renderer, radius - x, radius + y);
-			SDL_RenderPoint(renderer, radius + y, radius - x);
-			SDL_RenderPoint(renderer, radius + y, radius + x);
-			SDL_RenderPoint(renderer, radius - y, radius - x);
-			SDL_RenderPoint(renderer, radius - y, radius + x);
+			SDL_RenderPoint(renderer, centerX + x, centerY - y);
+			SDL_RenderPoint(renderer, centerX + x, centerY + y);
+			SDL_RenderPoint(renderer, centerX - x, centerY - y);
+			SDL_RenderPoint(renderer, centerX - x, centerY + y);
+			SDL_RenderPoint(renderer, centerX + y, centerY - x);
+			SDL_RenderPoint(renderer, centerX + y, centerY + x);
+			SDL_RenderPoint(renderer, centerX - y, centerY - x);
+			SDL_RenderPoint(renderer, centerX - y, centerY + x);
 		}
 
 		if (error <= 0) {
@@ -47,10 +43,4 @@ SDL_Texture *Painter_DrawCircle(float radius, SDL_Color color, bool isSolid)
 	}
 
 	SDL_RenderPresent(renderer);
-	SDL_Texture *texture = Camera_CreateTextureFromSurface(surface);
-
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroySurface(surface);
-
-	return texture;
 }

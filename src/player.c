@@ -20,8 +20,17 @@ Player Player_Create(BulletList *bulletList)
 	player.object.rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE_HALF;
 	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
 	player.object.direction = PLAYER_DEFAULT_DIRECTION;
-	player.object.texture = Painter_DrawCircle(
-		PLAYER_SIZE_HALF * WINDOW_SCALE, PLAYER_COLOR, true);
+
+	SDL_Surface *surface = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
+						 PLAYER_SIZE * WINDOW_SCALE,
+						 SDL_PIXELFORMAT_RGBA32);
+	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
+	Painter_DrawCircle(renderer, PLAYER_SIZE_HALF * WINDOW_SCALE,
+			   PLAYER_SIZE_HALF * WINDOW_SCALE,
+			   PLAYER_SIZE_HALF * WINDOW_SCALE, PLAYER_COLOR, true);
+	player.object.texture = Camera_CreateTextureFromSurface(surface);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroySurface(surface);
 
 	return player;
 }

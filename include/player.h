@@ -13,11 +13,14 @@
  */
 typedef struct {
 	/* Eye sight */
-	SDL_Surface *surface;
-	SDL_Renderer *renderer;
-	SDL_Texture *texture;
+	SDL_Surface *sightSurface;
+	SDL_Renderer *sightRenderer;
+	SDL_Texture *sightTexture;
 
+	/* Magazine */
 	BulletMagazine magazine;
+
+	/* Render object */
 	Render_Object object;
 } Player;
 

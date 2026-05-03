@@ -4,13 +4,18 @@ Player Player_Create(BulletList *bulletList)
 {
 	Player player;
 
-	player.surface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT,
-					   SDL_PIXELFORMAT_RGBA32);
-	player.renderer = SDL_CreateSoftwareRenderer(player.surface);
-	player.texture = Camera_CreateTextureFromSurface(player.surface);
+	/* Eye sight */
+	player.sightSurface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT,
+						SDL_PIXELFORMAT_RGBA32);
+	player.sightRenderer = SDL_CreateSoftwareRenderer(player.sightSurface);
+	player.sightTexture =
+		Camera_CreateTextureFromSurface(player.sightSurface);
 
+	/* Magazine */
 	player.magazine.bulletList = bulletList;
 	player.magazine.bulletNumber = BULLET_MAX_COUNT;
+
+	/* Render object */
 	player.object.rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE_HALF;
 	player.object.rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE_HALF;
 	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
@@ -23,9 +28,11 @@ Player Player_Create(BulletList *bulletList)
 
 void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
-	SDL_SetRenderDrawColor(player->renderer, 0, 0, 0, 128);
-	SDL_RenderClear(player->renderer);
+	/* Draw black translucent background */
+	SDL_SetRenderDrawColor(player->sightRenderer, 0, 0, 0, 128);
+	SDL_RenderClear(player->sightRenderer);
 
+	/* Draw transparent sight */
 	float deltaX, deltaY;
 	float verticalX, verticalY, horizontalX, horizontalY;
 	float verticalDepth, horizontalDepth, deltaDepth;
@@ -45,7 +52,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
 
-		// Vertical
+		/* Vertical */
 		deltaX = cos < 0 ? -1.0f : 1.0f;
 		verticalX = cos < 0 ? (int)pos.x - 1e-6 : (int)pos.x + 1;
 		verticalDepth = (verticalX - pos.x) / cos;
@@ -60,7 +67,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 			verticalDepth += deltaDepth;
 		}
 
-		// Horizontal
+		/* Horizontal */
 		deltaY = sin < 0 ? -1.0f : +1.0f;
 		horizontalY = sin < 0 ? (int)pos.y - 1e-6 : (int)pos.y + 1;
 		horizontalDepth = (horizontalY - pos.y) / sin;
@@ -90,14 +97,15 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		}
 		vertices[1].position = vertices[2].position;
 		vertices[2].position = Camera_GetPosOnScreen(&endPos);
-		SDL_RenderGeometry(player->renderer, NULL, vertices, 3, NULL,
-				   0);
+		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
+				   NULL, 0);
 	}
-	SDL_RenderPresent(player->renderer);
+	SDL_RenderPresent(player->sightRenderer);
 
-	SDL_UpdateTexture(player->texture, NULL, player->surface->pixels,
-			  player->surface->pitch);
-	SDL_RenderTexture(renderer, player->texture, NULL, NULL);
+	SDL_UpdateTexture(player->sightTexture, NULL,
+			  player->sightSurface->pixels,
+			  player->sightSurface->pitch);
+	SDL_RenderTexture(renderer, player->sightTexture, NULL, NULL);
 }
 
 void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
@@ -114,7 +122,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		SDL_atan2f(mouseY - playerPos.y, mouseX - playerPos.x);
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 
-	// Move
+	/* Move */
 	if (keyboardState[SDL_SCANCODE_W])
 		y -= speed;
 	if (keyboardState[SDL_SCANCODE_S])
@@ -138,7 +146,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		player->object.rect.y += y;
 	}
 
-	// Shoot & reload
+	/* Shoot & reload */
 	if (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
 		Bullet_Create(&player->magazine, &player->object);
 	} else if (keyboardState[SDL_SCANCODE_R]) {
@@ -149,7 +157,9 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 void Player_Delete(Player *player)
 {
 	SDL_DestroyTexture(player->object.texture);
-	SDL_DestroyTexture(player->texture);
-	SDL_DestroyRenderer(player->renderer);
-	SDL_DestroySurface(player->surface);
+
+	/* Eye sight */
+	SDL_DestroyTexture(player->sightTexture);
+	SDL_DestroyRenderer(player->sightRenderer);
+	SDL_DestroySurface(player->sightSurface);
 }

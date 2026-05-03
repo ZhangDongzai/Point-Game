@@ -59,8 +59,9 @@ void Camera_RenderObject(Render_Object *object);
  */
 SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface);
 
-/** Render a series of objects 
-*/
+/** 
+ * Render a series of objects 
+ */
 void Camera_RenderObjects(Render_ObjectNode *objectNode);
 
 /**

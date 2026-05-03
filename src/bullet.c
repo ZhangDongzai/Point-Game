@@ -20,7 +20,7 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 		return false;
 	magazine->bulletNumber--;
 
-	for (; magazine->bulletList->object;
+	for (; magazine->bulletList->object.texture;
 	     magazine->bulletList = magazine->bulletList->next) {
 		if (!magazine->bulletList->next) {
 			magazine->bulletList->next = Bullet_CreateList();
@@ -28,14 +28,14 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 		}
 	}
 
-	Bullet *bullet = (Bullet *)calloc(1, sizeof(Bullet));
-	bullet->rect.x =
+	Bullet bullet;
+	bullet.rect.x =
 		object->rect.x + object->rect.w / 2.0f - BULLET_WIDTH / 2.0f;
-	bullet->rect.y =
+	bullet.rect.y =
 		object->rect.y + object->rect.h / 2.0f - BULLET_HEIGHT / 2.0f;
-	bullet->rect.w = BULLET_WIDTH;
-	bullet->rect.h = BULLET_HEIGHT;
-	bullet->direction = object->direction;
+	bullet.rect.w = BULLET_WIDTH;
+	bullet.rect.h = BULLET_HEIGHT;
+	bullet.direction = object->direction;
 
 	SDL_Surface *surface = SDL_CreateSurface(MAP_WIDTH, MAP_HEIGHT,
 						 SDL_PIXELFORMAT_RGBA32);
@@ -46,7 +46,7 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 
-	bullet->texture = Camera_CreateTextureFromSurface(surface);
+	bullet.texture = Camera_CreateTextureFromSurface(surface);
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroySurface(surface);
@@ -67,23 +67,22 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine)
 void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
 {
 	for (; bulletList; bulletList = bulletList->next) {
-		if (!bulletList->object)
+		if (!bulletList->object.texture)
 			continue;
 
-		bulletList->object->rect.x +=
-			SDL_cosf(bulletList->object->direction) * BULLET_SPEED *
+		bulletList->object.rect.x +=
+			SDL_cosf(bulletList->object.direction) * BULLET_SPEED *
 			deltaTime / 1000.0f;
-		bulletList->object->rect.y +=
-			SDL_sinf(bulletList->object->direction) * BULLET_SPEED *
+		bulletList->object.rect.y +=
+			SDL_sinf(bulletList->object.direction) * BULLET_SPEED *
 			deltaTime / 1000.0f;
 
-		if (!Map_IsHit(map, bulletList->object->rect.x,
-			       bulletList->object->rect.y)) {
+		if (!Map_IsHit(map, bulletList->object.rect.x,
+			       bulletList->object.rect.y)) {
 			continue;
 		}
 
-		Bullet_Delete(bulletList->object);
-		bulletList->object = NULL;
+		Bullet_Delete(&bulletList->object);
 
 		if (bulletList->prev && bulletList->next) {
 			bulletList->prev->next = bulletList->next;
@@ -94,16 +93,16 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
 
 void Bullet_Delete(Bullet *bullet)
 {
-	if (!bullet)
+	if (!bullet->texture)
 		return;
 	SDL_DestroyTexture(bullet->texture);
-	free(bullet);
+	bullet->texture = NULL;
 }
 
 void Bullet_DeleteList(BulletList *bulletList)
 {
 	for (; bulletList; bulletList = bulletList->next) {
-		Bullet_Delete(bulletList->object);
+		Bullet_Delete(&bulletList->object);
 	}
 
 	free(bulletList);

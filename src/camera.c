@@ -35,9 +35,9 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode)
 {
 	for (Render_ObjectNode *node = objectNode; node != NULL;
 	     node = node->next) {
-		if (!node->object)
+		if (!node->object.texture)
 			continue;
-		Camera_RenderObject(node->object);
+		Camera_RenderObject(&node->object);
 	}
 }
 

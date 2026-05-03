@@ -16,9 +16,10 @@ typedef enum {
 } MAP_CODE;
 
 typedef struct {
-	Render_Object object;
 	int *list;
-	int width, height;
+	SDL_Surface *surface;
+	SDL_Renderer *renderer;
+	Render_Object object;
 } Map;
 
 /**

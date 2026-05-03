@@ -12,6 +12,11 @@
  * The player context
  */
 typedef struct {
+	/* Eye sight */
+	SDL_Surface *surface;
+	SDL_Renderer *renderer;
+	SDL_Texture *texture;
+
 	BulletMagazine magazine;
 	Render_Object object;
 } Player;

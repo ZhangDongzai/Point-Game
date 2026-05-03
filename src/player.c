@@ -3,6 +3,12 @@
 Player Player_Create(BulletList *bulletList)
 {
 	Player player;
+
+	player.surface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT,
+					   SDL_PIXELFORMAT_RGBA32);
+	player.renderer = SDL_CreateSoftwareRenderer(player.surface);
+	player.texture = Camera_CreateTextureFromSurface(player.surface);
+
 	player.magazine.bulletList = bulletList;
 	player.magazine.bulletNumber = BULLET_MAX_COUNT;
 	player.object.rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE_HALF;
@@ -17,6 +23,9 @@ Player Player_Create(BulletList *bulletList)
 
 void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
+	SDL_SetRenderDrawColor(player->renderer, 0, 0, 0, 128);
+	SDL_RenderClear(player->renderer);
+
 	float deltaX, deltaY;
 	float verticalX, verticalY, horizontalX, horizontalY;
 	float verticalDepth, horizontalDepth, deltaDepth;
@@ -29,9 +38,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
 	vertices[0].color = vertices[1].color = vertices[2].color =
-		(SDL_FColor){ 1.0f, 1.0f, 1.0f, 0.5f };
-
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_ADD);
+		(SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
 
 	for (float degree = player->object.direction - 0.5f;
 	     degree < player->object.direction + 0.5f; degree += 0.01f) {
@@ -83,9 +90,14 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		}
 		vertices[1].position = vertices[2].position;
 		vertices[2].position = Camera_GetPosOnScreen(&endPos);
-		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
+		SDL_RenderGeometry(player->renderer, NULL, vertices, 3, NULL,
+				   0);
 	}
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+	SDL_RenderPresent(player->renderer);
+
+	SDL_UpdateTexture(player->texture, NULL, player->surface->pixels,
+			  player->surface->pitch);
+	SDL_RenderTexture(renderer, player->texture, NULL, NULL);
 }
 
 void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
@@ -137,4 +149,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 void Player_Delete(Player *player)
 {
 	SDL_DestroyTexture(player->object.texture);
+	SDL_DestroyTexture(player->texture);
+	SDL_DestroyRenderer(player->renderer);
+	SDL_DestroySurface(player->surface);
 }

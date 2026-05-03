@@ -8,15 +8,16 @@ InfoLabel InfoLabel_Create()
 	infoLabel.object.direction = 0.0f;
 	infoLabel.object.rect.h = 1.0f;
 	infoLabel.object.rect.w = 2.0f;
-	infoLabel.object.texture = NULL;
 
-	infoLabel.surface =
-		SDL_CreateSurface(infoLabel.object.rect.w * WINDOW_SCALE,
-				  infoLabel.object.rect.h * WINDOW_SCALE,
-				  SDL_PIXELFORMAT_RGBA32);
+	infoLabel.surface = SDL_CreateSurface(
+		infoLabel.object.rect.w * WINDOW_SCALE,
+		infoLabel.object.rect.h * WINDOW_SCALE, SDL_PIXELFORMAT_RGBA32);
+	infoLabel.object.texture = Camera_CreateTextureFromSurface(infoLabel.surface);
+	SDL_SetTextureBlendMode(infoLabel.object.texture, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureAlphaMod(infoLabel.object.texture, 200);
+
 	infoLabel.renderer = SDL_CreateSoftwareRenderer(infoLabel.surface);
-	infoLabel.textEngine =
-		TTF_CreateRendererTextEngine(infoLabel.renderer);
+	infoLabel.textEngine = TTF_CreateRendererTextEngine(infoLabel.renderer);
 	infoLabel.font = TTF_OpenFont(INFOLABEL_FONT, INFOLABEL_FONT_SIZE);
 
 	return infoLabel;
@@ -45,11 +46,9 @@ void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 			     (int)(WINDOW_SCALE / 20.0f));
 	SDL_RenderPresent(infoLabel->renderer);
 
-	SDL_DestroyTexture(infoLabel->object.texture);
-	infoLabel->object.texture = Camera_CreateTextureFromSurface(infoLabel->surface);
-	SDL_SetTextureBlendMode(infoLabel->object.texture,
-				SDL_BLENDMODE_BLEND);
-	SDL_SetTextureAlphaMod(infoLabel->object.texture, 200);
+	SDL_UpdateTexture(infoLabel->object.texture, NULL,
+			  infoLabel->surface->pixels,
+			  infoLabel->surface->pitch);
 
 	TTF_DestroyText(text);
 }

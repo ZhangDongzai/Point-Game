@@ -76,4 +76,11 @@ void Camera_Update(Render_Object *object, Render_Boundary boundary);
  */
 SDL_FPoint Camera_GetPosOnScreen(SDL_FPoint *point);
 
+/**
+ * Get if object is on the screen
+ *
+ * \returns true if object is on the screen or false
+ */
+bool Camera_IsPosOnScreen(SDL_FPoint *point);
+
 #endif /* INCLUDE_CAMERA_H */

@@ -43,7 +43,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 	/* Draw transparent sight */
 	float deltaX, deltaY;
-	float verticalX, verticalY, horizontalX, horizontalY;
+	SDL_FPoint vertical, horizontal;
 	float verticalDepth, horizontalDepth, deltaDepth;
 	float sin, cos;
 	int VeriticesCount = 0;
@@ -63,40 +63,44 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 		/* Vertical */
 		deltaX = cos < 0 ? -1.0f : 1.0f;
-		verticalX = cos < 0 ? (int)pos.x - 1e-6 : (int)pos.x + 1;
-		verticalDepth = (verticalX - pos.x) / cos;
-		verticalY = pos.y + verticalDepth * sin;
+		vertical.x = cos < 0 ? (int)pos.x - 1e-6 : (int)pos.x + 1;
+		verticalDepth = (vertical.x - pos.x) / cos;
+		vertical.y = pos.y + verticalDepth * sin;
 		deltaDepth = deltaX / cos;
 		deltaY = deltaDepth * sin;
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
-			if (Map_IsHit(map, verticalX, verticalY))
+			if (!Camera_IsPosOnScreen(&vertical))
 				break;
-			verticalX += deltaX;
-			verticalY += deltaY;
+			if (Map_IsHit(map, vertical.x, vertical.y))
+				break;
+			vertical.x += deltaX;
+			vertical.y += deltaY;
 			verticalDepth += deltaDepth;
 		}
 
 		/* Horizontal */
 		deltaY = sin < 0 ? -1.0f : +1.0f;
-		horizontalY = sin < 0 ? (int)pos.y - 1e-6 : (int)pos.y + 1;
-		horizontalDepth = (horizontalY - pos.y) / sin;
-		horizontalX = pos.x + horizontalDepth * cos;
+		horizontal.y = sin < 0 ? (int)pos.y - 1e-6 : (int)pos.y + 1;
+		horizontalDepth = (horizontal.y - pos.y) / sin;
+		horizontal.x = pos.x + horizontalDepth * cos;
 		deltaDepth = deltaY / sin;
 		deltaX = deltaDepth * cos;
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
-			if (Map_IsHit(map, horizontalX, horizontalY))
+			if (!Camera_IsPosOnScreen(&horizontal))
 				break;
-			horizontalX += deltaX;
-			horizontalY += deltaY;
+			if (Map_IsHit(map, horizontal.x, horizontal.y))
+				break;
+			horizontal.x += deltaX;
+			horizontal.y += deltaY;
 			horizontalDepth += deltaDepth;
 		}
 
 		if (horizontalDepth < verticalDepth) {
-			endPos.x = horizontalX;
-			endPos.y = horizontalY;
+			endPos.x = horizontal.x;
+			endPos.y = horizontal.y;
 		} else {
-			endPos.x = verticalX;
-			endPos.y = verticalY;
+			endPos.x = vertical.x;
+			endPos.y = vertical.y;
 		}
 
 		if (VeriticesCount < 2) {

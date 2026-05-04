@@ -21,12 +21,16 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	}
 
 	if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH,
-					 WINDOW_HEIGHT, 0, &app->window,
+					 WINDOW_HEIGHT, SDL_WINDOW_OPENGL, &app->window,
 					 &app->renderer)) {
 		SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
 		return SDL_APP_FAILURE;
 	}
 
+	if (!SDL_GL_SetSwapInterval(-1)){
+		SDL_GL_SetSwapInterval(1);
+	}
+	
 	Camera_BindRenderer(app->renderer, PLAYER_DEFAULT_POS);
 
 	app->bulletList = Bullet_CreateList();
@@ -74,11 +78,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	SDL_RenderPresent(app->renderer);
 
 	app->deltaTime = SDL_GetTicks() - app->preFrameTime;
-	if (WINDOW_DELTA_TIME > app->deltaTime) {
-		SDL_Delay(WINDOW_DELTA_TIME - app->deltaTime);
-		app->deltaTime = WINDOW_DELTA_TIME;
-	}
-	app->preFrameTime = SDL_GetTicks();
+	app->preFrameTime += app->deltaTime;
 
 	return SDL_APP_CONTINUE;
 }

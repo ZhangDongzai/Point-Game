@@ -11,7 +11,7 @@ void Camera_BindRenderer(SDL_Renderer *renderer, float *pos)
 SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface)
 {
 	SDL_Texture *texture = SDL_CreateTexture(camera.renderer,
-						 SDL_PIXELFORMAT_RGBA32,
+						 RENDER_PIXEL_FORMAT,
 						 SDL_TEXTUREACCESS_STREAMING,
 						 surface->w, surface->h);
 	SDL_UpdateTexture(texture, NULL, surface->pixels, surface->pitch);

@@ -11,8 +11,9 @@ InfoLabel InfoLabel_Create()
 
 	infoLabel.surface = SDL_CreateSurface(
 		infoLabel.object.rect.w * WINDOW_SCALE,
-		infoLabel.object.rect.h * WINDOW_SCALE, SDL_PIXELFORMAT_RGBA32);
-	infoLabel.object.texture = Camera_CreateTextureFromSurface(infoLabel.surface);
+		infoLabel.object.rect.h * WINDOW_SCALE, RENDER_PIXEL_FORMAT);
+	infoLabel.object.texture =
+		Camera_CreateTextureFromSurface(infoLabel.surface);
 	SDL_SetTextureBlendMode(infoLabel.object.texture, SDL_BLENDMODE_BLEND);
 	SDL_SetTextureAlphaMod(infoLabel.object.texture, 200);
 

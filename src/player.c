@@ -6,7 +6,7 @@ Player Player_Create(BulletList *bulletList)
 
 	/* Eye sight */
 	player.sightSurface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT,
-						SDL_PIXELFORMAT_RGBA32);
+						RENDER_PIXEL_FORMAT);
 	player.sightRenderer = SDL_CreateSoftwareRenderer(player.sightSurface);
 	player.sightTexture =
 		Camera_CreateTextureFromSurface(player.sightSurface);
@@ -23,7 +23,7 @@ Player Player_Create(BulletList *bulletList)
 
 	SDL_Surface *surface = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
 						 PLAYER_SIZE * WINDOW_SCALE,
-						 SDL_PIXELFORMAT_RGBA32);
+						 RENDER_PIXEL_FORMAT);
 	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
 	Painter_DrawCircle(renderer, PLAYER_SIZE_HALF * WINDOW_SCALE,
 			   PLAYER_SIZE_HALF * WINDOW_SCALE,

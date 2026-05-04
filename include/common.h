@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+// Render
+#define RENDER_PIXEL_FORMAT SDL_PIXELFORMAT_RGBA32
+
 // Window
 #define WINDOW_NAME "Point Game"
 #define WINDOW_WIDTH 1280

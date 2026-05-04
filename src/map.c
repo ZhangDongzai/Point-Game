@@ -32,13 +32,13 @@ Map Map_Init()
 	}
 
 	fclose(file);
-	
+
 	map.surface = SDL_CreateSurface(MAP_WIDTH * WINDOW_SCALE,
 					MAP_HEIGHT * WINDOW_SCALE,
-					SDL_PIXELFORMAT_RGBA32);
+					RENDER_PIXEL_FORMAT);
 	map.renderer = SDL_CreateSoftwareRenderer(map.surface);
 	map.object.texture = Camera_CreateTextureFromSurface(map.surface);
-	
+
 	return map;
 }
 

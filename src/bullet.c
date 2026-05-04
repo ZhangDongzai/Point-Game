@@ -37,8 +37,8 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 	bullet.rect.h = BULLET_HEIGHT;
 	bullet.direction = object->direction;
 
-	SDL_Surface *surface = SDL_CreateSurface(MAP_WIDTH, MAP_HEIGHT,
-						 SDL_PIXELFORMAT_RGBA32);
+	SDL_Surface *surface =
+		SDL_CreateSurface(MAP_WIDTH, MAP_HEIGHT, RENDER_PIXEL_FORMAT);
 	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
 
 	SDL_SetRenderDrawColor(renderer, BULLET_COLOR.r, BULLET_COLOR.g,

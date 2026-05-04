@@ -113,6 +113,9 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
 				   NULL, 0);
 	}
+	Painter_DrawCircle(player->sightRenderer, vertices[0].position.x,
+			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,
+			   (SDL_Color){ 0, 0, 0, 0 }, true);
 	SDL_RenderPresent(player->sightRenderer);
 
 	SDL_UpdateTexture(player->sightTexture, NULL,

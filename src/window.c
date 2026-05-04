@@ -36,6 +36,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 	app->preFrameTime = SDL_GetTicks();
 	app->deltaTime = 0;
+	
+	Map_Update(&app->map);
 
 	return SDL_APP_CONTINUE;
 }
@@ -58,7 +60,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
 	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map);
 	InfoLabel_Update(&app->infoLabel, &app->player);
-	Map_Update(&app->map);
 	Camera_Update(&app->player.object, Map_GetBoundary());
 
 	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);

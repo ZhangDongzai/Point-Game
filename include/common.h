@@ -23,7 +23,7 @@
 #define PLAYER_DEFAULT_DIRECTION 0.0f
 #define PLAYER_DEFAULT_POS (float[]){ 6.0f, 4.0f }
 #define PLAYER_SIZE 0.5f
-#define PLAYER_SIZE_HALF PLAYER_SIZE / 2.0f
+#define PLAYER_SIZE_HALF (PLAYER_SIZE / 2.0f)
 #define PLAYER_COLOR (SDL_Color){ 0, 255, 0, 255 }
 #define PLAYER_SHAPE RENDER_SHAPE_CIRCLE
 #define PLAYER_MOVE_SPEED 3.0f
@@ -53,6 +53,6 @@
 // Info label
 #define INFOLABEL_COLOR (SDL_Color){ 255, 255, 255, 255 }
 #define INFOLABEL_FONT "./sources/fusion-pixel-10px-monospaced-zh_hans.ttf"
-#define INFOLABEL_FONT_SIZE WINDOW_SCALE * 0.8f
+#define INFOLABEL_FONT_SIZE (WINDOW_SCALE * 0.8f)
 
 #endif /* INCLUDE_COMMON_H */

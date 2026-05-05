@@ -2,10 +2,9 @@
 
 static Camera camera;
 
-void Camera_BindRenderer(SDL_Renderer *renderer, float *pos)
+void Camera_BindRenderer(SDL_Renderer *renderer)
 {
 	camera.renderer = renderer;
-	memcpy(camera.pos, pos, sizeof(camera.pos));
 }
 
 SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface)
@@ -20,9 +19,9 @@ SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface)
 
 void Camera_RenderObject(Render_Object *object)
 {
-	SDL_FRect rect = { (object->rect.x - camera.pos[0]) * WINDOW_SCALE +
+	SDL_FRect rect = { (object->rect.x - camera.pos.x) * WINDOW_SCALE +
 				   WINDOW_WIDTH / 2.0f,
-			   (object->rect.y - camera.pos[1]) * WINDOW_SCALE +
+			   (object->rect.y - camera.pos.y) * WINDOW_SCALE +
 				   WINDOW_HEIGHT / 2.0f,
 			   object->rect.w * WINDOW_SCALE,
 			   object->rect.h * WINDOW_SCALE };
@@ -43,8 +42,8 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode)
 
 void Camera_Update(Render_Object *object, Render_Boundary boundary)
 {
-	camera.pos[0] = object->rect.x;
-	camera.pos[1] = object->rect.y;
+	camera.pos.x = object->rect.x;
+	camera.pos.y = object->rect.y;
 
 	boundary.left += WINDOW_WIDTH_SCALE / 2.0f;
 	boundary.right -= WINDOW_WIDTH_SCALE / 2.0f;
@@ -52,22 +51,22 @@ void Camera_Update(Render_Object *object, Render_Boundary boundary)
 	boundary.down -= WINDOW_HEIGHT_SCALE / 2.0f;
 
 	if (object->rect.x < boundary.left) {
-		camera.pos[0] = boundary.left;
+		camera.pos.x = boundary.left;
 	} else if (object->rect.x > boundary.right) {
-		camera.pos[0] = boundary.right;
+		camera.pos.x = boundary.right;
 	}
 	if (object->rect.y < boundary.up) {
-		camera.pos[1] = boundary.up;
+		camera.pos.y = boundary.up;
 	} else if (object->rect.y > boundary.down) {
-		camera.pos[1] = boundary.down;
+		camera.pos.y = boundary.down;
 	}
 }
 
 SDL_FPoint Camera_GetPosOnScreen(SDL_FPoint *point)
 {
 	return (SDL_FPoint){
-		(point->x - camera.pos[0]) * WINDOW_SCALE + WINDOW_WIDTH / 2.0f,
-		(point->y - camera.pos[1]) * WINDOW_SCALE + WINDOW_HEIGHT / 2.0f
+		(point->x - camera.pos.x) * WINDOW_SCALE + WINDOW_WIDTH / 2.0f,
+		(point->y - camera.pos.y) * WINDOW_SCALE + WINDOW_HEIGHT / 2.0f
 	};
 }
 

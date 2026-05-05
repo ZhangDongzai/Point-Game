@@ -16,8 +16,8 @@ Player Player_Create(BulletList *bulletList)
 	player.magazine.bulletNumber = BULLET_MAX_COUNT;
 
 	/* Render object */
-	player.object.rect.x = PLAYER_DEFAULT_POS[0] - PLAYER_SIZE_HALF;
-	player.object.rect.y = PLAYER_DEFAULT_POS[1] - PLAYER_SIZE_HALF;
+	player.object.rect.x = PLAYER_DEFAULT_POS.x - PLAYER_SIZE_HALF;
+	player.object.rect.y = PLAYER_DEFAULT_POS.y - PLAYER_SIZE_HALF;
 	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
 	player.object.direction = PLAYER_DEFAULT_DIRECTION;
 

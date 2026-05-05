@@ -31,11 +31,11 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		SDL_GL_SetSwapInterval(1);
 	}
 	
-	Camera_BindRenderer(app->renderer, PLAYER_DEFAULT_POS);
-
+	Camera_BindRenderer(app->renderer);
+	
+	app->map = Map_Init();
 	app->bulletList = Bullet_CreateList();
 	app->player = Player_Create(app->bulletList);
-	app->map = Map_Init();
 	app->infoLabel = InfoLabel_Create();
 
 	app->preFrameTime = SDL_GetTicks();

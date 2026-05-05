@@ -13,7 +13,7 @@ typedef enum { RENDER_SHAPE_RECT, RENDER_SHAPE_CIRCLE } Render_Shape;
  */
 typedef struct {
 	SDL_Renderer *renderer;
-	float pos[2];
+	SDL_FPoint pos;
 } Camera;
 
 /**
@@ -45,9 +45,9 @@ typedef struct {
 } Render_Boundary;
 
 /**
- * Bind the renderer used to render and set the position
+ * Bind the renderer used to render
  */
-void Camera_BindRenderer(SDL_Renderer *renderer, float *pos);
+void Camera_BindRenderer(SDL_Renderer *renderer);
 
 /**
  * Render something on the screen

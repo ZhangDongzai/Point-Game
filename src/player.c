@@ -56,8 +56,9 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	vertices[0].color = vertices[1].color = vertices[2].color =
 		(SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
 
-	for (float degree = player->object.direction - 0.5f;
-	     degree < player->object.direction + 0.5f; degree += 0.01f) {
+	for (float degree = player->object.direction - PLAYER_SIGHT_FOV_HALF;
+	     degree < player->object.direction + PLAYER_SIGHT_FOV_HALF;
+	     degree += PLAYER_SIGHT_RAY_DELTA) {
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
 

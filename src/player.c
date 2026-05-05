@@ -64,7 +64,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 		/* Vertical */
 		deltaX = cos < 0 ? -1.0f : 1.0f;
-		vertical.x = cos < 0 ? (int)pos.x - 1e-6 : (int)pos.x + 1;
+		vertical.x = cos < 0 ? (int)pos.x - 0.001f : (int)pos.x + 1;
 		verticalDepth = (vertical.x - pos.x) / cos;
 		vertical.y = pos.y + verticalDepth * sin;
 		deltaDepth = deltaX / cos;
@@ -81,7 +81,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 		/* Horizontal */
 		deltaY = sin < 0 ? -1.0f : +1.0f;
-		horizontal.y = sin < 0 ? (int)pos.y - 1e-6 : (int)pos.y + 1;
+		horizontal.y = sin < 0 ? (int)pos.y - 0.001f : (int)pos.y + 1;
 		horizontalDepth = (horizontal.y - pos.y) / sin;
 		horizontal.x = pos.x + horizontalDepth * cos;
 		deltaDepth = deltaY / sin;

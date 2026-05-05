@@ -7,6 +7,7 @@
 extern int MAP_WIDTH;
 extern int MAP_HEIGHT;
 extern int MAP_MAX_LENGTH;
+extern SDL_FPoint MAP_DEFAULT_POS;
 
 typedef enum {
 	MAP_CODE_FLOOR,

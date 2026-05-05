@@ -21,7 +21,6 @@
 
 // Player
 #define PLAYER_DEFAULT_DIRECTION 0.0f
-#define PLAYER_DEFAULT_POS (SDL_FPoint){ 3.0f, 9.0f }
 #define PLAYER_SIZE 1.0f
 #define PLAYER_SIZE_HALF (PLAYER_SIZE / 2.0f)
 #define PLAYER_COLOR (SDL_Color){ 0, 255, 0, 255 }

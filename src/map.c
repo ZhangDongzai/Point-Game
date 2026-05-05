@@ -3,6 +3,7 @@
 int MAP_WIDTH = 0;
 int MAP_HEIGHT = 0;
 int MAP_MAX_LENGTH = 0;
+SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 
 Map Map_Init()
 {
@@ -23,6 +24,9 @@ Map Map_Init()
 	map.object.rect.h = MAP_HEIGHT;
 	MAP_MAX_LENGTH = MAP_WIDTH + MAP_HEIGHT;
 	map.list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
+
+	fgets(line, sizeof(line), file);
+	sscanf(line, "%f %f", &MAP_DEFAULT_POS.x, &MAP_DEFAULT_POS.y);
 
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		fgets(line, sizeof(line), file);

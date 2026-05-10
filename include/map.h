@@ -22,7 +22,6 @@ typedef struct {
 
 	int *list;
 	SDL_Surface *surface;
-	SDL_Renderer *renderer;
 	Render_Object object;
 } Map;
 

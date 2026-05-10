@@ -35,6 +35,7 @@
 #define MAP_FILE "./sources/map.txt"
 #define MAP_TEXTURE_FILE "./sources/texture.bmp"
 #define MAP_TEXTURE_SIZE 16
+#define MAP_TEXTURE_WALL_HEIGHT 24
 #define MAP_TEXTURE_FLOOR (SDL_Point){ 4, 3 }
 #define MAP_TEXTURE_WALL (SDL_Point){ 11, 0 }
 

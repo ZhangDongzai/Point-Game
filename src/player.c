@@ -47,11 +47,13 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	float verticalDepth, horizontalDepth, deltaDepth;
 	float sin, cos;
 	int VeriticesCount = 0;
+	bool isHitWall = false;
 	SDL_Vertex vertices[3];
 	SDL_FPoint startPos, endPos;
 	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
 			   player->object.rect.y + PLAYER_SIZE_HALF };
-	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE, WINDOW_SCALE + MAP_WALL_DELTA };
+	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE,
+			       WINDOW_SCALE + MAP_WALL_DELTA };
 
 	SDL_SetRenderDrawColor(player->sightRenderer, 0, 0, 0, 0);
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
@@ -63,6 +65,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	     degree += PLAYER_SIGHT_RAY_DELTA) {
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
+		isHitWall = false;
 
 		/* Vertical */
 		deltaX = cos < 0 ? -1.0f : 1.0f;
@@ -74,8 +77,10 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
 			if (!Camera_IsPosOnScreen(&vertical))
 				break;
-			if (Map_IsHit(map, vertical.x, vertical.y))
+			if (Map_IsHit(map, vertical.x, vertical.y)) {
+				isHitWall = true;
 				break;
+			}
 			vertical.x += deltaX;
 			vertical.y += deltaY;
 			verticalDepth += deltaDepth;
@@ -91,8 +96,10 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
 			if (!Camera_IsPosOnScreen(&horizontal))
 				break;
-			if (Map_IsHit(map, horizontal.x, horizontal.y))
+			if (Map_IsHit(map, horizontal.x, horizontal.y)) {
+				isHitWall = true;
 				break;
+			}
 			horizontal.x += deltaX;
 			horizontal.y += deltaY;
 			horizontalDepth += deltaDepth;
@@ -116,6 +123,11 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
 				   NULL, 0);
 
+		if (!isHitWall)
+			continue;
+		wallRect.h = Map_IsHit(map, endPos.x, endPos.y + 1.0f) ?
+				     WINDOW_SCALE :
+				     WINDOW_SCALE + MAP_WALL_DELTA;
 		endPos.x = (int)endPos.x, endPos.y = (int)endPos.y;
 		endPos = Camera_GetPosOnScreen(&endPos);
 		wallRect.x = endPos.x, wallRect.y = endPos.y - MAP_WALL_DELTA;

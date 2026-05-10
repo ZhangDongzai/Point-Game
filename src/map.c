@@ -8,7 +8,8 @@ SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 Map Map_Init()
 {
 	Map map;
-	map.object.rect.x = map.object.rect.y = 0;
+	map.object.rect.x = 0;
+	map.object.rect.y = -MAP_WALL_DELTA_SCALE;
 	map.object.direction = 0.0f;
 
 	char line[1024];
@@ -79,7 +80,7 @@ void Map_Update(Map *map)
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;
-			rect.y = row * WINDOW_SCALE;
+			rect.y = row * WINDOW_SCALE + MAP_WALL_DELTA;
 			SDL_BlitSurfaceScaled(map->floor, NULL, map->surface,
 					      &rect, SDL_SCALEMODE_NEAREST);
 		}
@@ -98,7 +99,7 @@ void Map_Update(Map *map)
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;
-			rect.y = row * WINDOW_SCALE - MAP_WALL_DELTA;
+			rect.y = row * WINDOW_SCALE;
 			SDL_BlitSurfaceScaled(map->wall, NULL, map->surface,
 					      &rect, SDL_SCALEMODE_NEAREST);
 		}

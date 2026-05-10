@@ -47,7 +47,7 @@ void Camera_Update(Render_Object *object, Render_Boundary boundary)
 
 	boundary.left += WINDOW_WIDTH_SCALE / 2.0f;
 	boundary.right -= WINDOW_WIDTH_SCALE / 2.0f;
-	boundary.up += WINDOW_HEIGHT_SCALE / 2.0f;
+	boundary.up += WINDOW_HEIGHT_SCALE / 2.0f - MAP_WALL_DELTA_SCALE;
 	boundary.down -= WINDOW_HEIGHT_SCALE / 2.0f;
 
 	if (object->rect.x < boundary.left) {

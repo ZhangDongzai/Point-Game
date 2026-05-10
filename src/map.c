@@ -31,7 +31,7 @@ Map Map_Init()
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		fgets(line, sizeof(line), file);
 		for (int column = 0; column < MAP_WIDTH; column++) {
-			map.list[row * MAP_WIDTH + column] = line[column] - '0';
+			map.list[row * MAP_WIDTH + column] = line[column];
 		}
 	}
 
@@ -43,48 +43,49 @@ Map Map_Init()
 	map.renderer = SDL_CreateSoftwareRenderer(map.surface);
 	map.object.texture = Camera_CreateTextureFromSurface(map.surface);
 
+	// Textures
+	SDL_Surface *fileSurface = SDL_LoadBMP(MAP_TEXTURE_FILE);
+	// Floor texture
+	SDL_Rect rect = { MAP_TEXTURE_FLOOR.x * MAP_TEXTURE_SIZE,
+			  MAP_TEXTURE_FLOOR.y * MAP_TEXTURE_SIZE,
+			  MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE };
+	map.floor = SDL_CreateSurface(MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE,
+				      RENDER_PIXEL_FORMAT);
+	SDL_BlitSurface(fileSurface, &rect, map.floor, NULL);
+
+	// Wall texture
+	rect.x = MAP_TEXTURE_WALL.x * MAP_TEXTURE_SIZE;
+	rect.y = MAP_TEXTURE_WALL.y * MAP_TEXTURE_SIZE;
+	map.wall = SDL_CreateSurface(MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE,
+				     RENDER_PIXEL_FORMAT);
+	SDL_BlitSurface(fileSurface, &rect, map.wall, NULL);
+
+	SDL_DestroySurface(fileSurface);
+
 	return map;
 }
 
 void Map_Update(Map *map)
 {
-	SDL_FRect rect = { 0, 0, WINDOW_SCALE, WINDOW_SCALE };
+	SDL_Rect rect = { 0, 0, WINDOW_SCALE, WINDOW_SCALE };
+	SDL_Surface *surface;
 
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		for (int column = 0; column < MAP_WIDTH; column++) {
 			switch (map->list[row * MAP_WIDTH + column]) {
+			case MAP_CODE_NULL:
+				continue;
 			case MAP_CODE_FLOOR:
-				SDL_SetRenderDrawColor(map->renderer,
-						       MAP_COLOR_FLOOR.r,
-						       MAP_COLOR_FLOOR.g,
-						       MAP_COLOR_FLOOR.b,
-						       MAP_COLOR_FLOOR.a);
+				surface = map->floor;
 				break;
 			case MAP_CODE_WALL:
-				SDL_SetRenderDrawColor(map->renderer,
-						       MAP_COLOR_WALL.r,
-						       MAP_COLOR_WALL.g,
-						       MAP_COLOR_WALL.b,
-						       MAP_COLOR_WALL.a);
-				break;
-			case MAP_CODE_WATER:
-				SDL_SetRenderDrawColor(map->renderer,
-						       MAP_COLOR_WATER.r,
-						       MAP_COLOR_WATER.g,
-						       MAP_COLOR_WATER.b,
-						       MAP_COLOR_WATER.a);
-				break;
-			case MAP_CODE_GRASS:
-				SDL_SetRenderDrawColor(map->renderer,
-						       MAP_COLOR_GRASS.r,
-						       MAP_COLOR_GRASS.g,
-						       MAP_COLOR_GRASS.b,
-						       MAP_COLOR_GRASS.a);
+				surface = map->wall;
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;
 			rect.y = row * WINDOW_SCALE;
-			SDL_RenderFillRect(map->renderer, &rect);
+			SDL_BlitSurfaceScaled(surface, NULL, map->surface,
+					      &rect, SDL_SCALEMODE_NEAREST);
 		}
 	}
 	SDL_RenderPresent(map->renderer);

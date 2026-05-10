@@ -10,13 +10,16 @@ extern int MAP_MAX_LENGTH;
 extern SDL_FPoint MAP_DEFAULT_POS;
 
 typedef enum {
-	MAP_CODE_FLOOR,
-	MAP_CODE_WALL,
-	MAP_CODE_WATER,
-	MAP_CODE_GRASS,
+	MAP_CODE_FLOOR = '0',
+	MAP_CODE_WALL = '1',
+	MAP_CODE_NULL = 'N',
 } MAP_CODE;
 
 typedef struct {
+	// Texture
+	SDL_Surface *floor;
+	SDL_Surface *wall;
+
 	int *list;
 	SDL_Surface *surface;
 	SDL_Renderer *renderer;

@@ -15,7 +15,7 @@
 #define WINDOW_HEIGHT 720
 #define WINDOW_MAX_FPS 60.0f
 #define WINDOW_DELTA_TIME (1000.0f / WINDOW_MAX_FPS)
-#define WINDOW_SCALE 50.0f
+#define WINDOW_SCALE 64.0f
 #define WINDOW_WIDTH_SCALE (WINDOW_WIDTH / WINDOW_SCALE)
 #define WINDOW_HEIGHT_SCALE (WINDOW_HEIGHT / WINDOW_SCALE)
 
@@ -32,11 +32,11 @@
 #define PLAYER_SIGHT_RAY_DELTA (PLAYER_SIGHT_FOV / PLAYER_SIGHT_RAY_NUMBER)
 
 // Map
-#define MAP_COLOR_FLOOR (SDL_Color){ 50, 50, 50, 255 }
-#define MAP_COLOR_WALL (SDL_Color){ 150, 150, 150, 255 }
-#define MAP_COLOR_WATER (SDL_Color){ 0, 0, 255, 255 }
-#define MAP_COLOR_GRASS (SDL_Color){ 0, 255, 0, 255 }
 #define MAP_FILE "./sources/map.txt"
+#define MAP_TEXTURE_FILE "./sources/texture.bmp"
+#define MAP_TEXTURE_SIZE 16
+#define MAP_TEXTURE_FLOOR (SDL_Point){ 4, 3 }
+#define MAP_TEXTURE_WALL (SDL_Point){ 11, 0 }
 
 // Bullet
 #define BULLET_WIDTH 0.2f

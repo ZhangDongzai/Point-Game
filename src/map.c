@@ -54,7 +54,7 @@ Map Map_Init()
 
 	// Wall texture
 	rect.x = MAP_TEXTURE_WALL.x * MAP_TEXTURE_SIZE;
-	rect.y = MAP_TEXTURE_WALL.y * MAP_TEXTURE_SIZE;
+	rect.y = MAP_TEXTURE_WALL.y * MAP_TEXTURE_WALL_HEIGHT;
 	rect.h = MAP_TEXTURE_WALL_HEIGHT;
 	map.wall = SDL_CreateSurface(MAP_TEXTURE_SIZE, MAP_TEXTURE_WALL_HEIGHT,
 				     RENDER_PIXEL_FORMAT);
@@ -98,7 +98,7 @@ void Map_Update(Map *map)
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;
-			rect.y = row * WINDOW_SCALE;
+			rect.y = row * WINDOW_SCALE - MAP_WALL_DELTA;
 			SDL_BlitSurfaceScaled(map->wall, NULL, map->surface,
 					      &rect, SDL_SCALEMODE_NEAREST);
 		}

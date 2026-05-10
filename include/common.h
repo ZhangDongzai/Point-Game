@@ -37,7 +37,10 @@
 #define MAP_TEXTURE_SIZE 16
 #define MAP_TEXTURE_WALL_HEIGHT 24
 #define MAP_TEXTURE_FLOOR (SDL_Point){ 4, 3 }
-#define MAP_TEXTURE_WALL (SDL_Point){ 11, 0 }
+#define MAP_TEXTURE_WALL (SDL_Point){ 8, 1 }
+#define MAP_WALL_DELTA                                         \
+	((float)(MAP_TEXTURE_WALL_HEIGHT - MAP_TEXTURE_SIZE) / \
+	 MAP_TEXTURE_SIZE * WINDOW_SCALE)
 
 // Bullet
 #define BULLET_WIDTH 0.2f

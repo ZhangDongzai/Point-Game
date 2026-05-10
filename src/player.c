@@ -51,7 +51,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_FPoint startPos, endPos;
 	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
 			   player->object.rect.y + PLAYER_SIZE_HALF };
-	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE, WINDOW_SCALE };
+	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE, WINDOW_SCALE + MAP_WALL_DELTA };
 
 	SDL_SetRenderDrawColor(player->sightRenderer, 0, 0, 0, 0);
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
@@ -118,7 +118,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 		endPos.x = (int)endPos.x, endPos.y = (int)endPos.y;
 		endPos = Camera_GetPosOnScreen(&endPos);
-		wallRect.x = endPos.x, wallRect.y = endPos.y;
+		wallRect.x = endPos.x, wallRect.y = endPos.y - MAP_WALL_DELTA;
 		SDL_RenderFillRect(player->sightRenderer, &wallRect);
 	}
 	Painter_DrawCircle(player->sightRenderer, vertices[0].position.x,

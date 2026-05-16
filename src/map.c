@@ -45,7 +45,7 @@ Map Map_Init()
 	map.object.flipMode = SDL_FLIP_NONE;
 
 	// Textures
-	SDL_Surface *fileSurface = SDL_LoadBMP(MAP_TEXTURE_FILE);
+	SDL_Surface *fileSurface = IMG_Load(MAP_TEXTURE_FILE);
 	// Floor texture
 	SDL_Rect rect = { MAP_TEXTURE_FLOOR.x * MAP_TEXTURE_SIZE,
 			  MAP_TEXTURE_FLOOR.y * MAP_TEXTURE_SIZE,

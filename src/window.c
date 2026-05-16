@@ -64,7 +64,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
 	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map);
 	InfoLabel_Update(&app->infoLabel, &app->player);
-	Camera_Update(&app->player.object, Map_GetBoundary());
+	Camera_Update(&app->player.object, &app->map.wall.rect);
 
 	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
 	SDL_RenderClear(app->renderer);

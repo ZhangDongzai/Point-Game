@@ -36,16 +36,6 @@ typedef struct Render_ObjectNode {
 } Render_ObjectNode;
 
 /**
- * The boundary of a object
- */
-typedef struct {
-	float up;
-	float down;
-	float left;
-	float right;
-} Render_Boundary;
-
-/**
  * Bind the renderer used to render
  */
 void Camera_BindRenderer(SDL_Renderer *renderer);
@@ -68,7 +58,7 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode);
 /**
  * Update camera's pos
  */
-void Camera_Update(Render_Object *object, Render_Boundary boundary);
+void Camera_Update(Render_Object *object, SDL_FRect *boundary);
 
 /**
  * Get the position of object on the screen

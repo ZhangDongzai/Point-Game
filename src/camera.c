@@ -40,25 +40,25 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode)
 	}
 }
 
-void Camera_Update(Render_Object *object, Render_Boundary boundary)
+void Camera_Update(Render_Object *object, SDL_FRect *boundary)
 {
 	camera.pos.x = object->rect.x;
 	camera.pos.y = object->rect.y;
 
-	boundary.left += WINDOW_WIDTH_SCALE / 2.0f;
-	boundary.right -= WINDOW_WIDTH_SCALE / 2.0f;
-	boundary.up += WINDOW_HEIGHT_SCALE / 2.0f - MAP_WALL_DELTA_SCALE;
-	boundary.down -= WINDOW_HEIGHT_SCALE / 2.0f;
+	float left = WINDOW_WIDTH_SCALE / 2.0f + boundary->x;
+	float right = -WINDOW_WIDTH_SCALE / 2.0f + boundary->x + boundary->w;
+	float up = WINDOW_HEIGHT_SCALE / 2.0f + boundary->y;
+	float bottom = WINDOW_HEIGHT_SCALE / 2.0f + boundary->y + boundary->h;
 
-	if (object->rect.x < boundary.left) {
-		camera.pos.x = boundary.left;
-	} else if (object->rect.x > boundary.right) {
-		camera.pos.x = boundary.right;
+	if (object->rect.x < left) {
+		camera.pos.x = left;
+	} else if (object->rect.x > right) {
+		camera.pos.x = right;
 	}
-	if (object->rect.y < boundary.up) {
-		camera.pos.y = boundary.up;
-	} else if (object->rect.y > boundary.down) {
-		camera.pos.y = boundary.down;
+	if (object->rect.y < up) {
+		camera.pos.y = up;
+	} else if (object->rect.y > bottom) {
+		camera.pos.y = bottom;
 	}
 }
 

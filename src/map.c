@@ -116,15 +116,6 @@ void Map_Update(Map *map)
 			  map->surface->pitch);
 }
 
-Render_Boundary Map_GetBoundary()
-{
-	Render_Boundary boundary;
-	boundary.left = boundary.up = 0;
-	boundary.right = MAP_WIDTH;
-	boundary.down = MAP_HEIGHT;
-	return boundary;
-}
-
 bool Map_IsPointHit(Map *map, float x, float y)
 {
 	if (x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT) {

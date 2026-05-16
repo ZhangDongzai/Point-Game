@@ -34,13 +34,6 @@ typedef struct {
 Map Map_Init();
 
 /**
- * Get the boundary of a map
- *
- * \returns the render boundary context
- */
-Render_Boundary Map_GetBoundary();
-
-/**
  * Tell the object if it hits walls
  *
  * \returns a bool value

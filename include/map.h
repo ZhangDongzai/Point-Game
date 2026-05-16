@@ -17,12 +17,13 @@ typedef enum {
 
 typedef struct {
 	// Texture
-	SDL_Surface *floor;
-	SDL_Surface *wall;
+	SDL_Surface *floorTexture;
+	SDL_Surface *wallTexture;
 
 	int *list;
 	SDL_Surface *surface;
-	Render_Object object;
+	Render_Object floor;
+	Render_Object wall;
 } Map;
 
 /**

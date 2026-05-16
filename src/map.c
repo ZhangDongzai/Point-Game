@@ -8,9 +8,10 @@ SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 Map Map_Init()
 {
 	Map map;
-	map.object.rect.x = 0;
-	map.object.rect.y = -MAP_WALL_DELTA_SCALE;
-	map.object.direction = 0.0f;
+	map.floor.rect.x = map.floor.rect.y = map.wall.rect.x = 0;
+	map.wall.rect.y = -MAP_WALL_DELTA_SCALE;
+	map.floor.direction = map.wall.direction = 0.0f;
+	map.floor.flipMode = map.wall.flipMode = SDL_FLIP_NONE;
 
 	char line[1024];
 	FILE *file = fopen(MAP_FILE, "r");
@@ -21,8 +22,8 @@ Map Map_Init()
 
 	fgets(line, sizeof(line), file);
 	sscanf(line, "%d %d", &MAP_WIDTH, &MAP_HEIGHT);
-	map.object.rect.w = MAP_WIDTH;
-	map.object.rect.h = MAP_HEIGHT;
+	map.floor.rect.w = map.wall.rect.w = MAP_WIDTH;
+	map.floor.rect.h = map.wall.rect.h = MAP_HEIGHT;
 	MAP_MAX_LENGTH = MAP_WIDTH + MAP_HEIGHT;
 	map.list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
 
@@ -41,8 +42,8 @@ Map Map_Init()
 	map.surface = SDL_CreateSurface(MAP_WIDTH * WINDOW_SCALE,
 					MAP_HEIGHT * WINDOW_SCALE,
 					RENDER_PIXEL_FORMAT);
-	map.object.texture = Camera_CreateTextureFromSurface(map.surface);
-	map.object.flipMode = SDL_FLIP_NONE;
+	map.floor.texture = Camera_CreateTextureFromSurface(map.surface);
+	map.wall.texture = Camera_CreateTextureFromSurface(map.surface);
 
 	// Textures
 	SDL_Surface *fileSurface = IMG_Load(MAP_TEXTURE_FILE);
@@ -50,17 +51,17 @@ Map Map_Init()
 	SDL_Rect rect = { MAP_TEXTURE_FLOOR.x * MAP_TEXTURE_SIZE,
 			  MAP_TEXTURE_FLOOR.y * MAP_TEXTURE_SIZE,
 			  MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE };
-	map.floor = SDL_CreateSurface(MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE,
-				      RENDER_PIXEL_FORMAT);
-	SDL_BlitSurface(fileSurface, &rect, map.floor, NULL);
+	map.floorTexture = SDL_CreateSurface(MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE,
+					     RENDER_PIXEL_FORMAT);
+	SDL_BlitSurface(fileSurface, &rect, map.floorTexture, NULL);
 
 	// Wall texture
 	rect.x = MAP_TEXTURE_WALL.x * MAP_TEXTURE_SIZE;
 	rect.y = MAP_TEXTURE_WALL.y * MAP_TEXTURE_WALL_HEIGHT;
 	rect.h = MAP_TEXTURE_WALL_HEIGHT;
-	map.wall = SDL_CreateSurface(MAP_TEXTURE_SIZE, MAP_TEXTURE_WALL_HEIGHT,
-				     RENDER_PIXEL_FORMAT);
-	SDL_BlitSurface(fileSurface, &rect, map.wall, NULL);
+	map.wallTexture = SDL_CreateSurface(
+		MAP_TEXTURE_SIZE, MAP_TEXTURE_WALL_HEIGHT, RENDER_PIXEL_FORMAT);
+	SDL_BlitSurface(fileSurface, &rect, map.wallTexture, NULL);
 
 	SDL_DestroySurface(fileSurface);
 
@@ -70,6 +71,7 @@ Map Map_Init()
 void Map_Update(Map *map)
 {
 	// Floor
+	SDL_ClearSurface(map->surface, 0.0f, 0.0f, 0.0f, 0.0f);
 	SDL_Rect rect = { 0, 0, WINDOW_SCALE, WINDOW_SCALE };
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		for (int column = 0; column < MAP_WIDTH; column++) {
@@ -81,13 +83,17 @@ void Map_Update(Map *map)
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;
-			rect.y = row * WINDOW_SCALE + MAP_WALL_DELTA;
-			SDL_BlitSurfaceScaled(map->floor, NULL, map->surface,
-					      &rect, SDL_SCALEMODE_NEAREST);
+			rect.y = row * WINDOW_SCALE;
+			SDL_BlitSurfaceScaled(map->floorTexture, NULL,
+					      map->surface, &rect,
+					      SDL_SCALEMODE_NEAREST);
 		}
 	}
+	SDL_UpdateTexture(map->floor.texture, NULL, map->surface->pixels,
+			  map->surface->pitch);
 
 	// Wall
+	SDL_ClearSurface(map->surface, 0.0f, 0.0f, 0.0f, 0.0f);
 	rect.h = (float)MAP_TEXTURE_WALL_HEIGHT / (float)MAP_TEXTURE_SIZE *
 		 WINDOW_SCALE;
 	for (int row = 0; row < MAP_HEIGHT; row++) {
@@ -101,11 +107,12 @@ void Map_Update(Map *map)
 			}
 			rect.x = column * WINDOW_SCALE;
 			rect.y = row * WINDOW_SCALE;
-			SDL_BlitSurfaceScaled(map->wall, NULL, map->surface,
-					      &rect, SDL_SCALEMODE_NEAREST);
+			SDL_BlitSurfaceScaled(map->wallTexture, NULL,
+					      map->surface, &rect,
+					      SDL_SCALEMODE_NEAREST);
 		}
 	}
-	SDL_UpdateTexture(map->object.texture, NULL, map->surface->pixels,
+	SDL_UpdateTexture(map->wall.texture, NULL, map->surface->pixels,
 			  map->surface->pitch);
 }
 
@@ -130,7 +137,8 @@ bool Map_IsHit(Map *map, float x, float y)
 
 void Map_Delete(Map *map)
 {
-	SDL_DestroyTexture(map->object.texture);
+	SDL_DestroyTexture(map->floor.texture);
+	SDL_DestroyTexture(map->floor.texture);
 	SDL_DestroySurface(map->surface);
 	free(map->list);
 }

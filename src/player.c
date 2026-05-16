@@ -20,12 +20,14 @@ Player Player_Create(BulletList *bulletList)
 	player.prevChangeTextureTime = SDL_GetTicks();
 	player.textureNumber = 4;
 	SDL_Surface *textureSurface = IMG_Load(PLAYER_TEXTURE_FILE);
-	SDL_Surface *temp = SDL_CreateSurface(
-		PLAYER_TEXTURE_SIZE, PLAYER_TEXTURE_SIZE, RENDER_PIXEL_FORMAT);
+	SDL_Surface *temp = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
+					      PLAYER_SIZE * WINDOW_SCALE,
+					      RENDER_PIXEL_FORMAT);
 	SDL_Rect rect = { 0, 0, PLAYER_TEXTURE_SIZE, PLAYER_TEXTURE_SIZE };
 	for (int i = 0; i < PLAYER_TEXTURE_NUMBER; i++) {
 		rect.x = i * PLAYER_TEXTURE_SIZE;
-		SDL_BlitSurface(textureSurface, &rect, temp, NULL);
+		SDL_BlitSurfaceScaled(textureSurface, &rect, temp, NULL,
+				      SDL_SCALEMODE_NEAREST);
 		player.textures[i] = Camera_CreateTextureFromSurface(temp);
 		SDL_ClearSurface(temp, 0.0f, 0.0f, 0.0f, 0.0f);
 	}
@@ -158,7 +160,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
 				   NULL, 0);
 	}
-	
+
 	Painter_DrawCircle(player->sightRenderer, vertices[0].position.x,
 			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,
 			   (SDL_Color){ 0, 0, 0, 0 }, true);

@@ -55,7 +55,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	float sin, cos;
 	int VeriticesCount = 0;
 	bool isHitWall = false;
-	SDL_Vertex vertices[3];
+	SDL_Vertex vertices[PLAYER_SIGHT_RAY_NUMBER + 1];
 	SDL_FPoint startPos, endPos;
 	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
 			   player->object.rect.y + PLAYER_SIZE_HALF };
@@ -64,9 +64,9 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 	SDL_SetRenderDrawColor(player->sightRenderer, 0, 0, 0, 0);
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
-	vertices[0].color = vertices[1].color = vertices[2].color =
-		(SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
+	vertices[0].color = (SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
 
+	int rayNumber = 0;
 	for (float degree = player->sightDirection - PLAYER_SIGHT_FOV_HALF;
 	     degree < player->sightDirection + PLAYER_SIGHT_FOV_HALF;
 	     degree += PLAYER_SIGHT_RAY_DELTA) {
@@ -120,15 +120,27 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 			endPos.y = vertical.y;
 		}
 
-		if (VeriticesCount < 2) {
-			vertices[++VeriticesCount].position =
-				Camera_GetPosOnScreen(&endPos);
-			continue;
+		rayNumber++;
+		vertices[rayNumber].color = vertices[rayNumber - 1].color;
+		vertices[rayNumber].position = Camera_GetPosOnScreen(&endPos);
+
+		if (rayNumber == 2) {
+			/* Do nothing */
+		} else if (vertices[rayNumber - 2].position.x ==
+				   vertices[rayNumber - 1].position.x &&
+			   vertices[rayNumber - 1].position.x ==
+				   vertices[rayNumber].position.x) {
+			vertices[rayNumber - 1].position.y =
+				vertices[rayNumber].position.y;
+			rayNumber--;
+		} else if (vertices[rayNumber - 2].position.y ==
+				   vertices[rayNumber - 1].position.y &&
+			   vertices[rayNumber - 1].position.y ==
+				   vertices[rayNumber].position.y) {
+			vertices[rayNumber - 1].position.x =
+				vertices[rayNumber].position.x;
+			rayNumber--;
 		}
-		vertices[1].position = vertices[2].position;
-		vertices[2].position = Camera_GetPosOnScreen(&endPos);
-		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
-				   NULL, 0);
 
 		if (!isHitWall)
 			continue;
@@ -140,6 +152,13 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		wallRect.x = endPos.x, wallRect.y = endPos.y - MAP_WALL_DELTA;
 		SDL_RenderFillRect(player->sightRenderer, &wallRect);
 	}
+
+	for (int i = 2; i < rayNumber + 1; i++) {
+		vertices[1] = vertices[i - 1], vertices[2] = vertices[i];
+		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
+				   NULL, 0);
+	}
+	
 	Painter_DrawCircle(player->sightRenderer, vertices[0].position.x,
 			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,
 			   (SDL_Color){ 0, 0, 0, 0 }, true);

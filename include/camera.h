@@ -21,6 +21,7 @@ typedef struct {
  */
 typedef struct {
 	SDL_FRect rect;
+	SDL_FlipMode flipMode;
 	SDL_Texture *texture;
 	float direction;
 } Render_Object;

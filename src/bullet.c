@@ -35,6 +35,7 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 		object->rect.y + object->rect.h / 2.0f - BULLET_HEIGHT / 2.0f;
 	bullet.rect.w = BULLET_WIDTH;
 	bullet.rect.h = BULLET_HEIGHT;
+	bullet.flipMode = SDL_FLIP_NONE;
 	bullet.direction = object->direction;
 
 	SDL_Surface *surface =

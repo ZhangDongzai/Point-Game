@@ -27,7 +27,7 @@ void Camera_RenderObject(Render_Object *object)
 			   object->rect.h * WINDOW_SCALE };
 	double angle = object->direction / SDL_PI_D * 180;
 	SDL_RenderTextureRotated(camera.renderer, object->texture, NULL, &rect,
-				 angle, NULL, SDL_FLIP_NONE);
+				 angle, NULL, object->flipMode);
 }
 
 void Camera_RenderObjects(Render_ObjectNode *objectNode)

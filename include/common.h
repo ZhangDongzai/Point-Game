@@ -9,6 +9,7 @@
 
 // Render
 #define RENDER_PIXEL_FORMAT SDL_PIXELFORMAT_RGBA32
+#define PI_HALF (SDL_PI_F / 2.0f)
 
 // Window
 #define WINDOW_NAME "Point Game"

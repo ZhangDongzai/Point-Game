@@ -42,6 +42,7 @@ Map Map_Init()
 					MAP_HEIGHT * WINDOW_SCALE,
 					RENDER_PIXEL_FORMAT);
 	map.object.texture = Camera_CreateTextureFromSurface(map.surface);
+	map.object.flipMode = SDL_FLIP_NONE;
 
 	// Textures
 	SDL_Surface *fileSurface = SDL_LoadBMP(MAP_TEXTURE_FILE);

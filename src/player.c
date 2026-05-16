@@ -197,6 +197,13 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	}
 
 	/* Change texture */
+	if ((player->sightDirection > PI_HALF) ||
+	    (player->sightDirection < -PI_HALF)) {
+		player->object.flipMode = SDL_FLIP_HORIZONTAL;
+	} else {
+		player->object.flipMode = SDL_FLIP_NONE;
+	}
+
 	Uint64 time = SDL_GetTicks();
 	if (time - player->prevChangeTextureTime <
 	    PLAYER_TEXTURE_CHANGE_DELTA_TIME_MS)

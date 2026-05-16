@@ -5,6 +5,7 @@ Player Player_Create(BulletList *bulletList)
 	Player player;
 
 	/* Eye sight */
+	player.sightDirection = PLAYER_DEFAULT_DIRECTION;
 	player.sightSurface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT,
 						RENDER_PIXEL_FORMAT);
 	player.sightRenderer = SDL_CreateSoftwareRenderer(player.sightSurface);
@@ -15,22 +16,28 @@ Player Player_Create(BulletList *bulletList)
 	player.magazine.bulletList = bulletList;
 	player.magazine.bulletNumber = BULLET_MAX_COUNT;
 
+	/* Texture */
+	player.prevChangeTextureTime = SDL_GetTicks();
+	player.textureNumber = 4;
+	SDL_Surface *textureSurface = IMG_Load(PLAYER_TEXTURE_FILE);
+	SDL_Surface *temp = SDL_CreateSurface(
+		PLAYER_TEXTURE_SIZE, PLAYER_TEXTURE_SIZE, RENDER_PIXEL_FORMAT);
+	SDL_Rect rect = { 0, 0, PLAYER_TEXTURE_SIZE, PLAYER_TEXTURE_SIZE };
+	for (int i = 0; i < PLAYER_TEXTURE_NUMBER; i++) {
+		rect.x = i * PLAYER_TEXTURE_SIZE;
+		SDL_BlitSurface(textureSurface, &rect, temp, NULL);
+		player.textures[i] = Camera_CreateTextureFromSurface(temp);
+		SDL_ClearSurface(temp, 0.0f, 0.0f, 0.0f, 0.0f);
+	}
+	SDL_DestroySurface(temp);
+	SDL_DestroySurface(textureSurface);
+
 	/* Render object */
 	player.object.rect.x = MAP_DEFAULT_POS.x - PLAYER_SIZE_HALF;
 	player.object.rect.y = MAP_DEFAULT_POS.y - PLAYER_SIZE_HALF;
 	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
-	player.object.direction = PLAYER_DEFAULT_DIRECTION;
-
-	SDL_Surface *surface = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
-						 PLAYER_SIZE * WINDOW_SCALE,
-						 RENDER_PIXEL_FORMAT);
-	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
-	Painter_DrawCircle(renderer, PLAYER_SIZE_HALF * WINDOW_SCALE,
-			   PLAYER_SIZE_HALF * WINDOW_SCALE,
-			   PLAYER_SIZE_HALF * WINDOW_SCALE, PLAYER_COLOR, true);
-	player.object.texture = Camera_CreateTextureFromSurface(surface);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroySurface(surface);
+	player.object.direction = 0.0f;
+	player.object.texture = player.textures[0];
 
 	return player;
 }
@@ -60,8 +67,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	vertices[0].color = vertices[1].color = vertices[2].color =
 		(SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
 
-	for (float degree = player->object.direction - PLAYER_SIGHT_FOV_HALF;
-	     degree < player->object.direction + PLAYER_SIGHT_FOV_HALF;
+	for (float degree = player->sightDirection - PLAYER_SIGHT_FOV_HALF;
+	     degree < player->sightDirection + PLAYER_SIGHT_FOV_HALF;
 	     degree += PLAYER_SIGHT_RAY_DELTA) {
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
@@ -154,7 +161,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 				 player->object.rect.y + PLAYER_SIZE_HALF };
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
-	player->object.direction =
+	player->sightDirection =
 		SDL_atan2f(mouseY - playerPos.y, mouseX - playerPos.x);
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 
@@ -188,11 +195,35 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	} else if (keyboardState[SDL_SCANCODE_R]) {
 		Bullet_ReloadMagazine(&player->magazine);
 	}
+
+	/* Change texture */
+	Uint64 time = SDL_GetTicks();
+	if (time - player->prevChangeTextureTime <
+	    PLAYER_TEXTURE_CHANGE_DELTA_TIME_MS)
+		return;
+	player->prevChangeTextureTime = time;
+
+	if (x || y) {
+		if (player->textureNumber < 3)
+			player->textureNumber++;
+		else
+			player->textureNumber = 0;
+	} else {
+		if (player->textureNumber < 4 || player->textureNumber == 7)
+			player->textureNumber = 4;
+		else
+			player->textureNumber++;
+	}
+
+	player->object.texture = player->textures[player->textureNumber];
 }
 
 void Player_Delete(Player *player)
 {
-	SDL_DestroyTexture(player->object.texture);
+	/* Texture */
+	for (int i = 0; i < PLAYER_TEXTURE_NUMBER; i++) {
+		SDL_DestroyTexture(player->textures[i]);
+	}
 
 	/* Eye sight */
 	SDL_DestroyTexture(player->sightTexture);

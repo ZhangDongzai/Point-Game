@@ -19,9 +19,13 @@ add_executable(Point-Game
 file(COPY sources/fusion-pixel-10px-monospaced-zh_hans.ttf DESTINATION ${CMAKE_BINARY_DIR}/sources/)
 file(COPY sources/map.txt DESTINATION ${CMAKE_BINARY_DIR}/sources/)
 file(COPY sources/texture.bmp DESTINATION ${CMAKE_BINARY_DIR}/sources/)
+file(COPY sources/player.png DESTINATION ${CMAKE_BINARY_DIR}/sources/)
 
 find_package(SDL3 REQUIRED)
 target_link_libraries(Point-Game PRIVATE SDL3::SDL3)
 
 find_package(SDL3_ttf REQUIRED)
 target_link_libraries(Point-Game PRIVATE SDL3_ttf::SDL3_ttf)
+
+find_package(SDL3_image REQUIRED)
+target_link_libraries(Point-Game PRIVATE SDL3_image::SDL3_image)

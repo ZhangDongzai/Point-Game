@@ -13,6 +13,7 @@
  */
 typedef struct {
 	/* Eye sight */
+	float sightDirection;
 	SDL_Surface *sightSurface;
 	SDL_Renderer *sightRenderer;
 	SDL_Texture *sightTexture;
@@ -22,6 +23,11 @@ typedef struct {
 
 	/* Render object */
 	Render_Object object;
+
+	/* Texture */
+	Uint64 prevChangeTextureTime;
+	Uint8 textureNumber;
+	SDL_Texture *textures[PLAYER_TEXTURE_NUMBER];
 } Player;
 
 /**

@@ -3,6 +3,7 @@
 
 #include <SDL3/SDL.h>
 #include <SDL3_ttf/SDL_ttf.h>
+#include <SDL3_image/SDL_image.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -30,6 +31,10 @@
 #define PLAYER_SIGHT_FOV_HALF (PLAYER_SIGHT_FOV / 2.0f)
 #define PLAYER_SIGHT_RAY_NUMBER 100
 #define PLAYER_SIGHT_RAY_DELTA (PLAYER_SIGHT_FOV / PLAYER_SIGHT_RAY_NUMBER)
+#define PLAYER_TEXTURE_FILE "./sources/player.png"
+#define PLAYER_TEXTURE_NUMBER 9
+#define PLAYER_TEXTURE_SIZE 32
+#define PLAYER_TEXTURE_CHANGE_DELTA_TIME_MS 100
 
 // Map
 #define MAP_FILE "./sources/map.txt"

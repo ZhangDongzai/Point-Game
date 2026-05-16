@@ -125,7 +125,7 @@ Render_Boundary Map_GetBoundary()
 	return boundary;
 }
 
-bool Map_IsHit(Map *map, float x, float y)
+bool Map_IsPointHit(Map *map, float x, float y)
 {
 	if (x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT) {
 		return true;
@@ -133,6 +133,14 @@ bool Map_IsHit(Map *map, float x, float y)
 		return true;
 	}
 	return false;
+}
+
+bool Map_IsRectHit(Map *map, SDL_FRect *rect)
+{
+	return Map_IsPointHit(map, rect->x, rect->y) ||
+	       Map_IsPointHit(map, rect->x + rect->w, rect->y) ||
+	       Map_IsPointHit(map, rect->x, rect->y + rect->h) ||
+	       Map_IsPointHit(map, rect->x + rect->w, rect->y + rect->w);
 }
 
 void Map_Delete(Map *map)

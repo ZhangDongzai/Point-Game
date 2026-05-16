@@ -86,7 +86,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
 			if (!Camera_IsPosOnScreen(&vertical))
 				break;
-			if (Map_IsHit(map, vertical.x, vertical.y)) {
+			if (Map_IsPointHit(map, vertical.x, vertical.y)) {
 				isHitWall = true;
 				break;
 			}
@@ -105,7 +105,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
 			if (!Camera_IsPosOnScreen(&horizontal))
 				break;
-			if (Map_IsHit(map, horizontal.x, horizontal.y)) {
+			if (Map_IsPointHit(map, horizontal.x, horizontal.y)) {
 				isHitWall = true;
 				break;
 			}
@@ -146,7 +146,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 		if (!isHitWall)
 			continue;
-		wallRect.h = Map_IsHit(map, endPos.x, endPos.y + 1.0f) ?
+		wallRect.h = Map_IsPointHit(map, endPos.x, endPos.y + 1.0f) ?
 				     WINDOW_SCALE :
 				     WINDOW_SCALE + MAP_WALL_DELTA;
 		endPos.x = (int)endPos.x, endPos.y = (int)endPos.y;
@@ -202,13 +202,13 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	if (!Map_IsHit(map, player->object.rect.x + PLAYER_SIZE_HALF + x,
-		       player->object.rect.y + PLAYER_SIZE_HALF)) {
-		player->object.rect.x += x;
+	player->object.rect.x += x;
+	if (Map_IsRectHit(map, &player->object.rect)) {
+		player->object.rect.x -= x;
 	}
-	if (!Map_IsHit(map, player->object.rect.x + PLAYER_SIZE_HALF,
-		       player->object.rect.y + PLAYER_SIZE_HALF + y)) {
-		player->object.rect.y += y;
+	player->object.rect.y += y;
+	if (Map_IsRectHit(map, &player->object.rect)) {
+		player->object.rect.y -= y;
 	}
 
 	/* Shoot & reload */

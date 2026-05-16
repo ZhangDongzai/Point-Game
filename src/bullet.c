@@ -79,8 +79,8 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
 			SDL_sinf(bulletList->object.direction) * BULLET_SPEED *
 			deltaTime / 1000.0f;
 
-		if (!Map_IsHit(map, bulletList->object.rect.x,
-			       bulletList->object.rect.y)) {
+		if (!Map_IsPointHit(map, bulletList->object.rect.x,
+				    bulletList->object.rect.y)) {
 			continue;
 		}
 

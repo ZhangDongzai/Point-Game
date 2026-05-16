@@ -45,7 +45,8 @@ Render_Boundary Map_GetBoundary();
  *
  * \returns a bool value
  */
-bool Map_IsHit(Map *map, float x, float y);
+bool Map_IsPointHit(Map *map, float x, float y);
+bool Map_IsRectHit(Map *map, SDL_FRect *rect);
 
 /**
  * Update the map

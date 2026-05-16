@@ -5,7 +5,8 @@ BulletList *Bullet_CreateList()
 	return (BulletList *)calloc(1, sizeof(BulletList));
 }
 
-bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
+bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
+		   float direction)
 {
 	Uint64 now = SDL_GetTicks();
 
@@ -36,7 +37,7 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object)
 	bullet.rect.w = BULLET_WIDTH;
 	bullet.rect.h = BULLET_HEIGHT;
 	bullet.flipMode = SDL_FLIP_NONE;
-	bullet.direction = object->direction;
+	bullet.direction = direction;
 
 	SDL_Surface *surface =
 		SDL_CreateSurface(MAP_WIDTH, MAP_HEIGHT, RENDER_PIXEL_FORMAT);

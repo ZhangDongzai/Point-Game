@@ -35,7 +35,8 @@ BulletList *Bullet_CreateList();
  *
  * \return true if the bullet is created successfully, otherwise false
  */
-bool Bullet_Create(BulletMagazine *magazine, Render_Object *object);
+bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
+		   float direction);
 
 /**
  * Reload magazine

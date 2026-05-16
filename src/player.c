@@ -191,7 +191,8 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 
 	/* Shoot & reload */
 	if (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
-		Bullet_Create(&player->magazine, &player->object);
+		Bullet_Create(&player->magazine, &player->object,
+			      player->sightDirection);
 	} else if (keyboardState[SDL_SCANCODE_R]) {
 		Bullet_ReloadMagazine(&player->magazine);
 	}

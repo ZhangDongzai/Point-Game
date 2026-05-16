@@ -202,13 +202,20 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	player->object.rect.x += x;
-	if (Map_IsRectHit(map, &player->object.rect)) {
-		player->object.rect.x -= x;
+	if (!Map_IsPointHit(map, player->object.rect.x + x,
+			    player->object.rect.y + player->object.rect.h) &&
+	    !Map_IsPointHit(map,
+			    player->object.rect.x + player->object.rect.w + x,
+			    player->object.rect.y + player->object.rect.h)) {
+		player->object.rect.x += x;
 	}
-	player->object.rect.y += y;
-	if (Map_IsRectHit(map, &player->object.rect)) {
-		player->object.rect.y -= y;
+	if (!Map_IsPointHit(map, player->object.rect.x,
+			    player->object.rect.y + player->object.rect.h +
+				    y) &&
+	    !Map_IsPointHit(map, player->object.rect.x + player->object.rect.w,
+			    player->object.rect.y + player->object.rect.h +
+				    y)) {
+		player->object.rect.y += y;
 	}
 
 	/* Shoot & reload */

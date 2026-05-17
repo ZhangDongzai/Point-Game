@@ -10,8 +10,12 @@ Map Map_Init()
 	Map map;
 	map.floor.srcrect.x = map.floor.srcrect.y = 0;
 	map.wall.srcrect.x = map.wall.srcrect.y = 0;
-	map.floor.dstrect.x = map.floor.dstrect.y = map.wall.dstrect.x = 0;
-	map.wall.dstrect.y = -MAP_WALL_DELTA_SCALE;
+	map.floor.dstrect.x = map.floor.dstrect.y = 0;
+	map.wall.dstrect.x = map.wall.dstrect.y = 0;
+	map.floor.srcrect.w = map.wall.srcrect.w = WINDOW_WIDTH;
+	map.floor.srcrect.h = map.wall.srcrect.h = WINDOW_HEIGHT;
+	map.floor.dstrect.w = map.wall.dstrect.w = WINDOW_WIDTH_SCALE;
+	map.floor.dstrect.h = map.wall.dstrect.h = WINDOW_HEIGHT_SCALE;
 	map.floor.direction = map.wall.direction = 0.0f;
 	map.floor.flipMode = map.wall.flipMode = SDL_FLIP_NONE;
 
@@ -24,10 +28,7 @@ Map Map_Init()
 
 	fgets(line, sizeof(line), file);
 	sscanf(line, "%d %d", &MAP_WIDTH, &MAP_HEIGHT);
-	map.floor.dstrect.w = map.wall.dstrect.w = MAP_WIDTH;
-	map.floor.dstrect.h = map.wall.dstrect.h = MAP_HEIGHT;
-	map.floor.srcrect.w = map.wall.srcrect.w = MAP_WIDTH * WINDOW_SCALE;
-	map.floor.srcrect.h = map.wall.srcrect.h = MAP_HEIGHT * WINDOW_SCALE;
+	map.boundary = (SDL_FRect){ 0, 0, MAP_WIDTH, MAP_HEIGHT };
 	MAP_MAX_LENGTH = MAP_WIDTH + MAP_HEIGHT;
 	map.list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
 
@@ -43,8 +44,9 @@ Map Map_Init()
 
 	fclose(file);
 
-	map.surface = SDL_CreateSurface(
-		map.floor.srcrect.w, map.floor.srcrect.h, RENDER_PIXEL_FORMAT);
+	map.surface = SDL_CreateSurface(MAP_WIDTH * WINDOW_SCALE,
+					MAP_HEIGHT * WINDOW_SCALE,
+					RENDER_PIXEL_FORMAT);
 	map.floor.texture = Camera_CreateTextureFromSurface(map.surface);
 	map.wall.texture = Camera_CreateTextureFromSurface(map.surface);
 
@@ -111,7 +113,7 @@ void Map_Render(Map *map)
 				break;
 			}
 			rect.x = column * WINDOW_SCALE;
-			rect.y = row * WINDOW_SCALE;
+			rect.y = row * WINDOW_SCALE - MAP_WALL_DELTA;
 			SDL_BlitSurfaceScaled(map->wallTexture, NULL,
 					      map->surface, &rect,
 					      SDL_SCALEMODE_NEAREST);
@@ -119,6 +121,16 @@ void Map_Render(Map *map)
 	}
 	SDL_UpdateTexture(map->wall.texture, NULL, map->surface->pixels,
 			  map->surface->pitch);
+}
+
+void Map_Update(Map *map)
+{
+	SDL_FPoint point = { 0, 0 };
+	point = Camera_GetPosOnMap(&point);
+	map->floor.srcrect.x = map->wall.srcrect.x = point.x * WINDOW_SCALE;
+	map->floor.srcrect.y = map->wall.srcrect.y = point.y * WINDOW_SCALE;
+	map->floor.dstrect.x = map->wall.dstrect.x = point.x;
+	map->floor.dstrect.y = map->wall.dstrect.y = point.y;
 }
 
 bool Map_IsPointHit(Map *map, float x, float y)

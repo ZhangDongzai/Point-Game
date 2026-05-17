@@ -20,6 +20,8 @@ typedef struct {
 	SDL_Surface *floorTexture;
 	SDL_Surface *wallTexture;
 
+	SDL_FRect boundary;
+
 	int *list;
 	SDL_Surface *surface;
 	Render_Object floor;
@@ -45,6 +47,13 @@ bool Map_IsRectHit(Map *map, SDL_FRect *rect);
  * Render the map
  */
 void Map_Render(Map *map);
+
+/** 
+ * Update the map
+ *
+ * Make sure only render the parts on screen 
+ */
+void Map_Update(Map *map);
 
 /**
  * Delete a map

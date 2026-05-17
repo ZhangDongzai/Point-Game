@@ -5,14 +5,17 @@ InfoLabel InfoLabel_Create()
 	InfoLabel infoLabel;
 	strcpy(infoLabel.text, "00");
 
+	infoLabel.object.dstrect.w = 2.0f;
+	infoLabel.object.dstrect.h = 1.0f;
+	infoLabel.object.srcrect.x = infoLabel.object.srcrect.y = 0;
+	infoLabel.object.srcrect.w = infoLabel.object.dstrect.w * WINDOW_SCALE;
+	infoLabel.object.srcrect.h = infoLabel.object.dstrect.h * WINDOW_SCALE;
 	infoLabel.object.direction = 0.0f;
-	infoLabel.object.rect.h = 1.0f;
-	infoLabel.object.rect.w = 2.0f;
 	infoLabel.object.flipMode = SDL_FLIP_NONE;
 
-	infoLabel.surface = SDL_CreateSurface(
-		infoLabel.object.rect.w * WINDOW_SCALE,
-		infoLabel.object.rect.h * WINDOW_SCALE, RENDER_PIXEL_FORMAT);
+	infoLabel.surface = SDL_CreateSurface(infoLabel.object.srcrect.w,
+					      infoLabel.object.srcrect.h,
+					      RENDER_PIXEL_FORMAT);
 	infoLabel.object.texture =
 		Camera_CreateTextureFromSurface(infoLabel.surface);
 	SDL_SetTextureBlendMode(infoLabel.object.texture, SDL_BLENDMODE_BLEND);
@@ -27,8 +30,8 @@ InfoLabel InfoLabel_Create()
 
 void InfoLabel_Update(InfoLabel *infoLabel, Player *player)
 {
-	infoLabel->object.rect.x = player->object.rect.x + PLAYER_SIZE;
-	infoLabel->object.rect.y = player->object.rect.y + PLAYER_SIZE;
+	infoLabel->object.dstrect.x = player->object.dstrect.x + PLAYER_SIZE;
+	infoLabel->object.dstrect.y = player->object.dstrect.y + PLAYER_SIZE;
 
 	if (SDL_GetTicks() - player->magazine.prevReloadTime <
 	    BULLET_RELOAD_TIME_MS)

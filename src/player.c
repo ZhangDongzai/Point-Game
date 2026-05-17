@@ -35,9 +35,11 @@ Player Player_Create(BulletList *bulletList)
 	SDL_DestroySurface(textureSurface);
 
 	/* Render object */
-	player.object.rect.x = MAP_DEFAULT_POS.x - PLAYER_SIZE_HALF;
-	player.object.rect.y = MAP_DEFAULT_POS.y - PLAYER_SIZE_HALF;
-	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
+	player.object.srcrect.x = player.object.srcrect.y = 0;
+	player.object.srcrect.w = player.object.srcrect.h = PLAYER_SIZE * WINDOW_SCALE;
+	player.object.dstrect.x = MAP_DEFAULT_POS.x - PLAYER_SIZE_HALF;
+	player.object.dstrect.y = MAP_DEFAULT_POS.y - PLAYER_SIZE_HALF;
+	player.object.dstrect.w = player.object.dstrect.h = PLAYER_SIZE;
 	player.object.direction = 0.0f;
 	player.object.texture = player.textures[0];
 
@@ -59,8 +61,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	bool isHitWall = false;
 	SDL_Vertex vertices[PLAYER_SIGHT_RAY_NUMBER + 1];
 	SDL_FPoint startPos, endPos;
-	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
-			   player->object.rect.y + PLAYER_SIZE_HALF };
+	SDL_FPoint pos = { player->object.dstrect.x + PLAYER_SIZE_HALF,
+			   player->object.dstrect.y + PLAYER_SIZE_HALF };
 	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE,
 			       WINDOW_SCALE + MAP_WALL_DELTA };
 
@@ -178,8 +180,8 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
 	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-	SDL_FPoint playerPos = { player->object.rect.x + PLAYER_SIZE_HALF,
-				 player->object.rect.y + PLAYER_SIZE_HALF };
+	SDL_FPoint playerPos = { player->object.dstrect.x + PLAYER_SIZE_HALF,
+				 player->object.dstrect.y + PLAYER_SIZE_HALF };
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
 	player->sightDirection =
@@ -201,20 +203,22 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	if (!Map_IsPointHit(map, player->object.rect.x + x,
-			    player->object.rect.y + player->object.rect.h) &&
-	    !Map_IsPointHit(map,
-			    player->object.rect.x + player->object.rect.w + x,
-			    player->object.rect.y + player->object.rect.h)) {
-		player->object.rect.x += x;
+	if (!Map_IsPointHit(map, player->object.dstrect.x + x,
+			    player->object.dstrect.y +
+				    player->object.dstrect.h) &&
+	    !Map_IsPointHit(
+		    map,
+		    player->object.dstrect.x + player->object.dstrect.w + x,
+		    player->object.dstrect.y + player->object.dstrect.h)) {
+		player->object.dstrect.x += x;
 	}
-	if (!Map_IsPointHit(map, player->object.rect.x,
-			    player->object.rect.y + player->object.rect.h +
-				    y) &&
-	    !Map_IsPointHit(map, player->object.rect.x + player->object.rect.w,
-			    player->object.rect.y + player->object.rect.h +
-				    y)) {
-		player->object.rect.y += y;
+	if (!Map_IsPointHit(map, player->object.dstrect.x,
+			    player->object.dstrect.y +
+				    player->object.dstrect.h + y) &&
+	    !Map_IsPointHit(
+		    map, player->object.dstrect.x + player->object.dstrect.w,
+		    player->object.dstrect.y + player->object.dstrect.h + y)) {
+		player->object.dstrect.y += y;
 	}
 
 	/* Shoot & reload */

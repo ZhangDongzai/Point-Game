@@ -8,8 +8,10 @@ SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 Map Map_Init()
 {
 	Map map;
-	map.floor.rect.x = map.floor.rect.y = map.wall.rect.x = 0;
-	map.wall.rect.y = -MAP_WALL_DELTA_SCALE;
+	map.floor.srcrect.x = map.floor.srcrect.y = 0;
+	map.wall.srcrect.x = map.wall.srcrect.y = 0;
+	map.floor.dstrect.x = map.floor.dstrect.y = map.wall.dstrect.x = 0;
+	map.wall.dstrect.y = -MAP_WALL_DELTA_SCALE;
 	map.floor.direction = map.wall.direction = 0.0f;
 	map.floor.flipMode = map.wall.flipMode = SDL_FLIP_NONE;
 
@@ -22,8 +24,10 @@ Map Map_Init()
 
 	fgets(line, sizeof(line), file);
 	sscanf(line, "%d %d", &MAP_WIDTH, &MAP_HEIGHT);
-	map.floor.rect.w = map.wall.rect.w = MAP_WIDTH;
-	map.floor.rect.h = map.wall.rect.h = MAP_HEIGHT;
+	map.floor.dstrect.w = map.wall.dstrect.w = MAP_WIDTH;
+	map.floor.dstrect.h = map.wall.dstrect.h = MAP_HEIGHT;
+	map.floor.srcrect.w = map.wall.srcrect.w = MAP_WIDTH * WINDOW_SCALE;
+	map.floor.srcrect.h = map.wall.srcrect.h = MAP_HEIGHT * WINDOW_SCALE;
 	MAP_MAX_LENGTH = MAP_WIDTH + MAP_HEIGHT;
 	map.list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
 
@@ -39,9 +43,8 @@ Map Map_Init()
 
 	fclose(file);
 
-	map.surface = SDL_CreateSurface(MAP_WIDTH * WINDOW_SCALE,
-					MAP_HEIGHT * WINDOW_SCALE,
-					RENDER_PIXEL_FORMAT);
+	map.surface = SDL_CreateSurface(
+		map.floor.srcrect.w, map.floor.srcrect.h, RENDER_PIXEL_FORMAT);
 	map.floor.texture = Camera_CreateTextureFromSurface(map.surface);
 	map.wall.texture = Camera_CreateTextureFromSurface(map.surface);
 

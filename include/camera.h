@@ -20,7 +20,8 @@ typedef struct {
  * The object can be rendered on the screen
  */
 typedef struct {
-	SDL_FRect rect;
+	SDL_FRect srcrect;
+	SDL_FRect dstrect;
 	SDL_FlipMode flipMode;
 	SDL_Texture *texture;
 	float direction;

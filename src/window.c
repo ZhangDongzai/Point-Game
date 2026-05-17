@@ -40,8 +40,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 	app->preFrameTime = SDL_GetTicks();
 	app->deltaTime = 0;
-	
-	Map_Update(&app->map);
 
 	return SDL_APP_CONTINUE;
 }

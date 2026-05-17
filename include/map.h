@@ -42,9 +42,9 @@ bool Map_IsPointHit(Map *map, float x, float y);
 bool Map_IsRectHit(Map *map, SDL_FRect *rect);
 
 /**
- * Update the map
+ * Render the map
  */
-void Map_Update(Map *map);
+void Map_Render(Map *map);
 
 /**
  * Delete a map

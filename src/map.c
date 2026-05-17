@@ -68,10 +68,12 @@ Map Map_Init()
 
 	SDL_DestroySurface(fileSurface);
 
+	Map_Render(&map);
+
 	return map;
 }
 
-void Map_Update(Map *map)
+void Map_Render(Map *map)
 {
 	// Floor
 	SDL_ClearSurface(map->surface, 0.0f, 0.0f, 0.0f, 0.0f);

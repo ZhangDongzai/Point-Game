@@ -16,16 +16,12 @@ typedef enum {
 } MAP_CODE;
 
 typedef struct {
-	// Texture
-	SDL_Surface *floorTexture;
-	SDL_Surface *wallTexture;
+	SDL_Texture *floor;
+	SDL_Texture *wall;
 
 	SDL_FRect boundary;
 
 	int *list;
-	SDL_Surface *surface;
-	Render_Object floor;
-	Render_Object wall;
 } Map;
 
 /**
@@ -46,14 +42,7 @@ bool Map_IsRectHit(Map *map, SDL_FRect *rect);
 /**
  * Render the map
  */
-void Map_Render(Map *map);
-
-/** 
- * Update the map
- *
- * Make sure only render the parts on screen 
- */
-void Map_Update(Map *map);
+void Map_Render(SDL_Renderer *renderer, Map *map, SDL_FPoint *point);
 
 /**
  * Delete a map

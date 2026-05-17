@@ -21,18 +21,18 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	}
 
 	if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH,
-					 WINDOW_HEIGHT, SDL_WINDOW_OPENGL, &app->window,
-					 &app->renderer)) {
+					 WINDOW_HEIGHT, SDL_WINDOW_OPENGL,
+					 &app->window, &app->renderer)) {
 		SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
 		return SDL_APP_FAILURE;
 	}
 
-	if (!SDL_GL_SetSwapInterval(-1)){
+	if (!SDL_GL_SetSwapInterval(-1)) {
 		SDL_GL_SetSwapInterval(1);
 	}
-	
+
 	Camera_BindRenderer(app->renderer);
-	
+
 	app->map = Map_Init();
 	app->bulletList = Bullet_CreateList();
 	app->player = Player_Create(app->bulletList);
@@ -63,15 +63,20 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map);
 	InfoLabel_Update(&app->infoLabel, &app->player);
 	Camera_Update(&app->player.object, &app->map.boundary);
-	Map_Update(&app->map);
 
 	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
 	SDL_RenderClear(app->renderer);
 
-	Camera_RenderObject(&app->map.floor);
+	SDL_FPoint start = { 0.0f, 0.0f };
+	start = Camera_GetPosOnMap(&start);
+	start.x = (int)start.x, start.y = (int)start.y;
+	for (int row = 0; row < WINDOW_HEIGHT_SCALE + 1; row++) {
+		Map_Render(app->renderer, &app->map, &start);
+		start.y++;
+	}
+
 	Camera_RenderObjects(app->bulletList);
 	Camera_RenderObject(&app->player.object);
-	Camera_RenderObject(&app->map.wall);
 	Player_DrawSight(app->renderer, &app->player, &app->map);
 	Camera_RenderObject(&app->infoLabel.object);
 

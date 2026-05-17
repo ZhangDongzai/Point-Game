@@ -160,7 +160,6 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
 				   NULL, 0);
 	}
-	printf("Ray number: %d/%d\n", rayNumber, PLAYER_SIGHT_RAY_NUMBER);
 
 	Painter_DrawCircle(player->sightRenderer, vertices[0].position.x,
 			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,

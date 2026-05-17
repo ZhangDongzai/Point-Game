@@ -74,4 +74,11 @@ SDL_FPoint Camera_GetPosOnScreen(SDL_FPoint *point);
  */
 bool Camera_IsPosOnScreen(SDL_FPoint *point);
 
+/**
+ * Get the position of point on the map
+ *
+ * \returns the position of point on the map
+ */
+SDL_FPoint Camera_GetPosOnMap(SDL_FPoint *point);
+
 #endif /* INCLUDE_CAMERA_H */

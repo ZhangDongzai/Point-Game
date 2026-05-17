@@ -76,3 +76,11 @@ bool Camera_IsPosOnScreen(SDL_FPoint *point)
 	return !(pos.x <= 0 || pos.x >= WINDOW_WIDTH || pos.y <= 0 ||
 		 pos.y >= WINDOW_HEIGHT);
 }
+
+SDL_FPoint Camera_GetPosOnMap(SDL_FPoint *point)
+{
+	return (SDL_FPoint){
+		(point->x - WINDOW_WIDTH / 2.0f) / WINDOW_SCALE + camera.pos.x,
+		(point->y - WINDOW_HEIGHT / 2.0f) / WINDOW_SCALE + camera.pos.y
+	};
+}

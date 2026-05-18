@@ -4,11 +4,6 @@
 #include <common.h>
 
 /**
- * The shape of render object
- */
-typedef enum { RENDER_SHAPE_RECT, RENDER_SHAPE_CIRCLE } Render_Shape;
-
-/**
  * A camera to render object
  */
 typedef struct {

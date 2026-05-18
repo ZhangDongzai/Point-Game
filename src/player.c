@@ -40,6 +40,7 @@ Player Player_Create(BulletList *bulletList)
 	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
 	player.object.direction = 0.0f;
 	player.object.texture = player.textures[0];
+	player.object.height = RENDER_HEIGHT_FLOOR;
 
 	return player;
 }

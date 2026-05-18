@@ -3,6 +3,11 @@
 
 #include <common.h>
 
+typedef enum {
+	RENDER_HEIGHT_FLOOR,
+	RENDER_HEIGHT_AIR
+} RENDER_HEIGHT;
+
 /**
  * A camera to render object
  */
@@ -19,6 +24,7 @@ typedef struct {
 	SDL_FlipMode flipMode;
 	SDL_Texture *texture;
 	float direction;
+	RENDER_HEIGHT height;
 } Render_Object;
 
 /**
@@ -38,7 +44,7 @@ void Camera_BindRenderer(SDL_Renderer *renderer);
 /**
  * Render something on the screen
  */
-void Camera_RenderObject(Render_Object *object);
+void Camera_RenderObject(Render_Object *object, int row);
 
 /**
  * Create a texture from surface
@@ -48,7 +54,7 @@ SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface);
 /** 
  * Render a series of objects 
  */
-void Camera_RenderObjects(Render_ObjectNode *objectNode);
+void Camera_RenderObjects(Render_ObjectNode *objectNode, int row);
 
 /**
  * Update camera's pos

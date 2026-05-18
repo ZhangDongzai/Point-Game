@@ -38,6 +38,7 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
 	bullet.rect.h = BULLET_HEIGHT;
 	bullet.flipMode = SDL_FLIP_NONE;
 	bullet.direction = direction;
+	bullet.height = RENDER_HEIGHT_AIR;
 
 	SDL_Surface *surface =
 		SDL_CreateSurface(MAP_WIDTH, MAP_HEIGHT, RENDER_PIXEL_FORMAT);

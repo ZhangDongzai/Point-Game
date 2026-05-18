@@ -72,13 +72,14 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	start.x = (int)start.x, start.y = (int)start.y;
 	for (int row = 0; row < WINDOW_HEIGHT_SCALE + 1; row++) {
 		Map_Render(app->renderer, &app->map, &start);
+
+		Camera_RenderObjects(app->bulletList, start.y);
+		Camera_RenderObject(&app->player.object, start.y);
 		start.y++;
 	}
 
-	Camera_RenderObjects(app->bulletList);
-	Camera_RenderObject(&app->player.object);
 	Player_DrawSight(app->renderer, &app->player, &app->map);
-	Camera_RenderObject(&app->infoLabel.object);
+	Camera_RenderObject(&app->infoLabel.object, start.y);
 
 	SDL_RenderPresent(app->renderer);
 

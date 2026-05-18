@@ -17,8 +17,20 @@ SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface)
 	return texture;
 }
 
-void Camera_RenderObject(Render_Object *object)
+void Camera_RenderObject(Render_Object *object, int row)
 {
+	float objectRow = object->rect.y;
+	switch (object->height) {
+	case RENDER_HEIGHT_FLOOR:
+		objectRow += object->rect.h;
+		break;
+	case RENDER_HEIGHT_AIR:
+		objectRow += object->rect.h / 2.0f;
+		break;
+	}
+	if (!(row < objectRow && objectRow < row + 1))
+		return;
+
 	SDL_FRect rect = { (object->rect.x - camera.pos.x) * WINDOW_SCALE +
 				   WINDOW_WIDTH / 2.0f,
 			   (object->rect.y - camera.pos.y) * WINDOW_SCALE +
@@ -30,13 +42,13 @@ void Camera_RenderObject(Render_Object *object)
 				 angle, NULL, object->flipMode);
 }
 
-void Camera_RenderObjects(Render_ObjectNode *objectNode)
+void Camera_RenderObjects(Render_ObjectNode *objectNode, int row)
 {
 	for (Render_ObjectNode *node = objectNode; node != NULL;
 	     node = node->next) {
 		if (!node->object.texture)
 			continue;
-		Camera_RenderObject(&node->object);
+		Camera_RenderObject(&node->object, row);
 	}
 }
 

@@ -19,17 +19,15 @@ SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface)
 
 void Camera_RenderObject(Render_Object *object)
 {
-	SDL_FRect dstrect = {
-		(object->dstrect.x - camera.pos.x) * WINDOW_SCALE +
-			WINDOW_WIDTH / 2.0f,
-		(object->dstrect.y - camera.pos.y) * WINDOW_SCALE +
-			WINDOW_HEIGHT / 2.0f,
-		object->dstrect.w * WINDOW_SCALE,
-		object->dstrect.h * WINDOW_SCALE
-	};
+	SDL_FRect rect = { (object->rect.x - camera.pos.x) * WINDOW_SCALE +
+				   WINDOW_WIDTH / 2.0f,
+			   (object->rect.y - camera.pos.y) * WINDOW_SCALE +
+				   WINDOW_HEIGHT / 2.0f,
+			   object->rect.w * WINDOW_SCALE,
+			   object->rect.h * WINDOW_SCALE };
 	double angle = object->direction / SDL_PI_D * 180;
-	SDL_RenderTextureRotated(camera.renderer, object->texture, &object->srcrect,
-				 &dstrect, angle, NULL, object->flipMode);
+	SDL_RenderTextureRotated(camera.renderer, object->texture, NULL, &rect,
+				 angle, NULL, object->flipMode);
 }
 
 void Camera_RenderObjects(Render_ObjectNode *objectNode)
@@ -44,22 +42,22 @@ void Camera_RenderObjects(Render_ObjectNode *objectNode)
 
 void Camera_Update(Render_Object *object, SDL_FRect *boundary)
 {
-	camera.pos.x = object->dstrect.x;
-	camera.pos.y = object->dstrect.y;
+	camera.pos.x = object->rect.x;
+	camera.pos.y = object->rect.y;
 
 	float left = WINDOW_WIDTH_SCALE / 2.0f + boundary->x;
 	float right = -WINDOW_WIDTH_SCALE / 2.0f + boundary->x + boundary->w;
 	float up = WINDOW_HEIGHT_SCALE / 2.0f + boundary->y;
 	float bottom = WINDOW_HEIGHT_SCALE / 2.0f + boundary->y + boundary->h;
 
-	if (object->dstrect.x < left) {
+	if (object->rect.x < left) {
 		camera.pos.x = left;
-	} else if (object->dstrect.x > right) {
+	} else if (object->rect.x > right) {
 		camera.pos.x = right;
 	}
-	if (object->dstrect.y < up) {
+	if (object->rect.y < up) {
 		camera.pos.y = up;
-	} else if (object->dstrect.y > bottom) {
+	} else if (object->rect.y > bottom) {
 		camera.pos.y = bottom;
 	}
 }

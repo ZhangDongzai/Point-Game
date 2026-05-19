@@ -9,6 +9,7 @@ InfoLabel InfoLabel_Create()
 	infoLabel.object.rect.h = 1.0f;
 	infoLabel.object.rect.w = 2.0f;
 	infoLabel.object.flipMode = SDL_FLIP_NONE;
+	infoLabel.object.height = RENDER_HEIGHT_UI;
 
 	infoLabel.surface = SDL_CreateSurface(
 		infoLabel.object.rect.w * WINDOW_SCALE,

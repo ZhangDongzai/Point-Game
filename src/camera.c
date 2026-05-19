@@ -27,8 +27,11 @@ void Camera_RenderObject(Render_Object *object, int row)
 	case RENDER_HEIGHT_AIR:
 		objectRow += object->rect.h / 2.0f;
 		break;
+	case RENDER_HEIGHT_UI:
+		objectRow = row;
+		break;
 	}
-	if (!(row < objectRow && objectRow < row + 1))
+	if (!(row <= objectRow && objectRow < row + 1))
 		return;
 
 	SDL_FRect rect = { (object->rect.x - camera.pos.x) * WINDOW_SCALE +

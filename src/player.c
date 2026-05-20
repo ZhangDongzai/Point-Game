@@ -15,14 +15,19 @@ Player Player_Create(BulletList *bulletList)
 	/* Magazine */
 	player.magazine.bulletList = bulletList;
 	player.magazine.bulletNumber = BULLET_MAX_COUNT;
+	SDL_Surface *temp = SDL_CreateSurface(1, 1, RENDER_PIXEL_FORMAT);
+	SDL_ClearSurface(temp, BULLET_COLOR.r, BULLET_COLOR.g, BULLET_COLOR.b,
+			 BULLET_COLOR.a);
+	player.magazine.bullet = Camera_CreateTextureFromSurface(temp);
+	SDL_DestroySurface(temp);
 
 	/* Texture */
 	player.prevChangeTextureTime = SDL_GetTicks();
 	player.textureNumber = 4;
 	SDL_Surface *textureSurface = IMG_Load(PLAYER_TEXTURE_FILE);
-	SDL_Surface *temp = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
-					      PLAYER_SIZE * WINDOW_SCALE,
-					      RENDER_PIXEL_FORMAT);
+	temp = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
+				 PLAYER_SIZE * WINDOW_SCALE,
+				 RENDER_PIXEL_FORMAT);
 	SDL_Rect rect = { 0, 0, PLAYER_TEXTURE_SIZE, PLAYER_TEXTURE_SIZE };
 	for (int i = 0; i < PLAYER_TEXTURE_NUMBER; i++) {
 		rect.x = i * PLAYER_TEXTURE_SIZE;

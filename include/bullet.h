@@ -19,6 +19,7 @@ typedef Render_ObjectNode BulletList;
  * Magazine status
  */
 typedef struct {
+	SDL_Texture *bullet;
 	BulletList *bulletList;
 	short bulletNumber;
 	Uint64 prevReloadTime;

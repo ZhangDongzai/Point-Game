@@ -39,20 +39,7 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
 	bullet.flipMode = SDL_FLIP_NONE;
 	bullet.direction = direction;
 	bullet.height = RENDER_HEIGHT_AIR;
-
-	SDL_Surface *surface =
-		SDL_CreateSurface(MAP_WIDTH, MAP_HEIGHT, RENDER_PIXEL_FORMAT);
-	SDL_Renderer *renderer = SDL_CreateSoftwareRenderer(surface);
-
-	SDL_SetRenderDrawColor(renderer, BULLET_COLOR.r, BULLET_COLOR.g,
-			       BULLET_COLOR.b, BULLET_COLOR.a);
-	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
-
-	bullet.texture = Camera_CreateTextureFromSurface(surface);
-
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroySurface(surface);
+	bullet.texture = magazine->bullet;
 
 	magazine->bulletList->object = bullet;
 
@@ -98,7 +85,6 @@ void Bullet_Delete(Bullet *bullet)
 {
 	if (!bullet->texture)
 		return;
-	SDL_DestroyTexture(bullet->texture);
 	bullet->texture = NULL;
 }
 

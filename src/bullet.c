@@ -72,7 +72,7 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
 			continue;
 		}
 
-		Bullet_Delete(&bulletList->object);
+		bulletList->object.texture = NULL;
 
 		if (bulletList->prev && bulletList->next) {
 			bulletList->prev->next = bulletList->next;
@@ -81,18 +81,8 @@ void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
 	}
 }
 
-void Bullet_Delete(Bullet *bullet)
-{
-	if (!bullet->texture)
-		return;
-	bullet->texture = NULL;
-}
-
 void Bullet_DeleteList(BulletList *bulletList)
 {
-	for (; bulletList; bulletList = bulletList->next) {
-		Bullet_Delete(&bulletList->object);
-	}
-
-	free(bulletList);
+	for (; bulletList; bulletList = bulletList->next)
+		free(bulletList);
 }

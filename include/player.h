@@ -13,9 +13,7 @@
  */
 typedef struct {
 	/* Eye sight */
-	float sightDirection;
-	SDL_Surface *sightSurface;
-	SDL_Renderer *sightRenderer;
+	float direction;
 	SDL_Texture *sightTexture;
 
 	/* Magazine */
@@ -35,7 +33,7 @@ typedef struct {
  * 
  * \returns the player struct context
  */
-Player Player_Create(BulletList *bulletList);
+Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList);
 
 /**
  * Draw the player's eye sight

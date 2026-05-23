@@ -31,7 +31,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 	app->map = Map_Init();
 	app->bulletList = Bullet_CreateList();
-	app->player = Player_Create(app->bulletList);
+	app->player = Player_Create(app->renderer, app->bulletList);
 	app->infoLabel = InfoLabel_Create();
 
 	app->preFrameTime = SDL_GetTicks();

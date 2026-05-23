@@ -1,16 +1,15 @@
+#include <SDL3/SDL_render.h>
 #include <player.h>
 
-Player Player_Create(BulletList *bulletList)
+Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 {
 	Player player;
 
 	/* Eye sight */
-	player.sightDirection = PLAYER_DEFAULT_DIRECTION;
-	player.sightSurface = SDL_CreateSurface(WINDOW_WIDTH, WINDOW_HEIGHT,
-						RENDER_PIXEL_FORMAT);
-	player.sightRenderer = SDL_CreateSoftwareRenderer(player.sightSurface);
-	player.sightTexture =
-		Camera_CreateTextureFromSurface(player.sightSurface);
+	player.direction = PLAYER_DEFAULT_DIRECTION;
+	player.sightTexture = SDL_CreateTexture(renderer, RENDER_PIXEL_FORMAT,
+						SDL_TEXTUREACCESS_TARGET,
+						WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	/* Magazine */
 	player.magazine.bulletList = bulletList;
@@ -52,9 +51,10 @@ Player Player_Create(BulletList *bulletList)
 
 void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
+	SDL_SetRenderTarget(renderer, player->sightTexture);
 	/* Draw black translucent background */
-	SDL_SetRenderDrawColor(player->sightRenderer, 0, 0, 0, 128);
-	SDL_RenderClear(player->sightRenderer);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+	SDL_RenderClear(renderer);
 
 	/* Draw transparent sight */
 	float deltaX, deltaY;
@@ -70,13 +70,13 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE,
 			       WINDOW_SCALE + MAP_WALL_DELTA };
 
-	SDL_SetRenderDrawColor(player->sightRenderer, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
 	vertices[0].color = (SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
 
 	int rayNumber = 0;
-	for (float degree = player->sightDirection - PLAYER_SIGHT_FOV_HALF;
-	     degree < player->sightDirection + PLAYER_SIGHT_FOV_HALF;
+	for (float degree = player->direction - PLAYER_SIGHT_FOV_HALF;
+	     degree < player->direction + PLAYER_SIGHT_FOV_HALF;
 	     degree += PLAYER_SIGHT_RAY_DELTA) {
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
@@ -158,23 +158,19 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		endPos.x = (int)endPos.x, endPos.y = (int)endPos.y;
 		endPos = Camera_GetPosOnScreen(&endPos);
 		wallRect.x = endPos.x, wallRect.y = endPos.y - MAP_WALL_DELTA;
-		SDL_RenderFillRect(player->sightRenderer, &wallRect);
+		SDL_RenderFillRect(renderer, &wallRect);
 	}
 
 	for (int i = 2; i < rayNumber + 1; i++) {
 		vertices[1] = vertices[i - 1], vertices[2] = vertices[i];
-		SDL_RenderGeometry(player->sightRenderer, NULL, vertices, 3,
+		SDL_RenderGeometry(renderer, NULL, vertices, 3,
 				   NULL, 0);
 	}
 
-	Painter_DrawCircle(player->sightRenderer, vertices[0].position.x,
+	Painter_DrawCircle(renderer, vertices[0].position.x,
 			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,
 			   (SDL_Color){ 0, 0, 0, 0 }, true);
-	SDL_RenderPresent(player->sightRenderer);
-
-	SDL_UpdateTexture(player->sightTexture, NULL,
-			  player->sightSurface->pixels,
-			  player->sightSurface->pitch);
+	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderTexture(renderer, player->sightTexture, NULL, NULL);
 }
 
@@ -188,7 +184,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 				 player->object.rect.y + PLAYER_SIZE_HALF };
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
-	player->sightDirection =
+	player->direction =
 		SDL_atan2f(mouseY - playerPos.y, mouseX - playerPos.x);
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 
@@ -226,14 +222,14 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	/* Shoot & reload */
 	if (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
 		Bullet_Create(&player->magazine, &player->object,
-			      player->sightDirection);
+			      player->direction);
 	} else if (keyboardState[SDL_SCANCODE_R]) {
 		Bullet_ReloadMagazine(&player->magazine);
 	}
 
 	/* Change texture */
-	if ((player->sightDirection > PI_HALF) ||
-	    (player->sightDirection < -PI_HALF)) {
+	if ((player->direction > PI_HALF) ||
+	    (player->direction < -PI_HALF)) {
 		player->object.flipMode = SDL_FLIP_HORIZONTAL;
 	} else {
 		player->object.flipMode = SDL_FLIP_NONE;
@@ -269,6 +265,4 @@ void Player_Delete(Player *player)
 
 	/* Eye sight */
 	SDL_DestroyTexture(player->sightTexture);
-	SDL_DestroyRenderer(player->sightRenderer);
-	SDL_DestroySurface(player->sightSurface);
 }

@@ -41,6 +41,4 @@ void Painter_DrawCircle(SDL_Renderer *renderer, float centerX, float centerY,
 			error += (tx - diameter);
 		}
 	}
-
-	SDL_RenderPresent(renderer);
 }

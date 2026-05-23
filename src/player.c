@@ -24,7 +24,7 @@ Player Player_Create(BulletList *bulletList)
 	/* Texture */
 	player.prevChangeTextureTime = SDL_GetTicks();
 	player.textureNumber = 4;
-	SDL_Surface *textureSurface = IMG_Load(PLAYER_TEXTURE_FILE);
+	SDL_Surface *textureSurface = SDL_LoadPNG(PLAYER_TEXTURE_FILE);
 	temp = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
 				 PLAYER_SIZE * WINDOW_SCALE,
 				 RENDER_PIXEL_FORMAT);

@@ -35,7 +35,7 @@ Map Map_Init()
 	fclose(file);
 
 	// Textures
-	SDL_Surface *fileSurface = IMG_Load(MAP_TEXTURE_FILE);
+	SDL_Surface *fileSurface = SDL_LoadPNG(MAP_TEXTURE_FILE);
 	SDL_Rect rect = { MAP_TEXTURE_FLOOR.x * MAP_TEXTURE_SIZE,
 			  MAP_TEXTURE_FLOOR.y * MAP_TEXTURE_SIZE,
 			  MAP_TEXTURE_SIZE, MAP_TEXTURE_SIZE };

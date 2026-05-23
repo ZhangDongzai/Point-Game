@@ -26,6 +26,3 @@ target_link_libraries(Point-Game PRIVATE SDL3::SDL3)
 
 find_package(SDL3_ttf REQUIRED)
 target_link_libraries(Point-Game PRIVATE SDL3_ttf::SDL3_ttf)
-
-find_package(SDL3_image REQUIRED)
-target_link_libraries(Point-Game PRIVATE SDL3_image::SDL3_image)

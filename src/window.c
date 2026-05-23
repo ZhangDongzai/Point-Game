@@ -27,10 +27,6 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		return SDL_APP_FAILURE;
 	}
 
-	if (!SDL_GL_SetSwapInterval(-1)) {
-		SDL_GL_SetSwapInterval(1);
-	}
-
 	Camera_BindRenderer(app->renderer);
 
 	app->map = Map_Init();

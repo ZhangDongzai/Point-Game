@@ -22,7 +22,7 @@ typedef struct {
  *
  * \returns The info label object
  */
-InfoLabel InfoLabel_Create();
+InfoLabel InfoLabel_Create(TTF_Font *font);
 
 /**
  * Update info

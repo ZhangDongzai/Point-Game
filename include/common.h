@@ -19,6 +19,8 @@
 #define WINDOW_SCALE 64.0f
 #define WINDOW_WIDTH_SCALE (WINDOW_WIDTH / WINDOW_SCALE)
 #define WINDOW_HEIGHT_SCALE (WINDOW_HEIGHT / WINDOW_SCALE)
+#define WINDOW_FONT_PATH "./sources/fusion-pixel-10px-monospaced-zh_hans.ttf"
+#define WINDOW_FONT_SIZE (WINDOW_SCALE * 0.8f)
 
 // Player
 #define PLAYER_DEFAULT_DIRECTION 0.0f
@@ -57,7 +59,5 @@
 
 // Info label
 #define INFOLABEL_COLOR (SDL_Color){ 255, 255, 255, 255 }
-#define INFOLABEL_FONT "./sources/fusion-pixel-10px-monospaced-zh_hans.ttf"
-#define INFOLABEL_FONT_SIZE (WINDOW_SCALE * 0.8f)
 
 #endif /* INCLUDE_COMMON_H */

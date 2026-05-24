@@ -1,6 +1,6 @@
 #include <infoLabel.h>
 
-InfoLabel InfoLabel_Create()
+InfoLabel InfoLabel_Create(TTF_Font *font)
 {
 	InfoLabel infoLabel;
 	strcpy(infoLabel.text, "00");
@@ -21,7 +21,7 @@ InfoLabel InfoLabel_Create()
 
 	infoLabel.renderer = SDL_CreateSoftwareRenderer(infoLabel.surface);
 	infoLabel.textEngine = TTF_CreateRendererTextEngine(infoLabel.renderer);
-	infoLabel.font = TTF_OpenFont(INFOLABEL_FONT, INFOLABEL_FONT_SIZE);
+	infoLabel.font = font;
 
 	return infoLabel;
 }

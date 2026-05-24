@@ -15,15 +15,22 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		return SDL_APP_FAILURE;
 	}
 
+	if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH,
+					 WINDOW_HEIGHT, SDL_WINDOW_OPENGL,
+					 &app->window, &app->renderer)) {
+		SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+		return SDL_APP_FAILURE;
+	}
+
 	if (!TTF_Init()) {
 		SDL_Log("Couldn't initialize SDL_ttf: %s\n", SDL_GetError());
 		return SDL_APP_FAILURE;
 	}
 
-	if (!SDL_CreateWindowAndRenderer(WINDOW_NAME, WINDOW_WIDTH,
-					 WINDOW_HEIGHT, SDL_WINDOW_OPENGL,
-					 &app->window, &app->renderer)) {
-		SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+	app->font = TTF_OpenFont(WINDOW_FONT_PATH, WINDOW_FONT_SIZE);
+	if (!app->font) {
+		SDL_Log("Couldn't load font file: %s\n\tFont file path: %s\n",
+			SDL_GetError(), WINDOW_FONT_PATH);
 		return SDL_APP_FAILURE;
 	}
 
@@ -32,7 +39,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	app->map = Map_Init();
 	app->bulletList = Bullet_CreateList();
 	app->player = Player_Create(app->renderer, app->bulletList);
-	app->infoLabel = InfoLabel_Create();
+	app->infoLabel = InfoLabel_Create(app->font);
 
 	app->preFrameTime = SDL_GetTicks();
 	app->deltaTime = 0;

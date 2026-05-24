@@ -13,7 +13,7 @@ add_executable(Point-Game
     src/map.c
     src/bullet.c
     src/painter.c
-    src/infoLabel.c
+    src/ui.c
 )
 
 file(COPY sources/fusion-pixel-10px-monospaced-zh_hans.ttf DESTINATION ${CMAKE_BINARY_DIR}/sources/)

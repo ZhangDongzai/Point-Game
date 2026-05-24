@@ -27,7 +27,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 		return SDL_APP_FAILURE;
 	}
 
-	app->font = TTF_OpenFont(WINDOW_FONT_PATH, WINDOW_FONT_SIZE);
+	app->font = TTF_OpenFont(WINDOW_FONT_PATH, WINDOW_SCALE);
 	if (!app->font) {
 		SDL_Log("Couldn't load font file: %s\n\tFont file path: %s\n",
 			SDL_GetError(), WINDOW_FONT_PATH);
@@ -39,7 +39,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	app->map = Map_Init();
 	app->bulletList = Bullet_CreateList();
 	app->player = Player_Create(app->renderer, app->bulletList);
-	app->infoLabel = InfoLabel_Create(app->font);
+	app->ui = UI_Init(app->renderer, app->font);
 
 	app->preFrameTime = SDL_GetTicks();
 	app->deltaTime = 0;
@@ -62,28 +62,37 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
 	App *app = appstate;
 
-	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
-	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map);
-	InfoLabel_Update(&app->infoLabel, &app->player);
-	Camera_Update(&app->player.object, &app->map.boundary);
-
 	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
 	SDL_RenderClear(app->renderer);
 
-	SDL_FPoint start = { 0.0f, 0.0f };
-	start = Camera_GetPosOnMap(&start);
-	start.x = (int)start.x, start.y = (int)start.y;
-	for (int row = 0; row < WINDOW_HEIGHT_SCALE + 1; row++) {
-		Map_Render(app->renderer, &app->map, &start);
+	switch (app->ui.mode) {
+	case UI_MODE_GAME:
+		Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
+		Player_Update(&app->player, app->deltaTime, app->bulletList,
+			      &app->map);
+		Camera_Update(&app->player.object, &app->map.boundary);
 
-		Camera_RenderObjects(app->bulletList, start.y);
-		Camera_RenderObject(&app->player.object, start.y);
-		start.y++;
+		SDL_FPoint start = { 0.0f, 0.0f };
+		start = Camera_GetPosOnMap(&start);
+		start.x = (int)start.x, start.y = (int)start.y;
+		for (int row = 0; row < WINDOW_HEIGHT_SCALE + 1;
+		     row++, start.y++) {
+			Map_Render(app->renderer, &app->map, &start);
+
+			Camera_RenderObjects(app->bulletList, start.y);
+			Camera_RenderObject(&app->player.object, start.y);
+		}
+
+		Player_DrawSight(app->renderer, &app->player, &app->map);
+		UI_RenderGame(app->renderer, &app->ui, &app->player);
+		break;
+	case UI_MODE_MENU:
+		UI_RenderMenu(app->renderer, &app->ui);
+		break;
+	case UI_MODE_START:
+		UI_RenderStart(app->renderer, &app->ui);
+		break;
 	}
-
-	Player_DrawSight(app->renderer, &app->player, &app->map);
-	Camera_RenderObject(&app->infoLabel.object, start.y);
-
 	SDL_RenderPresent(app->renderer);
 
 	app->deltaTime = SDL_GetTicks() - app->preFrameTime;
@@ -98,7 +107,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 	Bullet_DeleteList(app->bulletList);
 	Player_Delete(&app->player);
 	Map_Delete(&app->map);
-	InfoLabel_Delete(&app->infoLabel);
+	UI_Destroy(&app->ui);
 	free(appstate);
 	TTF_Quit();
 	return;

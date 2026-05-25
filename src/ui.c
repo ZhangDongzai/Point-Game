@@ -21,24 +21,12 @@ void UI_RenderStart(SDL_Renderer *renderer, UI *ui)
 	TTF_DrawRendererText(text, rect.x, rect.y);
 
 	// Button
-	TTF_SetFontSize(ui->font, WINDOW_SCALE);
-	TTF_SetTextString(text, UI_START_BUTTON_TEXT,
-			  strlen(UI_START_BUTTON_TEXT));
-	TTF_GetTextSize(text, &rect.w, &rect.h);
-	rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE - rect.w / 2.0f;
-	rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE - rect.h / 2.0f;
-	TTF_DrawRendererText(text, rect.x, rect.y);
-	TTF_DestroyText(text);
-
-	SDL_FPoint mouse;
-	SDL_MouseButtonFlags mouseFlag = SDL_GetMouseState(&mouse.x, &mouse.y);
-	SDL_Point mousef = { mouse.x, mouse.y };
-	if (SDL_PointInRect(&mousef, &rect)) {
-		SDL_RenderLine(renderer, rect.x, rect.y + rect.h,
-			       rect.x + rect.w, rect.y + rect.h);
-		if (mouseFlag & SDL_BUTTON_LMASK)
-			ui->mode = UI_MODE_GAME;
-	}
+	UI_Button button = UI_CreateButton(
+		ui, NULL, UI_START_BUTTON_TEXT, &UI_DEFAULT_COLOR, WINDOW_SCALE,
+		UI_START_BUTTON_POS.x * WINDOW_SCALE,
+		UI_START_BUTTON_POS.y * WINDOW_SCALE);
+	if (UI_RenderButton(renderer, ui, &button))
+		ui->mode = UI_MODE_GAME;
 }
 
 void UI_RenderGame(SDL_Renderer *renderer, UI *ui, Player *player)
@@ -82,29 +70,70 @@ void UI_RenderGame(SDL_Renderer *renderer, UI *ui, Player *player)
 
 void UI_RenderMenu(SDL_Renderer *renderer, UI *ui)
 {
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-	TTF_Text *text = TTF_CreateText(ui->textEngine, ui->font,
-					      UI_MENU_BUTTON_TEXT,
-					      strlen(UI_MENU_BUTTON_TEXT));
-	SDL_Rect rect;
-	TTF_GetTextSize(text, &rect.w, &rect.h);
-	rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE - rect.w / 2.0f;
-	rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE - rect.h / 2.0f;
-	TTF_DrawRendererText(text, rect.x, rect.y);
-	TTF_DestroyText(text);
-
-	SDL_FPoint mouse;
-	SDL_MouseButtonFlags mouseFlag = SDL_GetMouseState(&mouse.x, &mouse.y);
-	SDL_Point mousef = { mouse.x, mouse.y };
-	if (SDL_PointInRect(&mousef, &rect)) {
-		SDL_RenderLine(renderer, rect.x, rect.y + rect.h,
-			       rect.x + rect.w, rect.y + rect.h);
-		if (mouseFlag & SDL_BUTTON_LMASK)
-			ui->mode = UI_MODE_GAME;
-	}
+	UI_Button button = UI_CreateButton(
+		ui, NULL, UI_MENU_BUTTON_TEXT, &UI_DEFAULT_COLOR, WINDOW_SCALE,
+		UI_MENU_BUTTON_POS.x * WINDOW_SCALE,
+		UI_MENU_BUTTON_POS.y * WINDOW_SCALE);
+	if (UI_RenderButton(renderer, ui, &button))
+		ui->mode = UI_MODE_GAME;
 }
 
 void UI_Destroy(UI *ui)
 {
 	TTF_DestroyRendererTextEngine(ui->textEngine);
+}
+
+UI_Button UI_CreateButton(UI *ui, SDL_Color *bgColor, char *text,
+			  SDL_Color *textColor, float textFontSize, int x,
+			  int y)
+{
+	UI_Button button;
+
+	button.rect.x = x, button.rect.y = y;
+	button.rect.w = button.rect.h = 0;
+	button.bgColor = bgColor ? *bgColor : UI_DEFAULT_BACKGROUND_COLOR;
+
+	strcpy(button.text, text);
+	button.textFontSize = textFontSize;
+	button.textColor = textColor ? *textColor : UI_DEFAULT_COLOR;
+
+	return button;
+}
+
+bool UI_RenderButton(SDL_Renderer *renderer, UI *ui, UI_Button *button)
+{
+	SDL_SetRenderDrawColor(renderer, button->bgColor.r, button->bgColor.g,
+			       button->bgColor.b, button->bgColor.a);
+
+	TTF_SetFontSize(ui->font, button->textFontSize);
+	TTF_Text *text = TTF_CreateText(ui->textEngine, ui->font, button->text,
+					strlen(button->text));
+
+	TTF_GetTextSize(text, &button->rect.w, &button->rect.h);
+	button->rect.x = button->rect.x - button->rect.w / 2.0f;
+	button->rect.y = button->rect.y - button->rect.h / 2.0f;
+	SDL_FRect rect = { button->rect.x, button->rect.y, button->rect.w,
+			   button->rect.h };
+
+	SDL_RenderFillRect(renderer, &rect);
+	SDL_SetRenderDrawColor(renderer, button->textColor.r,
+			       button->textColor.g, button->textColor.b,
+			       button->textColor.a);
+	TTF_DrawRendererText(text, button->rect.x, button->rect.y);
+
+	TTF_DestroyText(text);
+
+	SDL_FPoint mousef;
+	SDL_MouseButtonFlags mouseFlag =
+		SDL_GetMouseState(&mousef.x, &mousef.y);
+	SDL_Point mouse = { mousef.x, mousef.y };
+	if (SDL_PointInRect(&mouse, &button->rect)) {
+		SDL_RenderLine(renderer, button->rect.x,
+			       button->rect.y + button->rect.h,
+			       button->rect.x + button->rect.w,
+			       button->rect.y + button->rect.h);
+		if (mouseFlag & SDL_BUTTON_LMASK)
+			return true;
+	}
+	return false;
 }

@@ -2,8 +2,12 @@
 
 UI UI_Init(SDL_Renderer *renderer, TTF_Font *font)
 {
-	return (UI){ UI_MODE_START, font,
-		     TTF_CreateRendererTextEngine(renderer) };
+	UI ui;
+	ui.font = font;
+	ui.mode = UI_MODE_START;
+	ui.textEngine = TTF_CreateRendererTextEngine(renderer);
+	ui.text = TTF_CreateText(ui.textEngine, ui.font, "", strlen(""));
+	return ui;
 }
 
 void UI_RenderStart(SDL_Renderer *renderer, UI *ui)
@@ -11,14 +15,13 @@ void UI_RenderStart(SDL_Renderer *renderer, UI *ui)
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	// Title
 	TTF_SetFontSize(ui->font, WINDOW_SCALE * 2);
-	TTF_Text *text = TTF_CreateText(ui->textEngine, ui->font,
-					UI_START_TITLE_TEXT,
-					strlen(UI_START_TITLE_TEXT));
+	TTF_SetTextString(ui->text, UI_START_TITLE_TEXT,
+			  sizeof(UI_START_TITLE_TEXT));
 	SDL_Rect rect;
-	TTF_GetTextSize(text, &rect.w, &rect.h);
+	TTF_GetTextSize(ui->text, &rect.w, &rect.h);
 	rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE - rect.w / 2.0f;
 	rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE - rect.h / 2.0f;
-	TTF_DrawRendererText(text, rect.x, rect.y);
+	TTF_DrawRendererText(ui->text, rect.x, rect.y);
 
 	// Button
 	UI_Button button = UI_CreateButton(
@@ -56,11 +59,8 @@ void UI_RenderGame(SDL_Renderer *renderer, UI *ui, Player *player)
 			       UI_INFOLABEL_FONT_COLOR.b,
 			       UI_INFOLABEL_FONT_COLOR.a);
 	TTF_SetFontSize(ui->font, UI_INFOLABEL_FONT_SIZE);
-	TTF_Text *renderText =
-		TTF_CreateText(ui->textEngine, ui->font, text, strlen(text));
-	TTF_DrawRendererText(renderText, pos.x + textOffset,
-			     pos.y + textOffset);
-	TTF_DestroyText(renderText);
+	TTF_SetTextString(ui->text, text, strlen(text));
+	TTF_DrawRendererText(ui->text, pos.x + textOffset, pos.y + textOffset);
 
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 	if (keyboardState[SDL_SCANCODE_ESCAPE]) {
@@ -70,16 +70,17 @@ void UI_RenderGame(SDL_Renderer *renderer, UI *ui, Player *player)
 
 void UI_RenderMenu(SDL_Renderer *renderer, UI *ui)
 {
-	UI_Button button = UI_CreateButton(
-		ui, NULL, UI_MENU_BUTTON_TEXT, &UI_DEFAULT_COLOR, WINDOW_SCALE,
-		UI_MENU_BUTTON_POS.x * WINDOW_SCALE,
-		UI_MENU_BUTTON_POS.y * WINDOW_SCALE);
+	UI_Button button = UI_CreateButton(ui, NULL, UI_MENU_BUTTON_TEXT,
+					   &UI_DEFAULT_COLOR, WINDOW_SCALE,
+					   UI_MENU_BUTTON_POS.x * WINDOW_SCALE,
+					   UI_MENU_BUTTON_POS.y * WINDOW_SCALE);
 	if (UI_RenderButton(renderer, ui, &button))
 		ui->mode = UI_MODE_GAME;
 }
 
 void UI_Destroy(UI *ui)
 {
+	TTF_DestroyText(ui->text);
 	TTF_DestroyRendererTextEngine(ui->textEngine);
 }
 
@@ -106,10 +107,9 @@ bool UI_RenderButton(SDL_Renderer *renderer, UI *ui, UI_Button *button)
 			       button->bgColor.b, button->bgColor.a);
 
 	TTF_SetFontSize(ui->font, button->textFontSize);
-	TTF_Text *text = TTF_CreateText(ui->textEngine, ui->font, button->text,
-					strlen(button->text));
+	TTF_SetTextString(ui->text, button->text, strlen(button->text));
 
-	TTF_GetTextSize(text, &button->rect.w, &button->rect.h);
+	TTF_GetTextSize(ui->text, &button->rect.w, &button->rect.h);
 	button->rect.x = button->rect.x - button->rect.w / 2.0f;
 	button->rect.y = button->rect.y - button->rect.h / 2.0f;
 	SDL_FRect rect = { button->rect.x, button->rect.y, button->rect.w,
@@ -119,9 +119,7 @@ bool UI_RenderButton(SDL_Renderer *renderer, UI *ui, UI_Button *button)
 	SDL_SetRenderDrawColor(renderer, button->textColor.r,
 			       button->textColor.g, button->textColor.b,
 			       button->textColor.a);
-	TTF_DrawRendererText(text, button->rect.x, button->rect.y);
-
-	TTF_DestroyText(text);
+	TTF_DrawRendererText(ui->text, button->rect.x, button->rect.y);
 
 	SDL_FPoint mousef;
 	SDL_MouseButtonFlags mouseFlag =

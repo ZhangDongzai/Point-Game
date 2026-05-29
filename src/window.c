@@ -84,13 +84,13 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		}
 
 		Player_DrawSight(app->renderer, &app->player, &app->map);
-		UI_RenderGame(app->renderer, &app->ui, &app->player);
+		UI_RenderGame(&app->ui, &app->player);
 		break;
 	case UI_MODE_MENU:
-		UI_RenderMenu(app->renderer, &app->ui);
+		UI_RenderMenu(&app->ui);
 		break;
 	case UI_MODE_START:
-		UI_RenderStart(app->renderer, &app->ui);
+		UI_RenderStart(&app->ui);
 		break;
 	}
 	SDL_RenderPresent(app->renderer);

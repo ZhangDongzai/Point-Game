@@ -43,7 +43,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map);
 /**
  * Update player's actions
  */
-void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList, Map *map);
+void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
+		   Map *map, bool *isMouseUsable);
 
 /**
  * Delete a player

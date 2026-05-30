@@ -41,6 +41,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	app->player = Player_Create(app->renderer, app->bulletList);
 	app->ui = UI_Init(app->renderer, app->font);
 
+	app->isMouseUsable = true;
 	app->preFrameTime = SDL_GetTicks();
 	app->deltaTime = 0;
 
@@ -69,7 +70,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 	case UI_MODE_GAME:
 		Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
 		Player_Update(&app->player, app->deltaTime, app->bulletList,
-			      &app->map);
+			      &app->map, &app->isMouseUsable);
 		Camera_Update(&app->player.object, &app->map.boundary);
 
 		SDL_FPoint start = { 0.0f, 0.0f };
@@ -104,6 +105,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		const bool *keyboardState = SDL_GetKeyboardState(NULL);
 		if (keyboardState[SDL_SCANCODE_ESCAPE]) {
 			app->ui.mode = UI_MODE_MENU;
+			app->isMouseUsable = false;
 		}
 
 		break;
@@ -111,8 +113,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		UI_Reset(&app->ui);
 		app->ui.rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE;
 		app->ui.rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE;
-		if (UI_Button(&app->ui, "CONTINUE"))
+		if (UI_Button(&app->ui, "CONTINUE")) {
 			app->ui.mode = UI_MODE_GAME;
+			app->isMouseUsable = false;
+		}
 		break;
 	case UI_MODE_START:
 		UI_Reset(&app->ui);
@@ -126,8 +130,10 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		app->ui.rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE;
 		app->ui.rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE;
 		app->ui.edgeColor = COLOR_ZERO;
-		if (UI_Button(&app->ui, "START"))
+		if (UI_Button(&app->ui, "START")) {
 			app->ui.mode = UI_MODE_GAME;
+			app->isMouseUsable = false;
+		}
 		break;
 	}
 	SDL_RenderPresent(app->renderer);

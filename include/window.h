@@ -18,6 +18,7 @@ typedef struct {
 	BulletList *bulletList;
 	Map map;
 
+	bool isMouseUsable;
 	Uint64 preFrameTime;
 	Uint64 deltaTime;
 } App;

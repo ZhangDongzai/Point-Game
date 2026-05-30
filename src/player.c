@@ -163,8 +163,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 	for (int i = 2; i < rayNumber + 1; i++) {
 		vertices[1] = vertices[i - 1], vertices[2] = vertices[i];
-		SDL_RenderGeometry(renderer, NULL, vertices, 3,
-				   NULL, 0);
+		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
 	}
 
 	Painter_DrawCircle(renderer, vertices[0].position.x,
@@ -175,7 +174,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 }
 
 void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
-		   Map *map)
+		   Map *map, bool *isMouseUsable)
 {
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
@@ -220,16 +219,17 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	}
 
 	/* Shoot & reload */
-	if (mouseState & SDL_BUTTON_MASK(SDL_BUTTON_LEFT)) {
+	if ((mouseState & SDL_BUTTON_LMASK) && *isMouseUsable) {
 		Bullet_Create(&player->magazine, &player->object,
 			      player->direction);
+	} else if (!(mouseState & SDL_BUTTON_LMASK) && !*isMouseUsable) {
+		*isMouseUsable = true;
 	} else if (keyboardState[SDL_SCANCODE_R]) {
 		Bullet_ReloadMagazine(&player->magazine);
 	}
 
 	/* Change texture */
-	if ((player->direction > PI_HALF) ||
-	    (player->direction < -PI_HALF)) {
+	if ((player->direction > PI_HALF) || (player->direction < -PI_HALF)) {
 		player->object.flipMode = SDL_FLIP_HORIZONTAL;
 	} else {
 		player->object.flipMode = SDL_FLIP_NONE;

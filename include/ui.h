@@ -29,21 +29,6 @@ typedef struct {
 UI UI_Init(SDL_Renderer *renderer, TTF_Font *font);
 
 /**
- * Render welcome screen
- */
-void UI_RenderStart(UI *ui);
-
-/**
- * Render infomation in game
- */
-void UI_RenderGame(UI *ui, Player *player);
-
-/**
- * Render menu when game stops
- */
-void UI_RenderMenu(UI *ui);
-
-/**
  * Destroy UI
  */
 void UI_Destroy(UI *ui);

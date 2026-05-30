@@ -84,13 +84,51 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		}
 
 		Player_DrawSight(app->renderer, &app->player, &app->map);
-		UI_RenderGame(&app->ui, &app->player);
+
+		SDL_FPoint labelPos = { app->player.object.rect.x + PLAYER_SIZE * 2,
+				   app->player.object.rect.y + PLAYER_SIZE * 1.5f };
+		labelPos = Camera_GetPosOnScreen(&labelPos);
+
+		char labelText[8];
+		if (SDL_GetTicks() - app->player.magazine.prevReloadTime <
+		    BULLET_RELOAD_TIME_MS)
+			sprintf(labelText, "  /%02d", BULLET_MAX_COUNT % 100);
+		else
+			sprintf(labelText, "%02d/%02d",
+				app->player.magazine.bulletNumber % 100,
+				BULLET_MAX_COUNT % 100);
+
+		UI_Reset(&app->ui);
+		app->ui.rect.x = labelPos.x, app->ui.rect.y = labelPos.y;
+		app->ui.bgColor = UI_INFOLABEL_BACKGROUND_COLOR;
+		app->ui.edgeColor = COLOR_ZERO;
+		TTF_SetFontSize(app->ui.font, UI_INFOLABEL_FONT_SIZE);
+		UI_Label(&app->ui, labelText);
+
+		const bool *keyboardState = SDL_GetKeyboardState(NULL);
+		if (keyboardState[SDL_SCANCODE_ESCAPE]) {
+			app->ui.mode = UI_MODE_MENU;
+		}
+
 		break;
 	case UI_MODE_MENU:
-		UI_RenderMenu(&app->ui);
+		UI_Reset(&app->ui);
+		app->ui.rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE;
+		app->ui.rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE;
+		if (UI_Button(&app->ui, "CONTINUE"))
+			app->ui.mode = UI_MODE_GAME;
 		break;
 	case UI_MODE_START:
-		UI_RenderStart(&app->ui);
+		UI_Reset(&app->ui);
+		app->ui.rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE;
+		app->ui.rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE;
+		UI_Label(&app->ui, WINDOW_NAME);
+
+		UI_Reset(&app->ui);
+		app->ui.rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE;
+		app->ui.rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE;
+		if (UI_Button(&app->ui, "START"))
+			app->ui.mode = UI_MODE_GAME;
 		break;
 	}
 	SDL_RenderPresent(app->renderer);

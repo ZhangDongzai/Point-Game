@@ -85,10 +85,6 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 		Player_DrawSight(app->renderer, &app->player, &app->map);
 
-		SDL_FPoint labelPos = { app->player.object.rect.x + PLAYER_SIZE * 2,
-				   app->player.object.rect.y + PLAYER_SIZE * 1.5f };
-		labelPos = Camera_GetPosOnScreen(&labelPos);
-
 		char labelText[8];
 		if (SDL_GetTicks() - app->player.magazine.prevReloadTime <
 		    BULLET_RELOAD_TIME_MS)
@@ -99,8 +95,8 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 				BULLET_MAX_COUNT % 100);
 
 		UI_Reset(&app->ui);
-		app->ui.rect.x = labelPos.x, app->ui.rect.y = labelPos.y;
-		app->ui.bgColor = UI_INFOLABEL_BACKGROUND_COLOR;
+		app->ui.rect.x = WINDOW_SCALE * 2;
+		app->ui.rect.y = WINDOW_HEIGHT - WINDOW_SCALE;
 		app->ui.edgeColor = COLOR_ZERO;
 		TTF_SetFontSize(app->ui.font, UI_INFOLABEL_FONT_SIZE);
 		UI_Label(&app->ui, labelText);

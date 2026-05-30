@@ -4,6 +4,11 @@ UI UI_Init(SDL_Renderer *renderer, TTF_Font *font)
 {
 	UI ui;
 	ui.mode = UI_MODE_START;
+	ui.rect = (SDL_Rect){ 0, 0, 0, 0 };
+	ui.edgeColor = UI_DEFAULT_EDGE_COLOR;
+	ui.bgColor = UI_DEFAULT_BG_COLOR;
+	ui.fontColor = UI_DEFAULT_FONT_COLOR;
+
 	ui.renderer = renderer;
 	ui.font = font;
 	ui.textEngine = TTF_CreateRendererTextEngine(renderer);
@@ -13,53 +18,38 @@ UI UI_Init(SDL_Renderer *renderer, TTF_Font *font)
 
 void UI_RenderStart(UI *ui)
 {
-	SDL_SetRenderDrawColor(ui->renderer, 255, 255, 255, 255);
-	// Title
-	TTF_SetFontSize(ui->font, WINDOW_SCALE * 2);
-	TTF_SetTextString(ui->text, UI_START_TITLE_TEXT,
-			  sizeof(UI_START_TITLE_TEXT));
-	SDL_Rect rect;
-	TTF_GetTextSize(ui->text, &rect.w, &rect.h);
-	rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE - rect.w / 2.0f;
-	rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE - rect.h / 2.0f;
-	TTF_DrawRendererText(ui->text, rect.x, rect.y);
+	UI_Reset(ui);
+	ui->rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE;
+	ui->rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE;
+	UI_Label(ui, WINDOW_NAME);
 
-	// Button
-	if (UI_Button(ui, UI_START_BUTTON_TEXT,
-		      UI_START_BUTTON_POS.x * WINDOW_SCALE,
-		      UI_START_BUTTON_POS.y * WINDOW_SCALE))
+	UI_Reset(ui);
+	ui->rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE;
+	ui->rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE;
+	if (UI_Button(ui, "START"))
 		ui->mode = UI_MODE_GAME;
 }
 
 void UI_RenderGame(UI *ui, Player *player)
 {
-	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE,
-			   player->object.rect.y + PLAYER_SIZE };
+	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE * 2,
+			   player->object.rect.y + PLAYER_SIZE * 1.5f };
 	pos = Camera_GetPosOnScreen(&pos);
-	SDL_FRect rect = { pos.x, pos.y, UI_INFOLABEL_WIDTH * WINDOW_SCALE,
-			   UI_INFOLABEL_HEIGHT * WINDOW_SCALE };
-
-	SDL_SetRenderDrawColor(ui->renderer, UI_INFOLABEL_BACKGROUND_COLOR.r,
-			       UI_INFOLABEL_BACKGROUND_COLOR.g,
-			       UI_INFOLABEL_BACKGROUND_COLOR.b,
-			       UI_INFOLABEL_BACKGROUND_COLOR.a);
-	SDL_RenderFillRect(ui->renderer, &rect);
 
 	char text[8];
-	int textOffset = WINDOW_SCALE / 20.0f;
 	if (SDL_GetTicks() - player->magazine.prevReloadTime <
 	    BULLET_RELOAD_TIME_MS)
 		sprintf(text, "  /%02d", BULLET_MAX_COUNT % 100);
 	else
 		sprintf(text, "%02d/%02d", player->magazine.bulletNumber % 100,
 			BULLET_MAX_COUNT % 100);
-	SDL_SetRenderDrawColor(ui->renderer, UI_INFOLABEL_FONT_COLOR.r,
-			       UI_INFOLABEL_FONT_COLOR.g,
-			       UI_INFOLABEL_FONT_COLOR.b,
-			       UI_INFOLABEL_FONT_COLOR.a);
+
+	UI_Reset(ui);
+	ui->rect.x = pos.x, ui->rect.y = pos.y;
+	ui->bgColor = UI_INFOLABEL_BACKGROUND_COLOR;
+	ui->edgeColor = COLOR_ZERO;
 	TTF_SetFontSize(ui->font, UI_INFOLABEL_FONT_SIZE);
-	TTF_SetTextString(ui->text, text, strlen(text));
-	TTF_DrawRendererText(ui->text, pos.x + textOffset, pos.y + textOffset);
+	UI_Label(ui, text);
 
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 	if (keyboardState[SDL_SCANCODE_ESCAPE]) {
@@ -69,9 +59,10 @@ void UI_RenderGame(UI *ui, Player *player)
 
 void UI_RenderMenu(UI *ui)
 {
-	if (UI_Button(ui, UI_MENU_BUTTON_TEXT,
-		      UI_MENU_BUTTON_POS.x * WINDOW_SCALE,
-		      UI_MENU_BUTTON_POS.y * WINDOW_SCALE))
+	UI_Reset(ui);
+	ui->rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE;
+	ui->rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE;
+	if (UI_Button(ui, "CONTINUE"))
 		ui->mode = UI_MODE_GAME;
 }
 
@@ -81,27 +72,60 @@ void UI_Destroy(UI *ui)
 	TTF_DestroyRendererTextEngine(ui->textEngine);
 }
 
-bool UI_Button(UI *ui, char *text, int x, int y)
+bool UI_Button(UI *ui, char *text)
 {
-	SDL_Rect rect;
-
-	TTF_SetTextString(ui->text, text, strlen(text));
-	TTF_GetTextSize(ui->text, &rect.w, &rect.h);
-
-	rect.x = x - rect.w / 2.0f;
-	rect.y = y - rect.h / 2.0f;
-
-	TTF_DrawRendererText(ui->text, rect.x, rect.y);
+	UI_Label(ui, text);
 
 	SDL_FPoint fMouse;
 	SDL_MouseButtonFlags mouseFlag =
 		SDL_GetMouseState(&fMouse.x, &fMouse.y);
 	SDL_Point mouse = { fMouse.x, fMouse.y };
-	if (SDL_PointInRect(&mouse, &rect)) {
-		SDL_RenderLine(ui->renderer, rect.x, rect.y + rect.h,
-			       rect.x + rect.w, rect.y + rect.h);
+	if (SDL_PointInRect(&mouse, &ui->rect)) {
+		SDL_RenderLine(ui->renderer, ui->rect.x,
+			       ui->rect.y + ui->rect.h, ui->rect.x + ui->rect.w,
+			       ui->rect.y + ui->rect.h);
 		if (mouseFlag & SDL_BUTTON_LMASK)
 			return true;
 	}
 	return false;
+}
+
+void UI_Label(UI *ui, char *text)
+{
+	SDL_FRect rect;
+	int pad = TTF_GetFontSize(ui->font) / 4;
+
+	TTF_SetTextString(ui->text, text, strlen(text));
+	TTF_GetTextSize(ui->text, &ui->rect.w, &ui->rect.h);
+	ui->rect.x -= ui->rect.w / 2.0f;
+	ui->rect.y -= ui->rect.h / 2.0f;
+	SDL_RectToFRect(&ui->rect, &rect);
+	rect.x -= pad, rect.y -= pad;
+	rect.w += pad * 2, rect.h += pad * 2;
+
+	if (ui->bgColor.a) {
+		SDL_SetRenderDrawColor(ui->renderer, ui->bgColor.r,
+				       ui->bgColor.g, ui->bgColor.b,
+				       ui->bgColor.a);
+		SDL_RenderFillRect(ui->renderer, &rect);
+	}
+
+	SDL_SetRenderDrawColor(ui->renderer, ui->fontColor.r, ui->fontColor.g,
+			       ui->fontColor.b, ui->fontColor.a);
+	TTF_DrawRendererText(ui->text, ui->rect.x, ui->rect.y);
+
+	if (ui->edgeColor.a) {
+		SDL_SetRenderDrawColor(ui->renderer, ui->edgeColor.r,
+				       ui->edgeColor.g, ui->edgeColor.b,
+				       ui->edgeColor.a);
+		SDL_RenderRect(ui->renderer, &rect);
+	}
+}
+
+void UI_Reset(UI *ui)
+{
+	ui->rect = (SDL_Rect){ 0, 0, 0, 0 };
+	ui->edgeColor = UI_DEFAULT_EDGE_COLOR;
+	ui->bgColor = UI_DEFAULT_BG_COLOR;
+	ui->fontColor = UI_DEFAULT_FONT_COLOR;
 }

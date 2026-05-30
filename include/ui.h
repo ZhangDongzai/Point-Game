@@ -12,6 +12,11 @@ typedef enum {
 
 typedef struct {
 	UI_MODE mode;
+	SDL_Rect rect;
+	SDL_Color edgeColor;
+	SDL_Color bgColor;
+	SDL_Color fontColor;
+
 	SDL_Renderer *renderer;
 	TTF_Font *font;
 	TTF_TextEngine *textEngine;
@@ -47,11 +52,22 @@ void UI_Destroy(UI *ui);
  *
  * \param ui the UI object
  * \param text the text on the button
- * \param x the x of button's center pos
- * \param y the y of button's center pos
  *
  * \return true if button is clicked, false otherwise
  */
-bool UI_Button(UI *ui, char *text, int x, int y);
+bool UI_Button(UI *ui, char *text);
+
+/** Render a label
+ * 
+ * \param ui the UI object
+ * \param text the text on the label
+ */
+void UI_Label(UI *ui, char *text);
+
+/** Set all UI elements to default values
+ *
+ * \param ui the UI object
+ */
+void UI_Reset(UI *ui);
 
 #endif /* INCLUDE_UI_H */

@@ -120,13 +120,16 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		break;
 	case UI_MODE_START:
 		UI_Reset(&app->ui);
+		TTF_SetFontSize(app->ui.font, WINDOW_SCALE * 2);
 		app->ui.rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE;
 		app->ui.rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE;
+		app->ui.edgeColor = COLOR_ZERO;
 		UI_Label(&app->ui, WINDOW_NAME);
 
 		UI_Reset(&app->ui);
 		app->ui.rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE;
 		app->ui.rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE;
+		app->ui.edgeColor = COLOR_ZERO;
 		if (UI_Button(&app->ui, "START"))
 			app->ui.mode = UI_MODE_GAME;
 		break;

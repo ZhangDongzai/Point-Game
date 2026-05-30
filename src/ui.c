@@ -78,4 +78,5 @@ void UI_Reset(UI *ui)
 	ui->edgeColor = UI_DEFAULT_EDGE_COLOR;
 	ui->bgColor = UI_DEFAULT_BG_COLOR;
 	ui->fontColor = UI_DEFAULT_FONT_COLOR;
+	TTF_SetFontSize(ui->font, UI_DEFAULT_FONT_SIZE);
 }

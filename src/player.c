@@ -132,7 +132,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		vertices[rayNumber].color = vertices[rayNumber - 1].color;
 		vertices[rayNumber].position = Camera_GetPosOnScreen(&endPos);
 
-		if (rayNumber == 2) {
+		if (rayNumber <= 2) {
 			/* Do nothing */
 		} else if (vertices[rayNumber - 2].position.x ==
 				   vertices[rayNumber - 1].position.x &&

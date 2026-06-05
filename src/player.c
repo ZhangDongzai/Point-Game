@@ -49,6 +49,26 @@ Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 	return player;
 }
 
+static inline void _Reduce_Vertex(SDL_Vertex *vertex, int *number)
+{
+	if (*number <= 2)
+		return;
+
+	if (vertex[*number - 2].position.x == vertex[*number - 1].position.x &&
+	    vertex[*number - 1].position.x == vertex[*number].position.x) {
+		vertex[*number - 1].position.y = vertex[*number].position.y;
+		(*number)--;
+		return;
+	}
+
+	if (vertex[*number - 2].position.y == vertex[*number - 1].position.y &&
+	    vertex[*number - 1].position.y == vertex[*number].position.y) {
+		vertex[*number - 1].position.x = vertex[*number].position.x;
+		(*number)--;
+		return;
+	}
+}
+
 void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
 	SDL_SetRenderTarget(renderer, player->sightTexture);
@@ -132,23 +152,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 		vertices[rayNumber].color = vertices[rayNumber - 1].color;
 		vertices[rayNumber].position = Camera_GetPosOnScreen(&endPos);
 
-		if (rayNumber <= 2) {
-			/* Do nothing */
-		} else if (vertices[rayNumber - 2].position.x ==
-				   vertices[rayNumber - 1].position.x &&
-			   vertices[rayNumber - 1].position.x ==
-				   vertices[rayNumber].position.x) {
-			vertices[rayNumber - 1].position.y =
-				vertices[rayNumber].position.y;
-			rayNumber--;
-		} else if (vertices[rayNumber - 2].position.y ==
-				   vertices[rayNumber - 1].position.y &&
-			   vertices[rayNumber - 1].position.y ==
-				   vertices[rayNumber].position.y) {
-			vertices[rayNumber - 1].position.x =
-				vertices[rayNumber].position.x;
-			rayNumber--;
-		}
+		_Reduce_Vertex(vertices, &rayNumber);
 
 		if (!isHitWall)
 			continue;

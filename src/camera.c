@@ -99,3 +99,6 @@ SDL_FPoint Camera_GetPosOnMap(SDL_FPoint *point)
 		(point->y - WINDOW_HEIGHT / 2.0f) / WINDOW_SCALE + camera.pos.y
 	};
 }
+
+extern inline bool Camera_SetRenderDrawColor(SDL_Renderer *renderer,
+					     SDL_Color *color);

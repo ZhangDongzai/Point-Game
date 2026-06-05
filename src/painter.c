@@ -8,7 +8,7 @@ void Painter_DrawCircle(SDL_Renderer *renderer, float centerX, float centerY,
 	float tx = 1.0f, ty = 1.0f;
 	float error = tx - diameter;
 	
-	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
+	Camera_SetRenderDrawColor(renderer, &color);
 
 	while (x >= y) {
 		if (isSolid) {

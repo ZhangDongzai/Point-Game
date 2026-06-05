@@ -54,20 +54,15 @@ void UI_Label(UI *ui, char *text)
 	rect.w += pad * 2, rect.h += pad * 2;
 
 	if (ui->bgColor.a) {
-		SDL_SetRenderDrawColor(ui->renderer, ui->bgColor.r,
-				       ui->bgColor.g, ui->bgColor.b,
-				       ui->bgColor.a);
+		Camera_SetRenderDrawColor(ui->renderer, &ui->bgColor);
 		SDL_RenderFillRect(ui->renderer, &rect);
 	}
 
-	SDL_SetRenderDrawColor(ui->renderer, ui->fontColor.r, ui->fontColor.g,
-			       ui->fontColor.b, ui->fontColor.a);
+	Camera_SetRenderDrawColor(ui->renderer, &ui->fontColor);
 	TTF_DrawRendererText(ui->text, ui->rect.x, ui->rect.y);
 
 	if (ui->edgeColor.a) {
-		SDL_SetRenderDrawColor(ui->renderer, ui->edgeColor.r,
-				       ui->edgeColor.g, ui->edgeColor.b,
-				       ui->edgeColor.a);
+		Camera_SetRenderDrawColor(ui->renderer, &ui->edgeColor);
 		SDL_RenderRect(ui->renderer, &rect);
 	}
 }

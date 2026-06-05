@@ -83,4 +83,13 @@ bool Camera_IsPosOnScreen(SDL_FPoint *point);
  */
 SDL_FPoint Camera_GetPosOnMap(SDL_FPoint *point);
 
+/**
+ * Set renderer draw color using SDL_Color
+ */
+inline bool Camera_SetRenderDrawColor(SDL_Renderer *renderer, SDL_Color *color)
+{
+	return SDL_SetRenderDrawColor(renderer, color->r, color->g, color->b,
+				      color->a);
+}
+
 #endif /* INCLUDE_CAMERA_H */

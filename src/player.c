@@ -1,4 +1,3 @@
-#include <SDL3/SDL_render.h>
 #include <player.h>
 
 Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
@@ -124,8 +123,16 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_FPoint endPos;
 	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
 			   player->object.rect.y + PLAYER_SIZE_HALF };
+
+	int columns = SDL_ceilf(WINDOW_WIDTH_SCALE);
+	int rows = SDL_ceilf(WINDOW_HEIGHT_SCALE);
+	bool wallState[rows][columns];
+	memset(wallState, false, sizeof(bool) * rows * columns);
 	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE,
 			       WINDOW_SCALE + MAP_WALL_DELTA };
+	SDL_FPoint start = { 0, 0 };
+	start = Camera_GetPosOnMap(&start);
+	start.x = (int)start.x, start.y = (int)start.y;
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
@@ -159,18 +166,35 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 
 		if (!isHitWall)
 			continue;
-		wallRect.h = Map_IsPointHit(map, endPos.x, endPos.y + 1.0f) ?
-				     WINDOW_SCALE :
-				     WINDOW_SCALE + MAP_WALL_DELTA;
-		endPos.x = (int)endPos.x, endPos.y = (int)endPos.y;
-		endPos = Camera_GetPosOnScreen(&endPos);
-		wallRect.x = endPos.x, wallRect.y = endPos.y - MAP_WALL_DELTA;
-		SDL_RenderFillRect(renderer, &wallRect);
+		int row = (int)endPos.y - start.y;
+		int column = (int)endPos.x - start.x;
+		if (row >= 0 && row < rows && column >= 0 && column < columns)
+			wallState[row][column] = true;
 	}
 
 	for (int i = 2; i < rayNumber + 1; i++) {
 		vertices[1] = vertices[i - 1], vertices[2] = vertices[i];
 		SDL_RenderGeometry(renderer, NULL, vertices, 3, NULL, 0);
+	}
+
+	for (int row = 0; row < rows; row++) {
+		for (int column = 0; column < columns; column++) {
+			pos.x = start.x + column;
+			pos.y = start.y + row;
+
+			if (!Map_IsPointHit(map, pos.x, pos.y))
+				continue;
+
+			pos = Camera_GetPosOnScreen(&pos);
+			wallRect.x = pos.x;
+			wallRect.y = pos.y - MAP_WALL_DELTA;
+
+			if (!wallState[row][column])
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+			else
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+			SDL_RenderFillRect(renderer, &wallRect);
+		}
 	}
 
 	Painter_DrawCircle(renderer, vertices[0].position.x,

@@ -90,7 +90,7 @@ void Map_Render(SDL_Renderer *renderer, Map *map, SDL_FPoint *point)
 
 bool Map_IsPointHit(Map *map, float x, float y)
 {
-	if (x < 0 || y < 0 || x > MAP_WIDTH || y > MAP_HEIGHT) {
+	if (x < 0 || y < 0 || x >= MAP_WIDTH || y >= MAP_HEIGHT) {
 		return true;
 	} else if (map->list[(int)y * MAP_WIDTH + (int)x] == MAP_CODE_WALL) {
 		return true;
@@ -103,7 +103,7 @@ bool Map_IsRectHit(Map *map, SDL_FRect *rect)
 	return Map_IsPointHit(map, rect->x, rect->y) ||
 	       Map_IsPointHit(map, rect->x + rect->w, rect->y) ||
 	       Map_IsPointHit(map, rect->x, rect->y + rect->h) ||
-	       Map_IsPointHit(map, rect->x + rect->w, rect->y + rect->w);
+	       Map_IsPointHit(map, rect->x + rect->w, rect->y + rect->h);
 }
 
 void Map_Delete(Map *map)

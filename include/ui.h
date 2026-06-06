@@ -12,10 +12,11 @@ typedef enum {
 
 typedef struct {
 	UI_MODE mode;
-	SDL_Rect rect;
+	SDL_FRect rect;
 	SDL_Color edgeColor;
 	SDL_Color bgColor;
 	SDL_Color fontColor;
+	int pad;
 
 	SDL_Renderer *renderer;
 	TTF_Font *font;
@@ -48,6 +49,12 @@ bool UI_Button(UI *ui, char *text);
  * \param text the text on the label
  */
 void UI_Label(UI *ui, char *text);
+
+/** Render a frame
+ *
+ * \param ui the UI object
+ */
+void UI_Frame(UI *ui);
 
 /** Set all UI elements to default values
  *

@@ -4,7 +4,7 @@ UI UI_Init(SDL_Renderer *renderer, TTF_Font *font)
 {
 	UI ui;
 	ui.mode = UI_MODE_START;
-	ui.rect = (SDL_Rect){ 0, 0, 0, 0 };
+	ui.rect = (SDL_FRect){ 0, 0, 0, 0 };
 	ui.edgeColor = UI_DEFAULT_EDGE_COLOR;
 	ui.bgColor = UI_DEFAULT_BG_COLOR;
 	ui.fontColor = UI_DEFAULT_FONT_COLOR;
@@ -26,14 +26,13 @@ bool UI_Button(UI *ui, char *text)
 {
 	UI_Label(ui, text);
 
-	SDL_FPoint fMouse;
-	SDL_MouseButtonFlags mouseFlag =
-		SDL_GetMouseState(&fMouse.x, &fMouse.y);
-	SDL_Point mouse = { fMouse.x, fMouse.y };
-	if (SDL_PointInRect(&mouse, &ui->rect)) {
-		SDL_RenderLine(ui->renderer, ui->rect.x,
-			       ui->rect.y + ui->rect.h, ui->rect.x + ui->rect.w,
-			       ui->rect.y + ui->rect.h);
+	SDL_FPoint mouse;
+	SDL_MouseButtonFlags mouseFlag = SDL_GetMouseState(&mouse.x, &mouse.y);
+	if (SDL_PointInRectFloat(&mouse, &ui->rect)) {
+		SDL_RenderLine(ui->renderer, ui->rect.x + ui->pad,
+			       ui->rect.y + ui->rect.h - ui->pad,
+			       ui->rect.x + ui->rect.w - ui->pad,
+			       ui->rect.y + ui->rect.h - ui->pad);
 		if (mouseFlag & SDL_BUTTON_LMASK)
 			return true;
 	}
@@ -42,34 +41,39 @@ bool UI_Button(UI *ui, char *text)
 
 void UI_Label(UI *ui, char *text)
 {
-	SDL_FRect rect;
-	int pad = TTF_GetFontSize(ui->font) / 4;
+	int w, h;
+	ui->pad = TTF_GetFontSize(ui->font) / 4;
 
 	TTF_SetTextString(ui->text, text, strlen(text));
-	TTF_GetTextSize(ui->text, &ui->rect.w, &ui->rect.h);
-	ui->rect.x -= ui->rect.w / 2.0f;
-	ui->rect.y -= ui->rect.h / 2.0f;
-	SDL_RectToFRect(&ui->rect, &rect);
-	rect.x -= pad, rect.y -= pad;
-	rect.w += pad * 2, rect.h += pad * 2;
+	TTF_GetTextSize(ui->text, &w, &h);
+	ui->rect.x -= w / 2.0f + ui->pad;
+	ui->rect.y -= h / 2.0f + ui->pad;
+	ui->rect.w = w + ui->pad * 2;
+	ui->rect.h = h + ui->pad * 2;
 
-	if (ui->bgColor.a) {
-		Camera_SetRenderDrawColor(ui->renderer, &ui->bgColor);
-		SDL_RenderFillRect(ui->renderer, &rect);
-	}
+	UI_Frame(ui);
 
 	Camera_SetRenderDrawColor(ui->renderer, &ui->fontColor);
-	TTF_DrawRendererText(ui->text, ui->rect.x, ui->rect.y);
+	TTF_DrawRendererText(ui->text, ui->rect.x + ui->pad,
+			     ui->rect.y + ui->pad);
+}
+
+void UI_Frame(UI *ui)
+{
+	if (ui->bgColor.a) {
+		Camera_SetRenderDrawColor(ui->renderer, &ui->bgColor);
+		SDL_RenderFillRect(ui->renderer, &ui->rect);
+	}
 
 	if (ui->edgeColor.a) {
 		Camera_SetRenderDrawColor(ui->renderer, &ui->edgeColor);
-		SDL_RenderRect(ui->renderer, &rect);
+		SDL_RenderRect(ui->renderer, &ui->rect);
 	}
 }
 
 void UI_Reset(UI *ui)
 {
-	ui->rect = (SDL_Rect){ 0, 0, 0, 0 };
+	ui->rect = (SDL_FRect){ 0, 0, 0, 0 };
 	ui->edgeColor = UI_DEFAULT_EDGE_COLOR;
 	ui->bgColor = UI_DEFAULT_BG_COLOR;
 	ui->fontColor = UI_DEFAULT_FONT_COLOR;

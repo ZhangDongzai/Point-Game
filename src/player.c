@@ -49,6 +49,45 @@ Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 	return player;
 }
 
+/**
+ * Calculate ray
+ *
+ * \returns true if the ray hits the wall, otherwise false
+ */
+static inline bool _Calculate_Ray(const float *sin, const float *cos,
+				  float *depth, Map *map, bool isVertical,
+				  const SDL_FPoint *start, SDL_FPoint *end)
+{
+	float deltaX, deltaY, deltaDepth;
+
+	if (isVertical) {
+		deltaX = *cos < 0 ? -1.0f : 1.0f;
+		end->x = *cos < 0 ? (int)start->x - 0.001f : (int)start->x + 1;
+		*depth = (end->x - start->x) / *cos;
+		end->y = start->y + *depth * *sin;
+		deltaDepth = deltaX / *cos;
+		deltaY = deltaDepth * *sin;
+	} else {
+		deltaY = *sin < 0 ? -1.0f : +1.0f;
+		end->y = *sin < 0 ? (int)start->y - 0.001f : (int)start->y + 1;
+		*depth = (end->y - start->y) / *sin;
+		end->x = start->x + *depth * *cos;
+		deltaDepth = deltaY / *sin;
+		deltaX = deltaDepth * *cos;
+	}
+
+	for (int i = 0; i < MAP_MAX_LENGTH; i++) {
+		if (!Camera_IsPosOnScreen(end))
+			break;
+		if (Map_IsPointHit(map, end->x, end->y))
+			return true;
+		end->x += deltaX;
+		end->y += deltaY;
+		*depth += deltaDepth;
+	}
+	return false;
+}
+
 static inline void _Reduce_Vertex(SDL_Vertex *vertex, int *number)
 {
 	if (*number <= 2)
@@ -77,14 +116,12 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_RenderClear(renderer);
 
 	/* Draw transparent sight */
-	float deltaX, deltaY;
 	SDL_FPoint vertical, horizontal;
-	float verticalDepth, horizontalDepth, deltaDepth;
+	float verticalDepth, horizontalDepth;
 	float sin, cos;
-	int VeriticesCount = 0;
-	bool isHitWall = false;
+	bool isHitWall;
 	SDL_Vertex vertices[PLAYER_SIGHT_RAY_NUMBER + 1];
-	SDL_FPoint startPos, endPos;
+	SDL_FPoint endPos;
 	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
 			   player->object.rect.y + PLAYER_SIZE_HALF };
 	SDL_FRect wallRect = { 0, 0, WINDOW_SCALE,
@@ -100,45 +137,11 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	     degree += PLAYER_SIGHT_RAY_DELTA) {
 		sin = SDL_sinf(degree);
 		cos = SDL_cosf(degree);
-		isHitWall = false;
 
-		/* Vertical */
-		deltaX = cos < 0 ? -1.0f : 1.0f;
-		vertical.x = cos < 0 ? (int)pos.x - 0.001f : (int)pos.x + 1;
-		verticalDepth = (vertical.x - pos.x) / cos;
-		vertical.y = pos.y + verticalDepth * sin;
-		deltaDepth = deltaX / cos;
-		deltaY = deltaDepth * sin;
-		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
-			if (!Camera_IsPosOnScreen(&vertical))
-				break;
-			if (Map_IsPointHit(map, vertical.x, vertical.y)) {
-				isHitWall = true;
-				break;
-			}
-			vertical.x += deltaX;
-			vertical.y += deltaY;
-			verticalDepth += deltaDepth;
-		}
-
-		/* Horizontal */
-		deltaY = sin < 0 ? -1.0f : +1.0f;
-		horizontal.y = sin < 0 ? (int)pos.y - 0.001f : (int)pos.y + 1;
-		horizontalDepth = (horizontal.y - pos.y) / sin;
-		horizontal.x = pos.x + horizontalDepth * cos;
-		deltaDepth = deltaY / sin;
-		deltaX = deltaDepth * cos;
-		for (int i = 0; i < MAP_MAX_LENGTH; i++) {
-			if (!Camera_IsPosOnScreen(&horizontal))
-				break;
-			if (Map_IsPointHit(map, horizontal.x, horizontal.y)) {
-				isHitWall = true;
-				break;
-			}
-			horizontal.x += deltaX;
-			horizontal.y += deltaY;
-			horizontalDepth += deltaDepth;
-		}
+		isHitWall = _Calculate_Ray(&sin, &cos, &verticalDepth, map,
+					   true, &pos, &vertical);
+		isHitWall |= _Calculate_Ray(&sin, &cos, &horizontalDepth, map,
+					    false, &pos, &horizontal);
 
 		if (horizontalDepth < verticalDepth) {
 			endPos.x = horizontal.x;

@@ -35,6 +35,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	}
 
 	SDL_SetRenderVSync(app->renderer, SDL_RENDERER_VSYNC_ADAPTIVE);
+	SDL_SetRenderDrawBlendMode(app->renderer, RENDER_BLENDMODE);
 	Camera_BindRenderer(app->renderer);
 
 	app->map = Map_Init();
@@ -110,6 +111,7 @@ static inline void _Render_Menu(App *app)
 	UI_Reset(&app->ui);
 	app->ui.rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE;
 	app->ui.rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE;
+	app->ui.bgColor = COLOR_TRANSLUCENT_BLACK;
 	if (UI_Button(&app->ui, "CONTINUE")) {
 		app->ui.mode = UI_MODE_GAME;
 		app->isMouseUsable = false;
@@ -148,6 +150,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 		_Render_Game(app);
 		break;
 	case UI_MODE_MENU:
+		_Render_Game(app);
 		_Render_Menu(app);
 		break;
 	case UI_MODE_START:

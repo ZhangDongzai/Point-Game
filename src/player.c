@@ -110,6 +110,7 @@ static inline void _Reduce_Vertex(SDL_Vertex *vertex, int *number)
 void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
 	SDL_SetRenderTarget(renderer, player->sightTexture);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 	/* Draw black translucent background */
 	Camera_SetRenderDrawColor(renderer, &COLOR_TRANSLUCENT_BLACK);
 	SDL_RenderClear(renderer);
@@ -203,6 +204,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,
 			   COLOR_ZERO, true);
 	SDL_SetRenderTarget(renderer, NULL);
+	SDL_SetRenderDrawBlendMode(renderer, RENDER_BLENDMODE);
 	SDL_RenderTexture(renderer, player->sightTexture, NULL, NULL);
 }
 

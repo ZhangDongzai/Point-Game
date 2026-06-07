@@ -60,6 +60,81 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 	return SDL_APP_CONTINUE;
 }
 
+static inline void _Update_Game(App *app)
+{
+	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
+	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map,
+		      &app->isMouseUsable);
+	Camera_Update(&app->player.object, &app->map.boundary);
+
+	const bool *keyboardState = SDL_GetKeyboardState(NULL);
+	if (keyboardState[SDL_SCANCODE_ESCAPE]) {
+		app->ui.mode = UI_MODE_MENU;
+		app->isMouseUsable = false;
+	}
+}
+
+static inline void _Render_Game(App *app)
+{
+	SDL_FPoint start = { 0.0f, 0.0f };
+	start = Camera_GetPosOnMap(&start);
+	start.x = (int)start.x, start.y = (int)start.y;
+	for (int row = 0; row < WINDOW_HEIGHT_SCALE + 1; row++, start.y++) {
+		Map_Render(app->renderer, &app->map, &start);
+
+		Camera_RenderObjects(app->bulletList, start.y);
+		Camera_RenderObject(&app->player.object, start.y);
+	}
+
+	Player_DrawSight(app->renderer, &app->player, &app->map);
+
+	char labelText[8];
+	if (SDL_GetTicks() - app->player.magazine.prevReloadTime <
+	    BULLET_RELOAD_TIME_MS)
+		sprintf(labelText, "  /%02d", BULLET_MAX_COUNT % 100);
+	else
+		sprintf(labelText, "%02d/%02d",
+			app->player.magazine.bulletNumber % 100,
+			BULLET_MAX_COUNT % 100);
+
+	UI_Reset(&app->ui);
+	app->ui.rect.x = WINDOW_SCALE * 2;
+	app->ui.rect.y = WINDOW_HEIGHT - WINDOW_SCALE;
+	app->ui.edgeColor = COLOR_ZERO;
+	TTF_SetFontSize(app->ui.font, UI_INFOLABEL_FONT_SIZE);
+	UI_Label(&app->ui, labelText);
+}
+
+static inline void _Render_Menu(App *app)
+{
+	UI_Reset(&app->ui);
+	app->ui.rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE;
+	app->ui.rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE;
+	if (UI_Button(&app->ui, "CONTINUE")) {
+		app->ui.mode = UI_MODE_GAME;
+		app->isMouseUsable = false;
+	}
+}
+
+static inline void _Render_Start(App *app)
+{
+	UI_Reset(&app->ui);
+	TTF_SetFontSize(app->ui.font, WINDOW_SCALE * 2);
+	app->ui.rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE;
+	app->ui.rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE;
+	app->ui.edgeColor = COLOR_ZERO;
+	UI_Label(&app->ui, WINDOW_NAME);
+
+	UI_Reset(&app->ui);
+	app->ui.rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE;
+	app->ui.rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE;
+	app->ui.edgeColor = COLOR_ZERO;
+	if (UI_Button(&app->ui, "START")) {
+		app->ui.mode = UI_MODE_GAME;
+		app->isMouseUsable = false;
+	}
+}
+
 SDL_AppResult SDL_AppIterate(void *appstate)
 {
 	App *app = appstate;
@@ -69,72 +144,14 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 
 	switch (app->ui.mode) {
 	case UI_MODE_GAME:
-		Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
-		Player_Update(&app->player, app->deltaTime, app->bulletList,
-			      &app->map, &app->isMouseUsable);
-		Camera_Update(&app->player.object, &app->map.boundary);
-
-		SDL_FPoint start = { 0.0f, 0.0f };
-		start = Camera_GetPosOnMap(&start);
-		start.x = (int)start.x, start.y = (int)start.y;
-		for (int row = 0; row < WINDOW_HEIGHT_SCALE + 1;
-		     row++, start.y++) {
-			Map_Render(app->renderer, &app->map, &start);
-
-			Camera_RenderObjects(app->bulletList, start.y);
-			Camera_RenderObject(&app->player.object, start.y);
-		}
-
-		Player_DrawSight(app->renderer, &app->player, &app->map);
-
-		char labelText[8];
-		if (SDL_GetTicks() - app->player.magazine.prevReloadTime <
-		    BULLET_RELOAD_TIME_MS)
-			sprintf(labelText, "  /%02d", BULLET_MAX_COUNT % 100);
-		else
-			sprintf(labelText, "%02d/%02d",
-				app->player.magazine.bulletNumber % 100,
-				BULLET_MAX_COUNT % 100);
-
-		UI_Reset(&app->ui);
-		app->ui.rect.x = WINDOW_SCALE * 2;
-		app->ui.rect.y = WINDOW_HEIGHT - WINDOW_SCALE;
-		app->ui.edgeColor = COLOR_ZERO;
-		TTF_SetFontSize(app->ui.font, UI_INFOLABEL_FONT_SIZE);
-		UI_Label(&app->ui, labelText);
-
-		const bool *keyboardState = SDL_GetKeyboardState(NULL);
-		if (keyboardState[SDL_SCANCODE_ESCAPE]) {
-			app->ui.mode = UI_MODE_MENU;
-			app->isMouseUsable = false;
-		}
-
+		_Update_Game(app);
+		_Render_Game(app);
 		break;
 	case UI_MODE_MENU:
-		UI_Reset(&app->ui);
-		app->ui.rect.x = UI_MENU_BUTTON_POS.x * WINDOW_SCALE;
-		app->ui.rect.y = UI_MENU_BUTTON_POS.y * WINDOW_SCALE;
-		if (UI_Button(&app->ui, "CONTINUE")) {
-			app->ui.mode = UI_MODE_GAME;
-			app->isMouseUsable = false;
-		}
+		_Render_Menu(app);
 		break;
 	case UI_MODE_START:
-		UI_Reset(&app->ui);
-		TTF_SetFontSize(app->ui.font, WINDOW_SCALE * 2);
-		app->ui.rect.x = UI_START_TITLE_POS.x * WINDOW_SCALE;
-		app->ui.rect.y = UI_START_TITLE_POS.y * WINDOW_SCALE;
-		app->ui.edgeColor = COLOR_ZERO;
-		UI_Label(&app->ui, WINDOW_NAME);
-
-		UI_Reset(&app->ui);
-		app->ui.rect.x = UI_START_BUTTON_POS.x * WINDOW_SCALE;
-		app->ui.rect.y = UI_START_BUTTON_POS.y * WINDOW_SCALE;
-		app->ui.edgeColor = COLOR_ZERO;
-		if (UI_Button(&app->ui, "START")) {
-			app->ui.mode = UI_MODE_GAME;
-			app->isMouseUsable = false;
-		}
+		_Render_Start(app);
 		break;
 	}
 	SDL_RenderPresent(app->renderer);

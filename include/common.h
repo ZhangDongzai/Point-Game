@@ -12,7 +12,9 @@
 
 // Color
 #define COLOR_ZERO (SDL_Color){ 0, 0, 0, 0 }
+#define COLOR_ZERO_FLOAT (SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f }
 #define COLOR_WHITE (SDL_Color){ 255, 255, 255, 255 }
+#define COLOR_TRANSLUCENT_BLACK (SDL_Color){ 0, 0, 0, 127 }
 #define COLOR_BLACK (SDL_Color){ 0, 0, 0, 255 }
 
 // Window

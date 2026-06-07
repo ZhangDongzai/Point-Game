@@ -139,7 +139,7 @@ SDL_AppResult SDL_AppIterate(void *appstate)
 {
 	App *app = appstate;
 
-	SDL_SetRenderDrawColor(app->renderer, 0, 0, 0, 255);
+	Camera_SetRenderDrawColor(app->renderer, &COLOR_BLACK);
 	SDL_RenderClear(app->renderer);
 
 	switch (app->ui.mode) {

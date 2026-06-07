@@ -111,7 +111,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 {
 	SDL_SetRenderTarget(renderer, player->sightTexture);
 	/* Draw black translucent background */
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+	Camera_SetRenderDrawColor(renderer, &COLOR_TRANSLUCENT_BLACK);
 	SDL_RenderClear(renderer);
 
 	/* Draw transparent sight */
@@ -134,9 +134,9 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	start = Camera_GetPosOnMap(&start);
 	start.x = (int)start.x, start.y = (int)start.y;
 
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	Camera_SetRenderDrawColor(renderer, &COLOR_ZERO);
 	vertices[0].position = Camera_GetPosOnScreen(&pos);
-	vertices[0].color = (SDL_FColor){ 0.0f, 0.0f, 0.0f, 0.0f };
+	vertices[0].color = COLOR_ZERO_FLOAT;
 
 	int rayNumber = 0;
 	for (float degree = player->direction - PLAYER_SIGHT_FOV_HALF;
@@ -190,16 +190,18 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 			wallRect.y = pos.y - MAP_WALL_DELTA;
 
 			if (!wallState[row][column])
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 128);
+				Camera_SetRenderDrawColor(
+					renderer, &COLOR_TRANSLUCENT_BLACK);
 			else
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+				Camera_SetRenderDrawColor(renderer,
+							  &COLOR_ZERO);
 			SDL_RenderFillRect(renderer, &wallRect);
 		}
 	}
 
 	Painter_DrawCircle(renderer, vertices[0].position.x,
 			   vertices[0].position.y, PLAYER_SIZE * WINDOW_SCALE,
-			   (SDL_Color){ 0, 0, 0, 0 }, true);
+			   COLOR_ZERO, true);
 	SDL_SetRenderTarget(renderer, NULL);
 	SDL_RenderTexture(renderer, player->sightTexture, NULL, NULL);
 }

@@ -45,10 +45,9 @@ void Camera_RenderObject(Render_Object *object, int row)
 				 angle, NULL, object->flipMode);
 }
 
-void Camera_RenderObjects(Render_ObjectNode *objectNode, int row)
+void Camera_RenderObjects(Render_ObjectNode *node, int row)
 {
-	for (Render_ObjectNode *node = objectNode; node != NULL;
-	     node = node->next) {
+	for (; node; node = node->next) {
 		if (!node->object.texture)
 			continue;
 		Camera_RenderObject(&node->object, row);

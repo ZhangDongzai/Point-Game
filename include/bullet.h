@@ -47,7 +47,7 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine);
 /**
  * Update the position of bullet
  */
-void Bullet_UpdateList(BulletList *bullets, Uint64 deltaTime, Map *map);
+void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map);
 
 /** 
  * Delete a bullet list

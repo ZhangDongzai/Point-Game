@@ -10,38 +10,30 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
 {
 	Uint64 now = SDL_GetTicks();
 
-	if (now - magazine->prevShootTime < BULLET_SHOOT_DELTA)
+	if (now - magazine->prevShootTime < BULLET_SHOOT_DELTA ||
+	    now - magazine->prevReloadTime < BULLET_RELOAD_TIME_MS ||
+	    magazine->bulletNumber <= 0)
 		return false;
+
 	magazine->prevShootTime = now;
-
-	if (now - magazine->prevReloadTime < BULLET_RELOAD_TIME_MS)
-		return false;
-
-	if (magazine->bulletNumber <= 0)
-		return false;
 	magazine->bulletNumber--;
 
-	for (; magazine->bulletList->object.texture;
-	     magazine->bulletList = magazine->bulletList->next) {
-		if (!magazine->bulletList->next) {
-			magazine->bulletList->next = Bullet_CreateList();
-			magazine->bulletList->next->prev = magazine->bulletList;
-		}
-	}
+	BulletList *node = magazine->bulletList;
+	for (; node->object.texture; node = node->next)
+		if (!node->next)
+			node->next = Bullet_CreateList();
 
-	Bullet bullet;
-	bullet.rect.x =
+	Bullet *bullet = &node->object;
+	bullet->rect.x =
 		object->rect.x + object->rect.w / 2.0f - BULLET_WIDTH / 2.0f;
-	bullet.rect.y =
+	bullet->rect.y =
 		object->rect.y + object->rect.h / 2.0f - BULLET_HEIGHT / 2.0f;
-	bullet.rect.w = BULLET_WIDTH;
-	bullet.rect.h = BULLET_HEIGHT;
-	bullet.flipMode = SDL_FLIP_NONE;
-	bullet.direction = direction;
-	bullet.height = RENDER_HEIGHT_AIR;
-	bullet.texture = magazine->bullet;
-
-	magazine->bulletList->object = bullet;
+	bullet->rect.w = BULLET_WIDTH;
+	bullet->rect.h = BULLET_HEIGHT;
+	bullet->flipMode = SDL_FLIP_NONE;
+	bullet->direction = direction;
+	bullet->height = RENDER_HEIGHT_AIR;
+	bullet->texture = magazine->bullet;
 
 	return true;
 }
@@ -54,30 +46,26 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine)
 	}
 }
 
-void Bullet_UpdateList(BulletList *bulletList, Uint64 deltaTime, Map *map)
+void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map)
 {
-	for (; bulletList; bulletList = bulletList->next) {
-		if (!bulletList->object.texture)
-			continue;
-
-		bulletList->object.rect.x +=
-			SDL_cosf(bulletList->object.direction) * BULLET_SPEED *
-			deltaTime / 1000.0f;
-		bulletList->object.rect.y +=
-			SDL_sinf(bulletList->object.direction) * BULLET_SPEED *
-			deltaTime / 1000.0f;
-
-		if (!Map_IsPointHit(map, bulletList->object.rect.x,
-				    bulletList->object.rect.y)) {
-			continue;
+	float speed = BULLET_SPEED * deltaTime / 1000.0f;
+	BulletList *temp;
+	for (; node; node = node->next) {
+		if (node->next && !node->next->object.texture) {
+			temp = node->next;
+			node->next = temp->next;
+			free(temp);
 		}
 
-		bulletList->object.texture = NULL;
+		if (!node->object.texture)
+			continue;
 
-		if (bulletList->prev && bulletList->next) {
-			bulletList->prev->next = bulletList->next;
-			bulletList->next->prev = bulletList->prev;
-		}
+		node->object.rect.x += SDL_cosf(node->object.direction) * speed;
+		node->object.rect.y += SDL_sinf(node->object.direction) * speed;
+
+		if (Map_IsPointHit(map, node->object.rect.x,
+				   node->object.rect.y))
+			node->object.texture = NULL;
 	}
 }
 

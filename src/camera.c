@@ -101,3 +101,6 @@ SDL_FPoint Camera_GetPosOnMap(SDL_FPoint *point)
 
 extern inline bool Camera_SetRenderDrawColor(SDL_Renderer *renderer,
 					     SDL_Color *color);
+
+extern inline void Camera_GetRectCenterFloat(const SDL_FRect *rect,
+					     SDL_FPoint *point);

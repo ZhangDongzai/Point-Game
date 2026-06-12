@@ -5,8 +5,7 @@ BulletList *Bullet_CreateList()
 	return (BulletList *)calloc(1, sizeof(BulletList));
 }
 
-bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
-		   float direction)
+bool Bullet_Create(BulletMagazine *magazine, SDL_FPoint *pos, float direction)
 {
 	Uint64 now = SDL_GetTicks();
 
@@ -24,10 +23,8 @@ bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
 			node->next = Bullet_CreateList();
 
 	Bullet *bullet = &node->object;
-	bullet->rect.x =
-		object->rect.x + object->rect.w / 2.0f - BULLET_WIDTH / 2.0f;
-	bullet->rect.y =
-		object->rect.y + object->rect.h / 2.0f - BULLET_HEIGHT / 2.0f;
+	bullet->rect.x = pos->x - BULLET_WIDTH / 2.0f;
+	bullet->rect.y = pos->y - BULLET_HEIGHT / 2.0f;
 	bullet->rect.w = BULLET_WIDTH;
 	bullet->rect.h = BULLET_HEIGHT;
 	bullet->flipMode = SDL_FLIP_NONE;

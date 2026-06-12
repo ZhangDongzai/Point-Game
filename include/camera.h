@@ -91,4 +91,13 @@ inline bool Camera_SetRenderDrawColor(SDL_Renderer *renderer, SDL_Color *color)
 				      color->a);
 }
 
+/**
+ * Get the center position of a rect
+ */
+inline void Camera_GetRectCenterFloat(const SDL_FRect *rect, SDL_FPoint *point)
+{
+	point->x = rect->w / 2.0f + rect->x;
+	point->y = rect->h / 2.0f + rect->y;
+}
+
 #endif /* INCLUDE_CAMERA_H */

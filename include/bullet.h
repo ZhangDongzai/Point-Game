@@ -36,8 +36,7 @@ BulletList *Bullet_CreateList();
  *
  * \return true if the bullet is created successfully, otherwise false
  */
-bool Bullet_Create(BulletMagazine *magazine, Render_Object *object,
-		   float direction);
+bool Bullet_Create(BulletMagazine *magazine, SDL_FPoint *pos, float direction);
 
 /**
  * Reload magazine

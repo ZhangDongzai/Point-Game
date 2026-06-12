@@ -214,8 +214,8 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
 	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
-	SDL_FPoint playerPos = { player->object.rect.x + PLAYER_SIZE_HALF,
-				 player->object.rect.y + PLAYER_SIZE_HALF };
+	SDL_FPoint playerPos;
+	Camera_GetRectCenterFloat(&player->object.rect, &playerPos);
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
 	player->direction =
@@ -253,10 +253,11 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		player->object.rect.y += y;
 	}
 
+	Camera_GetRectCenterFloat(&player->object.rect, &playerPos);
+
 	/* Shoot & reload */
 	if ((mouseState & SDL_BUTTON_LMASK) && *isMouseUsable) {
-		Bullet_Create(&player->magazine, &player->object,
-			      player->direction);
+		Bullet_Create(&player->magazine, &playerPos, player->direction);
 	} else if (!(mouseState & SDL_BUTTON_LMASK) && !*isMouseUsable) {
 		*isMouseUsable = true;
 	} else if (keyboardState[SDL_SCANCODE_R]) {
@@ -264,11 +265,10 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	}
 
 	/* Change texture */
-	if ((player->direction > PI_HALF) || (player->direction < -PI_HALF)) {
+	if ((player->direction > PI_HALF) || (player->direction < -PI_HALF))
 		player->object.flipMode = SDL_FLIP_HORIZONTAL;
-	} else {
+	else
 		player->object.flipMode = SDL_FLIP_NONE;
-	}
 
 	Uint64 time = SDL_GetTicks();
 	if (time - player->prevChangeTextureTime <

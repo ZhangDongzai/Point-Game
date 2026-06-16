@@ -5,7 +5,7 @@ int MAP_HEIGHT = 0;
 int MAP_MAX_LENGTH = 0;
 SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 
-Map Map_Init()
+Map Map_Init(EnemyHead *enemys)
 {
 	Map map;
 
@@ -24,6 +24,16 @@ Map Map_Init()
 
 	fgets(line, sizeof(line), file);
 	sscanf(line, "%f %f", &MAP_DEFAULT_POS.x, &MAP_DEFAULT_POS.y);
+
+	fgets(line, sizeof(line), file);
+	SDL_FPoint pos;
+	for (char *i = line, *temp; *i != '\0'; i++) {
+		pos.x = strtof(i, &temp);
+		i = temp + 1;
+		pos.y = strtof(i, &temp);
+		i = temp;
+		Enemy_Create(enemys, &pos);
+	}
 
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		fgets(line, sizeof(line), file);

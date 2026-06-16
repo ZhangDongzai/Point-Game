@@ -1,6 +1,7 @@
 #ifndef INCLUDE_MAP_H
 #define INCLUDE_MAP_H
 
+#include <enemy.h>
 #include <camera.h>
 #include <common.h>
 
@@ -29,7 +30,7 @@ typedef struct {
  *
  * \returns the map context
  */
-Map Map_Init();
+Map Map_Init(EnemyHead *enemys);
 
 /**
  * Tell the object if it hits walls

@@ -1,6 +1,7 @@
 #ifndef INCLUDE_BULLET_H
 #define INCLUDE_BULLET_H
 
+#include <enemy.h>
 #include <map.h>
 #include <camera.h>
 #include <common.h>
@@ -46,7 +47,8 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine);
 /**
  * Update the position of bullet
  */
-void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map);
+void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map,
+		       EnemyHead *enemys);
 
 /** 
  * Delete a bullet list

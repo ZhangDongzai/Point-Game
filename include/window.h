@@ -2,6 +2,7 @@
 #define INCLUDE_WINDOW_H
 
 #include <bullet.h>
+#include <enemy.h>
 #include <player.h>
 #include <map.h>
 #include <ui.h>
@@ -15,6 +16,7 @@ typedef struct {
 	UI ui;
 
 	Player player;
+	EnemyHead enemys;
 	BulletList *bulletList;
 	Map map;
 

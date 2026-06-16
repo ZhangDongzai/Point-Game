@@ -43,9 +43,11 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine)
 	}
 }
 
-void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map)
+void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map,
+		       EnemyHead *enemys)
 {
 	float speed = BULLET_SPEED * deltaTime / 1000.0f;
+	SDL_FPoint pos;
 	BulletList *temp;
 	for (; node; node = node->next) {
 		if (node->next && !node->next->object.texture) {
@@ -60,9 +62,13 @@ void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map)
 		node->object.rect.x += SDL_cosf(node->object.direction) * speed;
 		node->object.rect.y += SDL_sinf(node->object.direction) * speed;
 
+		Camera_GetRectCenterFloat(&node->object.rect, &pos);
+
 		if (Map_IsPointHit(map, node->object.rect.x,
-				   node->object.rect.y))
+				   node->object.rect.y) ||
+		    Enemy_IsHit(enemys, &pos)) {
 			node->object.texture = NULL;
+		}
 	}
 }
 

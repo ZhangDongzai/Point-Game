@@ -38,7 +38,8 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	SDL_SetRenderDrawBlendMode(app->renderer, RENDER_BLENDMODE);
 	Camera_BindRenderer(app->renderer);
 
-	app->map = Map_Init();
+	app->enemys = Enemy_Init(app->renderer);
+	app->map = Map_Init(&app->enemys);
 	app->bulletList = Bullet_CreateList();
 	app->player = Player_Create(app->renderer, app->bulletList);
 	app->ui = UI_Init(app->renderer, app->font);
@@ -63,7 +64,8 @@ SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event)
 
 static inline void _Update_Game(App *app)
 {
-	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map);
+	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map,
+			  &app->enemys);
 	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map,
 		      &app->isMouseUsable);
 	Camera_Update(&app->player.object, &app->map.boundary);
@@ -84,6 +86,7 @@ static inline void _Render_Game(App *app)
 		Map_Render(app->renderer, &app->map, &start);
 
 		Camera_RenderObjects(app->bulletList, start.y);
+		Camera_RenderObjects(app->enemys.enemy, start.y);
 		Camera_RenderObject(&app->player.object, start.y);
 	}
 
@@ -169,6 +172,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 {
 	App *app = appstate;
 	Bullet_DeleteList(app->bulletList);
+	Enemy_Delete(&app->enemys);
 	Player_Delete(&app->player);
 	Map_Delete(&app->map);
 	UI_Destroy(&app->ui);

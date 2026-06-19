@@ -20,19 +20,25 @@ Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 	SDL_DestroySurface(temp);
 
 	/* Texture */
-	player.prevChangeTextureTime = SDL_GetTicks();
-	player.textureNumber = 4;
+	player.prevChangeTextureTime = 0;
+	player.textureNumber = 0;
 	SDL_Surface *textureSurface = SDL_LoadPNG(PLAYER_TEXTURE_FILE);
 	temp = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
 				 PLAYER_SIZE * WINDOW_SCALE,
 				 RENDER_PIXEL_FORMAT);
-	SDL_Rect rect = { 0, 0, PLAYER_TEXTURE_SIZE, PLAYER_TEXTURE_SIZE };
-	for (int i = 0; i < PLAYER_TEXTURE_NUMBER; i++) {
-		rect.x = i * PLAYER_TEXTURE_SIZE;
-		SDL_BlitSurfaceScaled(textureSurface, &rect, temp, NULL,
-				      SDL_SCALEMODE_NEAREST);
-		player.textures[i] = Camera_CreateTextureFromSurface(temp);
-		SDL_ClearSurface(temp, 0.0f, 0.0f, 0.0f, 0.0f);
+	SDL_Rect rect = PLAYER_TEXTURE_EDGE;
+	for (int row = 0; row < PLAYER_TEXTURE_ROWS; row++) {
+		rect.y = row * PLAYER_TEXTURE_SIZE + PLAYER_TEXTURE_EDGE.y;
+		for (int column = 0; column < PLAYER_TEXTURE_COLUMNS;
+		     column++) {
+			rect.x = column * PLAYER_TEXTURE_SIZE +
+				 PLAYER_TEXTURE_EDGE.x;
+			SDL_ClearSurface(temp, 0.0f, 0.0f, 0.0f, 0.0f);
+			SDL_BlitSurfaceScaled(textureSurface, &rect, temp, NULL,
+					      SDL_SCALEMODE_NEAREST);
+			player.textures[row][column] =
+				Camera_CreateTextureFromSurface(temp);
+		}
 	}
 	SDL_DestroySurface(temp);
 	SDL_DestroySurface(textureSurface);
@@ -42,7 +48,7 @@ Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 	player.object.rect.y = MAP_DEFAULT_POS.y - PLAYER_SIZE_HALF;
 	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
 	player.object.direction = 0.0f;
-	player.object.texture = player.textures[0];
+	player.object.texture = player.textures[0][0];
 	player.object.height = RENDER_HEIGHT_FLOOR;
 
 	return player;
@@ -265,7 +271,8 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	}
 
 	/* Change texture */
-	if ((player->direction > PI_HALF) || (player->direction < -PI_HALF))
+	if (player->direction > (SDL_PI_F / 4 * 3) ||
+	    player->direction < -(SDL_PI_F / 4 * 3))
 		player->object.flipMode = SDL_FLIP_HORIZONTAL;
 	else
 		player->object.flipMode = SDL_FLIP_NONE;
@@ -276,26 +283,35 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		return;
 	player->prevChangeTextureTime = time;
 
-	if (x || y) {
-		if (player->textureNumber < 3)
-			player->textureNumber++;
-		else
-			player->textureNumber = 0;
-	} else {
-		if (player->textureNumber < 4 || player->textureNumber == 7)
-			player->textureNumber = 4;
-		else
-			player->textureNumber++;
-	}
+	int row = x || y ? 3 : 0;
+	int column = player->textureNumber % PLAYER_TEXTURE_COLUMNS;
 
-	player->object.texture = player->textures[player->textureNumber];
+	if (player->direction > (SDL_PI_F / 4) &&
+	    player->direction < (SDL_PI_F / 4 * 3))
+		/* Nothing */;
+	else if (player->direction < -(SDL_PI_F / 4) &&
+		 player->direction > -(SDL_PI_F / 4 * 3))
+		row += 2;
+	else
+		row++;
+
+	if (column >= 0 && column < 5)
+		column++;
+	else
+		column = 0;
+
+	player->textureNumber = column + row * PLAYER_TEXTURE_COLUMNS;
+	player->object.texture = player->textures[row][column];
 }
 
 void Player_Delete(Player *player)
 {
 	/* Texture */
-	for (int i = 0; i < PLAYER_TEXTURE_NUMBER; i++) {
-		SDL_DestroyTexture(player->textures[i]);
+	for (int row = 0; row < PLAYER_TEXTURE_ROWS; row++) {
+		for (int column = 0; column < PLAYER_TEXTURE_COLUMNS;
+		     column++) {
+			SDL_DestroyTexture(player->textures[row][column]);
+		}
 	}
 
 	/* Eye sight */

@@ -24,7 +24,7 @@ typedef struct {
 	/* Texture */
 	Uint64 prevChangeTextureTime;
 	Uint8 textureNumber;
-	SDL_Texture *textures[PLAYER_TEXTURE_NUMBER];
+	SDL_Texture *textures[PLAYER_TEXTURE_ROWS][PLAYER_TEXTURE_COLUMNS];
 } Player;
 
 /**

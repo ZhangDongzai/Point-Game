@@ -9,7 +9,6 @@
 // Render
 #define RENDER_PIXEL_FORMAT SDL_PIXELFORMAT_RGBA32
 #define RENDER_BLENDMODE SDL_BLENDMODE_BLEND
-#define PI_HALF (SDL_PI_F / 2.0f)
 
 // Color
 #define COLOR_ZERO (SDL_Color){ 0, 0, 0, 0 }
@@ -17,6 +16,10 @@
 #define COLOR_WHITE (SDL_Color){ 255, 255, 255, 255 }
 #define COLOR_TRANSLUCENT_BLACK (SDL_Color){ 0, 0, 0, 127 }
 #define COLOR_BLACK (SDL_Color){ 0, 0, 0, 255 }
+
+// Texture
+#define TEXTURE_START 0
+#define TEXTURE_END 1
 
 // Window
 #define WINDOW_NAME "Point Game"
@@ -39,10 +42,16 @@
 #define PLAYER_SIGHT_FOV_HALF (PLAYER_SIGHT_FOV / 2.0f)
 #define PLAYER_SIGHT_RAY_NUMBER 100
 #define PLAYER_SIGHT_RAY_DELTA (PLAYER_SIGHT_FOV / PLAYER_SIGHT_RAY_NUMBER)
+
+// Player texture
 #define PLAYER_TEXTURE_FILE "./sources/player.png"
-#define PLAYER_TEXTURE_NUMBER 9
-#define PLAYER_TEXTURE_SIZE 32
+#define PLAYER_TEXTURE_SIZE 48
+#define PLAYER_TEXTURE_EDGE ((SDL_Rect){ 14, 20, 21, 25 })
 #define PLAYER_TEXTURE_CHANGE_DELTA_TIME_MS 100
+#define PLAYER_TEXTURE_COLUMNS 6
+#define PLAYER_TEXTURE_ROWS 10
+#define PLAYER_TEXTURE_ROW_IDLE ((Uint8[]){ 0, 2 })
+#define PLAYER_TEXTURE_ROW_MOVE ((Uint8[]){ 3, 5 })
 
 // Map
 #define MAP_FILE "./sources/map.txt"

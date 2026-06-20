@@ -1,6 +1,7 @@
 #ifndef INCLUDE_CAMERA_H
 #define INCLUDE_CAMERA_H
 
+#include <list.h>
 #include <common.h>
 
 typedef enum {
@@ -26,15 +27,9 @@ typedef struct {
 	SDL_Texture *texture;
 	float direction;
 	RENDER_HEIGHT height;
-} Render_Object;
 
-/**
- * The node of objects
- */
-typedef struct Render_ObjectNode {
-	Render_Object object;
-	struct Render_ObjectNode *next;
-} Render_ObjectNode;
+	struct list_head list;
+} Render_Object;
 
 /**
  * Bind the renderer used to render
@@ -44,17 +39,12 @@ void Camera_BindRenderer(SDL_Renderer *renderer);
 /**
  * Render something on the screen
  */
-void Camera_RenderObject(Render_Object *object, int row);
+void Camera_RenderObjects(struct list_head *list, int row);
 
 /**
  * Create a texture from surface
  */
 SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface);
-
-/** 
- * Render a series of objects 
- */
-void Camera_RenderObjects(Render_ObjectNode *objectNode, int row);
 
 /**
  * Update camera's pos

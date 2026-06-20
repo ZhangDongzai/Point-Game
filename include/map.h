@@ -30,7 +30,7 @@ typedef struct {
  *
  * \returns the map context
  */
-Map Map_Init(EnemyHead *enemys);
+Map Map_Init(Enemys *enemys);
 
 /**
  * Tell the object if it hits walls

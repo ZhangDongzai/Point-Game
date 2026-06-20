@@ -40,7 +40,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 
 	app->enemys = Enemy_Init(app->renderer);
 	app->map = Map_Init(&app->enemys);
-	app->bulletList = Bullet_CreateList();
+	app->bulletList = Bullet_Init();
 	app->player = Player_Create(app->renderer, app->bulletList);
 	app->ui = UI_Init(app->renderer, app->font);
 
@@ -66,9 +66,10 @@ static inline void _Update_Game(App *app)
 {
 	Bullet_UpdateList(app->bulletList, app->deltaTime, &app->map,
 			  &app->enemys);
-	Player_Update(&app->player, app->deltaTime, app->bulletList, &app->map,
+	Player_Update(app->player, app->deltaTime, &app->map,
 		      &app->isMouseUsable);
-	Camera_Update(&app->player.object, &app->map.boundary);
+	Camera_Update(list_first_entry(app->player->list, Render_Object, list),
+		      &app->map.boundary);
 
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 	if (keyboardState[SDL_SCANCODE_ESCAPE]) {
@@ -86,19 +87,19 @@ static inline void _Render_Game(App *app)
 		Map_Render(app->renderer, &app->map, &start);
 
 		Camera_RenderObjects(app->bulletList, start.y);
-		Camera_RenderObjects(app->enemys.enemy, start.y);
-		Camera_RenderObject(&app->player.object, start.y);
+		Camera_RenderObjects(app->enemys.list, start.y);
+		Camera_RenderObjects(app->player->list, start.y);
 	}
 
-	Player_DrawSight(app->renderer, &app->player, &app->map);
+	Player_DrawSight(app->renderer, app->player, &app->map);
 
 	char labelText[8];
-	if (SDL_GetTicks() - app->player.magazine.prevReloadTime <
+	if (SDL_GetTicks() - app->player->magazine.prevReloadTime <
 	    BULLET_RELOAD_TIME_MS)
 		sprintf(labelText, "  /%02d", BULLET_MAX_COUNT % 100);
 	else
 		sprintf(labelText, "%02d/%02d",
-			app->player.magazine.bulletNumber % 100,
+			app->player->magazine.bulletNumber % 100,
 			BULLET_MAX_COUNT % 100);
 
 	UI_Reset(&app->ui);
@@ -173,7 +174,7 @@ void SDL_AppQuit(void *appstate, SDL_AppResult result)
 	App *app = appstate;
 	Bullet_DeleteList(app->bulletList);
 	Enemy_Delete(&app->enemys);
-	Player_Delete(&app->player);
+	Player_Delete(app->player);
 	Map_Delete(&app->map);
 	UI_Destroy(&app->ui);
 	free(appstate);

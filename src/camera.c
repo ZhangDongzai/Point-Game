@@ -17,40 +17,38 @@ SDL_Texture *Camera_CreateTextureFromSurface(SDL_Surface *surface)
 	return texture;
 }
 
-void Camera_RenderObject(Render_Object *object, int row)
+void Camera_RenderObjects(struct list_head *list, int row)
 {
-	float objectRow = object->rect.y;
-	switch (object->height) {
-	case RENDER_HEIGHT_FLOOR:
-		objectRow += object->rect.h;
-		break;
-	case RENDER_HEIGHT_AIR:
-		objectRow += object->rect.h / 2.0f;
-		break;
-	case RENDER_HEIGHT_UI:
-		objectRow = row;
-		break;
-	}
-	if (!(row <= objectRow && objectRow < row + 1))
-		return;
-
-	SDL_FRect rect = { (object->rect.x - camera.pos.x) * WINDOW_SCALE +
-				   WINDOW_WIDTH / 2.0f,
-			   (object->rect.y - camera.pos.y) * WINDOW_SCALE +
-				   WINDOW_HEIGHT / 2.0f,
-			   object->rect.w * WINDOW_SCALE,
-			   object->rect.h * WINDOW_SCALE };
-	double angle = object->direction / SDL_PI_D * 180;
-	SDL_RenderTextureRotated(camera.renderer, object->texture, NULL, &rect,
-				 angle, NULL, object->flipMode);
-}
-
-void Camera_RenderObjects(Render_ObjectNode *node, int row)
-{
-	for (; node; node = node->next) {
-		if (!node->object.texture)
+	Render_Object *node;
+	list_for_each_entry(node, list, list) {
+		if (!node->texture)
 			continue;
-		Camera_RenderObject(&node->object, row);
+
+		float objectRow = node->rect.y;
+		switch (node->height) {
+		case RENDER_HEIGHT_FLOOR:
+			objectRow += node->rect.h;
+			break;
+		case RENDER_HEIGHT_AIR:
+			objectRow += node->rect.h / 2.0f;
+			break;
+		case RENDER_HEIGHT_UI:
+			objectRow = row;
+			break;
+		}
+		if (!(row <= objectRow && objectRow < row + 1))
+			continue;
+
+		SDL_FRect rect = {
+			(node->rect.x - camera.pos.x) * WINDOW_SCALE +
+				WINDOW_WIDTH / 2.0f,
+			(node->rect.y - camera.pos.y) * WINDOW_SCALE +
+				WINDOW_HEIGHT / 2.0f,
+			node->rect.w * WINDOW_SCALE, node->rect.h * WINDOW_SCALE
+		};
+		double angle = node->direction / SDL_PI_D * 180;
+		SDL_RenderTextureRotated(camera.renderer, node->texture, NULL,
+					 &rect, angle, NULL, node->flipMode);
 	}
 }
 

@@ -1,59 +1,54 @@
 #include <enemy.h>
 
-EnemyHead Enemy_Init(SDL_Renderer *renderer)
+Enemys Enemy_Init(SDL_Renderer *renderer)
 {
-	EnemyHead enemyHead;
+	Enemys enemys;
 
-	enemyHead.texture = SDL_CreateTexture(renderer, RENDER_PIXEL_FORMAT,
-					      SDL_TEXTUREACCESS_TARGET, 1, 1);
-	SDL_SetRenderTarget(renderer, enemyHead.texture);
+	enemys.texture = SDL_CreateTexture(renderer, RENDER_PIXEL_FORMAT,
+					   SDL_TEXTUREACCESS_TARGET, 1, 1);
+	SDL_SetRenderTarget(renderer, enemys.texture);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 	SDL_RenderClear(renderer);
 	SDL_SetRenderTarget(renderer, NULL);
-	enemyHead.enemy = NULL;
 
-	return enemyHead;
+	enemys.list = calloc(1, sizeof(struct list_head));
+	INIT_LIST_HEAD(enemys.list);
+
+	return enemys;
 }
 
-void Enemy_Create(EnemyHead *enemys, const SDL_FPoint *pos)
+void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos)
 {
-	Enemy *temp = enemys->enemy;
-	enemys->enemy = calloc(1, sizeof(Enemy));
-	enemys->enemy->next = temp;
+	Enemy *enemy = calloc(1, sizeof(Enemy));
 
-	temp = enemys->enemy;
-	temp->object.direction = 0.0f;
-	temp->object.flipMode = SDL_FLIP_NONE;
-	temp->object.height = RENDER_HEIGHT_FLOOR;
-	temp->object.rect = (SDL_FRect){ pos->x, pos->y, 1, 1 };
-	temp->object.texture = enemys->texture;
+	enemy->direction = 0.0f;
+	enemy->flipMode = SDL_FLIP_NONE;
+	enemy->height = RENDER_HEIGHT_FLOOR;
+	enemy->rect = (SDL_FRect){ pos->x, pos->y, 1, 1 };
+	enemy->texture = enemys->texture;
+
+	list_add(&enemy->list, enemys->list);
 }
 
-bool Enemy_IsHit(EnemyHead *enemys, const SDL_FPoint *pos)
+bool Enemy_IsHit(Enemys *enemys, const SDL_FPoint *pos)
 {
-	Enemy *temp;
-	for (Enemy *node = enemys->enemy; node; node = node->next) {
-		if (node->next && !node->next->object.texture) {
-			temp = node->next;
-			node->next = temp->next;
-			free(temp);
-		}
-
-		if (node->object.texture &&
-		    SDL_PointInRectFloat(pos, &node->object.rect)) {
-			node->object.texture = NULL;
+	Enemy *enemy, *temp;
+	list_for_each_entry_safe(enemy, temp, enemys->list, list) {
+		if (SDL_PointInRectFloat(pos, &enemy->rect)) {
+			list_del(&enemy->list);
+			free(enemy);
 			return true;
 		}
 	}
 	return false;
 }
 
-void Enemy_Delete(EnemyHead *enemys)
+void Enemy_Delete(Enemys *enemys)
 {
-	for (Enemy *node = enemys->enemy, *temp; node;) {
-		temp = node;
-		node = node->next;
-		free(temp);
+	Enemy *enemy, *temp;
+	list_for_each_entry_safe(enemy, temp, enemys->list, list) {
+		list_del(&enemy->list);
+		free(enemy);
 	}
 	SDL_DestroyTexture(enemys->texture);
 }

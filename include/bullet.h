@@ -12,25 +12,20 @@
 typedef Render_Object Bullet;
 
 /**
- * A list of bullets
- */
-typedef Render_ObjectNode BulletList;
-
-/**
  * Magazine status
  */
 typedef struct {
-	SDL_Texture *bullet;
-	BulletList *bulletList;
+	SDL_Texture *texture;
+	struct list_head *bulletList;
 	short bulletNumber;
 	Uint64 prevReloadTime;
 	Uint64 prevShootTime;
 } BulletMagazine;
 
 /**
- * Create a list of bullets
+ * Init a bullet list
  */
-BulletList *Bullet_CreateList();
+struct list_head *Bullet_Init();
 
 /**
  * Create a bullet and shoot
@@ -47,12 +42,12 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine);
 /**
  * Update the position of bullet
  */
-void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map,
-		       EnemyHead *enemys);
+void Bullet_UpdateList(struct list_head *bulletList, Uint64 deltaTime, Map *map,
+		       Enemys *enemys);
 
 /** 
  * Delete a bullet list
  */
-void Bullet_DeleteList(BulletList *bulletList);
+void Bullet_DeleteList(struct list_head *bulletList);
 
 #endif /* INCLUDE_BULLET_H */

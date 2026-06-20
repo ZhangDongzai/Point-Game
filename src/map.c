@@ -5,7 +5,7 @@ int MAP_HEIGHT = 0;
 int MAP_MAX_LENGTH = 0;
 SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 
-Map Map_Init(EnemyHead *enemys)
+Map Map_Init(Enemys *enemys)
 {
 	Map map;
 

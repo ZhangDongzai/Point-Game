@@ -19,7 +19,7 @@ typedef struct {
 	BulletMagazine magazine;
 
 	/* Render object */
-	Render_Object object;
+	struct list_head *list;
 
 	/* Texture */
 	Uint64 prevChangeTextureTime;
@@ -32,7 +32,7 @@ typedef struct {
  * 
  * \returns the player struct context
  */
-Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList);
+Player *Player_Create(SDL_Renderer *renderer, struct list_head *bulletList);
 
 /**
  * Draw the player's eye sight
@@ -42,8 +42,8 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map);
 /**
  * Update player's actions
  */
-void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
-		   Map *map, bool *isMouseUsable);
+void Player_Update(Player *player, Uint64 deltaTime, Map *map,
+		   bool *isMouseUsable);
 
 /**
  * Delete a player

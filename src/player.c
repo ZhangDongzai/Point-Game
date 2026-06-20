@@ -1,27 +1,27 @@
 #include <player.h>
 
-Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
+Player *Player_Create(SDL_Renderer *renderer, struct list_head *bulletList)
 {
-	Player player;
+	Player *player = (Player *)calloc(1, sizeof(Player));
 
 	/* Eye sight */
-	player.direction = PLAYER_DEFAULT_DIRECTION;
-	player.sightTexture = SDL_CreateTexture(renderer, RENDER_PIXEL_FORMAT,
-						SDL_TEXTUREACCESS_TARGET,
-						WINDOW_WIDTH, WINDOW_HEIGHT);
+	player->direction = PLAYER_DEFAULT_DIRECTION;
+	player->sightTexture = SDL_CreateTexture(renderer, RENDER_PIXEL_FORMAT,
+						 SDL_TEXTUREACCESS_TARGET,
+						 WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	/* Magazine */
-	player.magazine.bulletList = bulletList;
-	player.magazine.bulletNumber = BULLET_MAX_COUNT;
+	player->magazine.bulletList = bulletList;
+	player->magazine.bulletNumber = BULLET_MAX_COUNT;
 	SDL_Surface *temp = SDL_CreateSurface(1, 1, RENDER_PIXEL_FORMAT);
 	SDL_ClearSurface(temp, BULLET_COLOR.r, BULLET_COLOR.g, BULLET_COLOR.b,
 			 BULLET_COLOR.a);
-	player.magazine.bullet = Camera_CreateTextureFromSurface(temp);
+	player->magazine.texture = Camera_CreateTextureFromSurface(temp);
 	SDL_DestroySurface(temp);
 
 	/* Texture */
-	player.prevChangeTextureTime = 0;
-	player.textureNumber = 0;
+	player->prevChangeTextureTime = 0;
+	player->textureNumber = 0;
 	SDL_Surface *textureSurface = SDL_LoadPNG(PLAYER_TEXTURE_FILE);
 	temp = SDL_CreateSurface(PLAYER_SIZE * WINDOW_SCALE,
 				 PLAYER_SIZE * WINDOW_SCALE,
@@ -36,7 +36,7 @@ Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 			SDL_ClearSurface(temp, 0.0f, 0.0f, 0.0f, 0.0f);
 			SDL_BlitSurfaceScaled(textureSurface, &rect, temp, NULL,
 					      SDL_SCALEMODE_NEAREST);
-			player.textures[row][column] =
+			player->textures[row][column] =
 				Camera_CreateTextureFromSurface(temp);
 		}
 	}
@@ -44,12 +44,17 @@ Player Player_Create(SDL_Renderer *renderer, BulletList *bulletList)
 	SDL_DestroySurface(textureSurface);
 
 	/* Render object */
-	player.object.rect.x = MAP_DEFAULT_POS.x - PLAYER_SIZE_HALF;
-	player.object.rect.y = MAP_DEFAULT_POS.y - PLAYER_SIZE_HALF;
-	player.object.rect.w = player.object.rect.h = PLAYER_SIZE;
-	player.object.direction = 0.0f;
-	player.object.texture = player.textures[0][0];
-	player.object.height = RENDER_HEIGHT_FLOOR;
+	Render_Object *object = calloc(1, sizeof(Render_Object));
+	object->rect.x = MAP_DEFAULT_POS.x - PLAYER_SIZE_HALF;
+	object->rect.y = MAP_DEFAULT_POS.y - PLAYER_SIZE_HALF;
+	object->rect.w = object->rect.h = PLAYER_SIZE;
+	object->direction = 0.0f;
+	object->texture = player->textures[0][0];
+	object->height = RENDER_HEIGHT_FLOOR;
+
+	player->list = calloc(1, sizeof(struct list_head));
+	INIT_LIST_HEAD(player->list);
+	list_add(&object->list, player->list);
 
 	return player;
 }
@@ -128,8 +133,10 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	bool isHitWall;
 	SDL_Vertex vertices[PLAYER_SIGHT_RAY_NUMBER + 1];
 	SDL_FPoint endPos;
-	SDL_FPoint pos = { player->object.rect.x + PLAYER_SIZE_HALF,
-			   player->object.rect.y + PLAYER_SIZE_HALF };
+	Render_Object *object =
+		list_first_entry(player->list, Render_Object, list);
+	SDL_FPoint pos = { object->rect.x + PLAYER_SIZE_HALF,
+			   object->rect.y + PLAYER_SIZE_HALF };
 
 	int columns = SDL_ceilf(WINDOW_WIDTH_SCALE);
 	int rows = SDL_ceilf(WINDOW_HEIGHT_SCALE);
@@ -214,14 +221,16 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_RenderTexture(renderer, player->sightTexture, NULL, NULL);
 }
 
-void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
-		   Map *map, bool *isMouseUsable)
+void Player_Update(Player *player, Uint64 deltaTime, Map *map,
+		   bool *isMouseUsable)
 {
 	float x = 0, y = 0, mouseX, mouseY, speed;
 
 	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 	SDL_FPoint playerPos;
-	Camera_GetRectCenterFloat(&player->object.rect, &playerPos);
+	Render_Object *object =
+		list_first_entry(player->list, Render_Object, list);
+	Camera_GetRectCenterFloat(&object->rect, &playerPos);
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
 	player->direction =
@@ -243,23 +252,20 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		y *= SDL_sinf(SDL_PI_F * 0.25f);
 	}
 
-	if (!Map_IsPointHit(map, player->object.rect.x + x,
-			    player->object.rect.y + player->object.rect.h) &&
-	    !Map_IsPointHit(map,
-			    player->object.rect.x + player->object.rect.w + x,
-			    player->object.rect.y + player->object.rect.h)) {
-		player->object.rect.x += x;
+	if (!Map_IsPointHit(map, object->rect.x + x,
+			    object->rect.y + object->rect.h) &&
+	    !Map_IsPointHit(map, object->rect.x + object->rect.w + x,
+			    object->rect.y + object->rect.h)) {
+		object->rect.x += x;
 	}
-	if (!Map_IsPointHit(map, player->object.rect.x,
-			    player->object.rect.y + player->object.rect.h +
-				    y) &&
-	    !Map_IsPointHit(map, player->object.rect.x + player->object.rect.w,
-			    player->object.rect.y + player->object.rect.h +
-				    y)) {
-		player->object.rect.y += y;
+	if (!Map_IsPointHit(map, object->rect.x,
+			    object->rect.y + object->rect.h + y) &&
+	    !Map_IsPointHit(map, object->rect.x + object->rect.w,
+			    object->rect.y + object->rect.h + y)) {
+		object->rect.y += y;
 	}
 
-	Camera_GetRectCenterFloat(&player->object.rect, &playerPos);
+	Camera_GetRectCenterFloat(&object->rect, &playerPos);
 
 	/* Shoot & reload */
 	if ((mouseState & SDL_BUTTON_LMASK) && *isMouseUsable) {
@@ -273,9 +279,9 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 	/* Change texture */
 	if (player->direction > (SDL_PI_F / 4 * 3) ||
 	    player->direction < -(SDL_PI_F / 4 * 3))
-		player->object.flipMode = SDL_FLIP_HORIZONTAL;
+		object->flipMode = SDL_FLIP_HORIZONTAL;
 	else
-		player->object.flipMode = SDL_FLIP_NONE;
+		object->flipMode = SDL_FLIP_NONE;
 
 	Uint64 time = SDL_GetTicks();
 	if (time - player->prevChangeTextureTime <
@@ -301,7 +307,7 @@ void Player_Update(Player *player, Uint64 deltaTime, BulletList *bulletList,
 		column = 0;
 
 	player->textureNumber = column + row * PLAYER_TEXTURE_COLUMNS;
-	player->object.texture = player->textures[row][column];
+	object->texture = player->textures[row][column];
 }
 
 void Player_Delete(Player *player)
@@ -316,4 +322,8 @@ void Player_Delete(Player *player)
 
 	/* Eye sight */
 	SDL_DestroyTexture(player->sightTexture);
+
+	free(list_first_entry(player->list, Render_Object, list));
+	free(player->list);
+	free(player);
 }

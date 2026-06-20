@@ -1,8 +1,10 @@
 #include <bullet.h>
 
-BulletList *Bullet_CreateList()
+struct list_head *Bullet_Init()
 {
-	return (BulletList *)calloc(1, sizeof(BulletList));
+	struct list_head *list = calloc(1, sizeof(struct list_head));
+	INIT_LIST_HEAD(list);
+	return list;
 }
 
 bool Bullet_Create(BulletMagazine *magazine, SDL_FPoint *pos, float direction)
@@ -17,12 +19,7 @@ bool Bullet_Create(BulletMagazine *magazine, SDL_FPoint *pos, float direction)
 	magazine->prevShootTime = now;
 	magazine->bulletNumber--;
 
-	BulletList *node = magazine->bulletList;
-	for (; node->object.texture; node = node->next)
-		if (!node->next)
-			node->next = Bullet_CreateList();
-
-	Bullet *bullet = &node->object;
+	Bullet *bullet = (Bullet *)calloc(1, sizeof(Bullet));
 	bullet->rect.x = pos->x - BULLET_WIDTH / 2.0f;
 	bullet->rect.y = pos->y - BULLET_HEIGHT / 2.0f;
 	bullet->rect.w = BULLET_WIDTH;
@@ -30,7 +27,9 @@ bool Bullet_Create(BulletMagazine *magazine, SDL_FPoint *pos, float direction)
 	bullet->flipMode = SDL_FLIP_NONE;
 	bullet->direction = direction;
 	bullet->height = RENDER_HEIGHT_AIR;
-	bullet->texture = magazine->bullet;
+	bullet->texture = magazine->texture;
+
+	list_add(&bullet->list, magazine->bulletList);
 
 	return true;
 }
@@ -43,37 +42,32 @@ void Bullet_ReloadMagazine(BulletMagazine *magazine)
 	}
 }
 
-void Bullet_UpdateList(BulletList *node, Uint64 deltaTime, Map *map,
-		       EnemyHead *enemys)
+void Bullet_UpdateList(struct list_head *bulletList, Uint64 deltaTime, Map *map,
+		       Enemys *enemys)
 {
 	float speed = BULLET_SPEED * deltaTime / 1000.0f;
 	SDL_FPoint pos;
-	BulletList *temp;
-	for (; node; node = node->next) {
-		if (node->next && !node->next->object.texture) {
-			temp = node->next;
-			node->next = temp->next;
-			free(temp);
-		}
+	Bullet *node, *temp;
+	list_for_each_entry_safe(node, temp, bulletList, list) {
+		node->rect.x += SDL_cosf(node->direction) * speed;
+		node->rect.y += SDL_sinf(node->direction) * speed;
 
-		if (!node->object.texture)
-			continue;
+		Camera_GetRectCenterFloat(&node->rect, &pos);
 
-		node->object.rect.x += SDL_cosf(node->object.direction) * speed;
-		node->object.rect.y += SDL_sinf(node->object.direction) * speed;
-
-		Camera_GetRectCenterFloat(&node->object.rect, &pos);
-
-		if (Map_IsPointHit(map, node->object.rect.x,
-				   node->object.rect.y) ||
+		if (Map_IsPointHit(map, node->rect.x,
+				   node->rect.y) ||
 		    Enemy_IsHit(enemys, &pos)) {
-			node->object.texture = NULL;
+			list_del(&node->list);
+			free(node);
 		}
 	}
 }
 
-void Bullet_DeleteList(BulletList *bulletList)
+void Bullet_DeleteList(struct list_head *bulletList)
 {
-	for (; bulletList; bulletList = bulletList->next)
-		free(bulletList);
+	Bullet *temp, *node;
+	list_for_each_entry_safe(node, temp, bulletList, list) {
+		list_del(&node->list);
+		free(node);
+	}
 }

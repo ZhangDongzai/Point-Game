@@ -289,7 +289,8 @@ void Player_Update(Player *player, Uint64 deltaTime, Map *map,
 		return;
 	player->prevChangeTextureTime = time;
 
-	int row = x || y ? 3 : 0;
+	int row = x || y ? PLAYER_TEXTURE_ROW_MOVE[0] :
+			   PLAYER_TEXTURE_ROW_IDLE[0];
 	int column = player->textureNumber % PLAYER_TEXTURE_COLUMNS;
 
 	if (player->direction > (SDL_PI_F / 4) &&

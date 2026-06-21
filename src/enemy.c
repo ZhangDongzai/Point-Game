@@ -36,6 +36,7 @@ Enemys Enemy_Init()
 void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos)
 {
 	Enemy *enemy = calloc(1, sizeof(Enemy));
+	list_add(&enemy->list, enemys->list);
 
 	enemy->direction = 0.0f;
 	enemy->flipMode = SDL_FLIP_NONE;
@@ -43,7 +44,11 @@ void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos)
 	enemy->rect = (SDL_FRect){ pos->x, pos->y, ENEMY_WIDTH, ENEMY_HEIGHT };
 	enemy->texture = enemys->texture[0][0];
 
-	list_add(&enemy->list, enemys->list);
+	Enemy_Data *data = calloc(1, sizeof(Enemy_Data));
+	enemy->data = data;
+
+	data->prevChangeTextureTime = 0;
+	data->textureNumber = 0;
 }
 
 bool Enemy_IsHit(Enemys *enemys, const SDL_FPoint *pos)
@@ -71,5 +76,40 @@ void Enemy_Delete(Enemys *enemys)
 		for (int column = 0; column < ENEMY_TEXTURE_COLUMNS; column++) {
 			SDL_DestroyTexture(enemys->texture[row][column]);
 		}
+	}
+}
+
+void Enemy_Update(Enemys *enemys)
+{
+	Enemy *enemy;
+	Enemy_Data *data;
+	Uint64 time = SDL_GetTicks();
+	Uint8 row, column;
+	list_for_each_entry(enemy, enemys->list, list) {
+		data = enemy->data;
+
+		if (time - data->prevChangeTextureTime <
+		    ENEMY_TEXTURE_CHANGE_DELTA_TIME_MS)
+			continue;
+		data->prevChangeTextureTime = time;
+
+		row = data->textureNumber / ENEMY_TEXTURE_COLUMNS;
+		column = data->textureNumber % ENEMY_TEXTURE_COLUMNS;
+
+		column++;
+		if (row >= ENEMY_TEXTURE_ROW_IDLE[0] &&
+		    row <= ENEMY_TEXTURE_ROW_IDLE[1] && 
+		    !(column >= ENEMY_TEXTURE_COLUMN_IDLE[0] && 
+		    column <= ENEMY_TEXTURE_COLUMN_IDLE[1]))
+			column = 0;
+		else if (row >= ENEMY_TEXTURE_ROW_MOVE[0] &&
+		    row <= ENEMY_TEXTURE_ROW_MOVE[1] && 
+		    !(column >= ENEMY_TEXTURE_COLUMN_MOVE[0] && 
+		    column <= ENEMY_TEXTURE_COLUMN_MOVE[1]))
+			column = 0;
+
+		enemy->texture = enemys->texture[row][column];
+		data->textureNumber = row * ENEMY_TEXTURE_COLUMNS + column;
+		printf("Row: %d\tColumn: %d\n", row, column);
 	}
 }

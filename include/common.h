@@ -61,11 +61,13 @@
 #define ENEMY_TEXTURE_FILE "./sources/slime.png"
 #define ENEMY_TEXTURE_SIZE 32
 #define ENEMY_TEXTURE_EDGE ((SDL_Rect){ 8, 12, 16, 12 })
-#define ENEMY_TEXTURE_CHANGE_DELTA_TIME_MS 100
+#define ENEMY_TEXTURE_CHANGE_DELTA_TIME_MS 120
 #define ENEMY_TEXTURE_COLUMNS 7
 #define ENEMY_TEXTURE_ROWS 13
-#define ENEMY_TEXTURE_RECT_IDLE ((SDL_Rect){ 0, 0, 4, 3 })
-#define ENEMY_TEXTURE_RECT_MOVE ((SDL_Rect){ 0, 3, 6, 3 })
+#define ENEMY_TEXTURE_ROW_IDLE ((Uint8[]){ 0, 2 })
+#define ENEMY_TEXTURE_COLUMN_IDLE ((Uint8[]){ 0, 3 })
+#define ENEMY_TEXTURE_ROW_MOVE ((Uint8[]){ 3, 5 })
+#define ENEMY_TEXTURE_COLUMN_MOVE ((Uint8[]){ 0, 5 })
 
 // Map
 #define MAP_FILE "./sources/map.txt"

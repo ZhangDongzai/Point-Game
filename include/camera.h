@@ -28,6 +28,7 @@ typedef struct {
 	float direction;
 	RENDER_HEIGHT height;
 
+	void *data;
 	struct list_head list;
 } Render_Object;
 

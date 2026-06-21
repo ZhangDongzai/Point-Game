@@ -38,7 +38,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
 	SDL_SetRenderDrawBlendMode(app->renderer, RENDER_BLENDMODE);
 	Camera_BindRenderer(app->renderer);
 
-	app->enemys = Enemy_Init(app->renderer);
+	app->enemys = Enemy_Init();
 	app->map = Map_Init(&app->enemys);
 	app->bulletList = Bullet_Init();
 	app->player = Player_Create(app->renderer, app->bulletList);
@@ -70,6 +70,7 @@ static inline void _Update_Game(App *app)
 		      &app->isMouseUsable);
 	Camera_Update(list_first_entry(app->player->list, Render_Object, list),
 		      &app->map.boundary);
+	Enemy_Update(&app->enemys);
 
 	const bool *keyboardState = SDL_GetKeyboardState(NULL);
 	if (keyboardState[SDL_SCANCODE_ESCAPE]) {

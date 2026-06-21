@@ -11,6 +11,11 @@ typedef struct {
 	struct list_head *list;
 } Enemys;
 
+typedef struct {
+	Uint64 prevChangeTextureTime;
+	Uint8 textureNumber;
+} Enemy_Data;
+
 Enemys Enemy_Init();
 
 void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos);

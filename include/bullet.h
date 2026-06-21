@@ -25,7 +25,7 @@ typedef struct {
 /**
  * Init a bullet list
  */
-struct list_head *Bullet_Init();
+void Bullet_Init(struct list_head *bulletList);
 
 /**
  * Create a bullet and shoot

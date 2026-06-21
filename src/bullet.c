@@ -1,10 +1,8 @@
 #include <bullet.h>
 
-struct list_head *Bullet_Init()
+void Bullet_Init(struct list_head *bulletList)
 {
-	struct list_head *list = calloc(1, sizeof(struct list_head));
-	INIT_LIST_HEAD(list);
-	return list;
+	INIT_LIST_HEAD(bulletList);
 }
 
 bool Bullet_Create(BulletMagazine *magazine, SDL_FPoint *pos, float direction)

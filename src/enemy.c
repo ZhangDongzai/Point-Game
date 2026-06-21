@@ -1,9 +1,7 @@
 #include <enemy.h>
 
-Enemys Enemy_Init()
+void Enemy_Init(Enemys *enemys)
 {
-	Enemys enemys;
-
 	SDL_Surface *surface = SDL_LoadPNG(ENEMY_TEXTURE_FILE);
 	SDL_Surface *temp = SDL_CreateSurface(ENEMY_WIDTH * WINDOW_SCALE,
 					      ENEMY_HEIGHT * WINDOW_SCALE,
@@ -19,7 +17,7 @@ Enemys Enemy_Init()
 			SDL_ClearSurface(temp, 0.0f, 0.0f, 0.0f, 0.0f);
 			SDL_BlitSurfaceScaled(surface, &rect, temp, NULL,
 					      SDL_SCALEMODE_NEAREST);
-			enemys.texture[row][column] =
+			enemys->texture[row][column] =
 				Camera_CreateTextureFromSurface(temp);
 		}
 	}
@@ -27,16 +25,13 @@ Enemys Enemy_Init()
 	SDL_DestroySurface(temp);
 	SDL_DestroySurface(surface);
 
-	enemys.list = calloc(1, sizeof(struct list_head));
-	INIT_LIST_HEAD(enemys.list);
-
-	return enemys;
+	INIT_LIST_HEAD(&enemys->list);
 }
 
 void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos)
 {
 	Enemy *enemy = calloc(1, sizeof(Enemy));
-	list_add(&enemy->list, enemys->list);
+	list_add(&enemy->list, &enemys->list);
 
 	enemy->direction = 0.0f;
 	enemy->flipMode = SDL_FLIP_NONE;
@@ -54,7 +49,7 @@ void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos)
 bool Enemy_IsHit(Enemys *enemys, const SDL_FPoint *pos)
 {
 	Enemy *enemy, *temp;
-	list_for_each_entry_safe(enemy, temp, enemys->list, list) {
+	list_for_each_entry_safe(enemy, temp, &enemys->list, list) {
 		if (SDL_PointInRectFloat(pos, &enemy->rect)) {
 			list_del(&enemy->list);
 			free(enemy);
@@ -67,7 +62,7 @@ bool Enemy_IsHit(Enemys *enemys, const SDL_FPoint *pos)
 void Enemy_Delete(Enemys *enemys)
 {
 	Enemy *enemy, *temp;
-	list_for_each_entry_safe(enemy, temp, enemys->list, list) {
+	list_for_each_entry_safe(enemy, temp, &enemys->list, list) {
 		list_del(&enemy->list);
 		free(enemy);
 	}
@@ -85,7 +80,7 @@ void Enemy_Update(Enemys *enemys)
 	Enemy_Data *data;
 	Uint64 time = SDL_GetTicks();
 	Uint8 row, column;
-	list_for_each_entry(enemy, enemys->list, list) {
+	list_for_each_entry(enemy, &enemys->list, list) {
 		data = enemy->data;
 
 		if (time - data->prevChangeTextureTime <

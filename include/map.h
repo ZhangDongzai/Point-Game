@@ -27,10 +27,8 @@ typedef struct {
 
 /**
  * Init map from file
- *
- * \returns the map context
  */
-Map Map_Init(Enemys *enemys);
+void Map_Init(Map *map, Enemys *enemys);
 
 /**
  * Tell the object if it hits walls

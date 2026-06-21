@@ -8,7 +8,7 @@ typedef Render_Object Enemy;
 
 typedef struct {
 	SDL_Texture *texture[ENEMY_TEXTURE_ROWS][ENEMY_TEXTURE_COLUMNS];
-	struct list_head *list;
+	struct list_head list;
 } Enemys;
 
 typedef struct {
@@ -16,7 +16,7 @@ typedef struct {
 	Uint8 textureNumber;
 } Enemy_Data;
 
-Enemys Enemy_Init();
+void Enemy_Init(Enemys *enemys);
 
 void Enemy_Create(Enemys *enemys, const SDL_FPoint *pos);
 

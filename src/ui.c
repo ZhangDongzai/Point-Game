@@ -1,19 +1,17 @@
 #include <ui.h>
 
-UI UI_Init(SDL_Renderer *renderer, TTF_Font *font)
+void UI_Init(UI *ui, SDL_Renderer *renderer, TTF_Font *font)
 {
-	UI ui;
-	ui.mode = UI_MODE_START;
-	ui.rect = (SDL_FRect){ 0, 0, 0, 0 };
-	ui.edgeColor = UI_DEFAULT_EDGE_COLOR;
-	ui.bgColor = UI_DEFAULT_BG_COLOR;
-	ui.fontColor = UI_DEFAULT_FONT_COLOR;
+	ui->mode = UI_MODE_START;
+	ui->rect = (SDL_FRect){ 0, 0, 0, 0 };
+	ui->edgeColor = UI_DEFAULT_EDGE_COLOR;
+	ui->bgColor = UI_DEFAULT_BG_COLOR;
+	ui->fontColor = UI_DEFAULT_FONT_COLOR;
 
-	ui.renderer = renderer;
-	ui.font = font;
-	ui.textEngine = TTF_CreateRendererTextEngine(renderer);
-	ui.text = TTF_CreateText(ui.textEngine, ui.font, "", strlen(""));
-	return ui;
+	ui->renderer = renderer;
+	ui->font = font;
+	ui->textEngine = TTF_CreateRendererTextEngine(renderer);
+	ui->text = TTF_CreateText(ui->textEngine, ui->font, "", strlen(""));
 }
 
 void UI_Destroy(UI *ui)

@@ -27,7 +27,7 @@ typedef struct {
 /** 
  * Initialize UI
  */
-UI UI_Init(SDL_Renderer *renderer, TTF_Font *font);
+void UI_Init(UI *ui, SDL_Renderer *renderer, TTF_Font *font);
 
 /**
  * Destroy UI

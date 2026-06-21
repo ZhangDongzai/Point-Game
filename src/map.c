@@ -5,10 +5,8 @@ int MAP_HEIGHT = 0;
 int MAP_MAX_LENGTH = 0;
 SDL_FPoint MAP_DEFAULT_POS = { 0.0f, 0.0f };
 
-Map Map_Init(Enemys *enemys)
+void Map_Init(Map *map, Enemys *enemys)
 {
-	Map map;
-
 	char line[1024];
 	FILE *file = fopen(MAP_FILE, "r");
 	if (!file) {
@@ -18,9 +16,9 @@ Map Map_Init(Enemys *enemys)
 
 	fgets(line, sizeof(line), file);
 	sscanf(line, "%d %d", &MAP_WIDTH, &MAP_HEIGHT);
-	map.boundary = (SDL_FRect){ 0, 0, MAP_WIDTH, MAP_HEIGHT };
+	map->boundary = (SDL_FRect){ 0, 0, MAP_WIDTH, MAP_HEIGHT };
 	MAP_MAX_LENGTH = MAP_WIDTH + MAP_HEIGHT;
-	map.list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
+	map->list = (int *)calloc(MAP_WIDTH * MAP_HEIGHT, sizeof(int));
 
 	fgets(line, sizeof(line), file);
 	sscanf(line, "%f %f", &MAP_DEFAULT_POS.x, &MAP_DEFAULT_POS.y);
@@ -38,7 +36,7 @@ Map Map_Init(Enemys *enemys)
 	for (int row = 0; row < MAP_HEIGHT; row++) {
 		fgets(line, sizeof(line), file);
 		for (int column = 0; column < MAP_WIDTH; column++) {
-			map.list[row * MAP_WIDTH + column] = line[column];
+			map->list[row * MAP_WIDTH + column] = line[column];
 		}
 	}
 
@@ -53,7 +51,7 @@ Map Map_Init(Enemys *enemys)
 					       RENDER_PIXEL_FORMAT);
 	SDL_BlitSurfaceScaled(fileSurface, &rect, floor, NULL,
 			      SDL_SCALEMODE_NEAREST);
-	map.floor = Camera_CreateTextureFromSurface(floor);
+	map->floor = Camera_CreateTextureFromSurface(floor);
 	SDL_DestroySurface(floor);
 
 	rect.x = MAP_TEXTURE_WALL.x * MAP_TEXTURE_SIZE;
@@ -64,11 +62,9 @@ Map Map_Init(Enemys *enemys)
 					      RENDER_PIXEL_FORMAT);
 	SDL_BlitSurfaceScaled(fileSurface, &rect, wall, NULL,
 			      SDL_SCALEMODE_NEAREST);
-	map.wall = Camera_CreateTextureFromSurface(wall);
+	map->wall = Camera_CreateTextureFromSurface(wall);
 	SDL_DestroySurface(wall);
 	SDL_DestroySurface(fileSurface);
-
-	return map;
 }
 
 void Map_Render(SDL_Renderer *renderer, Map *map, SDL_FPoint *point)

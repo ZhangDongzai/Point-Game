@@ -1,9 +1,7 @@
 #include <player.h>
 
-Player *Player_Create(SDL_Renderer *renderer, struct list_head *bulletList)
+void Player_Create(Player *player, SDL_Renderer *renderer, struct list_head *bulletList)
 {
-	Player *player = (Player *)calloc(1, sizeof(Player));
-
 	/* Eye sight */
 	player->direction = PLAYER_DEFAULT_DIRECTION;
 	player->sightTexture = SDL_CreateTexture(renderer, RENDER_PIXEL_FORMAT,
@@ -52,11 +50,8 @@ Player *Player_Create(SDL_Renderer *renderer, struct list_head *bulletList)
 	object->texture = player->textures[0][0];
 	object->height = RENDER_HEIGHT_FLOOR;
 
-	player->list = calloc(1, sizeof(struct list_head));
-	INIT_LIST_HEAD(player->list);
-	list_add(&object->list, player->list);
-
-	return player;
+	INIT_LIST_HEAD(&player->list);
+	list_add(&object->list, &player->list);
 }
 
 /**
@@ -134,7 +129,7 @@ void Player_DrawSight(SDL_Renderer *renderer, Player *player, Map *map)
 	SDL_Vertex vertices[PLAYER_SIGHT_RAY_NUMBER + 1];
 	SDL_FPoint endPos;
 	Render_Object *object =
-		list_first_entry(player->list, Render_Object, list);
+		list_first_entry(&player->list, Render_Object, list);
 	SDL_FPoint pos = { object->rect.x + PLAYER_SIZE_HALF,
 			   object->rect.y + PLAYER_SIZE_HALF };
 
@@ -229,7 +224,7 @@ void Player_Update(Player *player, Uint64 deltaTime, Map *map,
 	SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&mouseX, &mouseY);
 	SDL_FPoint playerPos;
 	Render_Object *object =
-		list_first_entry(player->list, Render_Object, list);
+		list_first_entry(&player->list, Render_Object, list);
 	Camera_GetRectCenterFloat(&object->rect, &playerPos);
 	playerPos = Camera_GetPosOnScreen(&playerPos);
 	speed = PLAYER_MOVE_SPEED * deltaTime / 1000.0f;
@@ -324,7 +319,5 @@ void Player_Delete(Player *player)
 	/* Eye sight */
 	SDL_DestroyTexture(player->sightTexture);
 
-	free(list_first_entry(player->list, Render_Object, list));
-	free(player->list);
-	free(player);
+	free(list_first_entry(&player->list, Render_Object, list));
 }

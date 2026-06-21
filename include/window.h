@@ -15,9 +15,9 @@ typedef struct {
 	TTF_Font *font;
 	UI ui;
 
-	Player *player;
+	Player player;
 	Enemys enemys;
-	struct list_head *bulletList;
+	struct list_head bulletList;
 	Map map;
 
 	bool isMouseUsable;
